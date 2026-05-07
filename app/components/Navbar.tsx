@@ -131,7 +131,7 @@ export default function Navbar() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
               <Link
-                href="#products"
+                href="/products"
                 className="text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 relative group py-2"
               >
                 Products
@@ -164,7 +164,7 @@ export default function Navbar() {
                       collections.map((coll) => (
                         <Link
                           key={coll.id}
-                          href={`/#${coll.slug}`}
+                          href={`/products?collectionId=${coll.id}`}
                           onClick={() => setIsCategoryMenuOpen(false)}
                           className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors"
                         >

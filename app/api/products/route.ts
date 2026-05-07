@@ -36,6 +36,10 @@ export async function GET(request: NextRequest) {
     const collectionSlug = searchParams.get('collection');
     const collectionId = searchParams.get('collectionId');
     const inStock = searchParams.get('inStock');
+    const minPrice = searchParams.get('minPrice');
+    const maxPrice = searchParams.get('maxPrice');
+    const sort = searchParams.get('sort');
+    const search = searchParams.get('search');
 
     const where: any = {};
     if (collectionSlug) {
@@ -50,9 +54,32 @@ export async function GET(request: NextRequest) {
       where.inStock = false;
     }
 
+    if (minPrice || maxPrice) {
+      where.price = {};
+      if (minPrice) where.price.gte = parseFloat(minPrice);
+      if (maxPrice) where.price.lte = parseFloat(maxPrice);
+    }
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { shortDescription: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    let orderBy: any = { createdAt: 'desc' };
+    if (sort === 'price-asc') {
+      orderBy = { price: 'asc' };
+    } else if (sort === 'price-desc') {
+      orderBy = { price: 'desc' };
+    } else if (sort === 'newest') {
+      orderBy = { createdAt: 'desc' };
+    }
+
     const products = await prisma.product.findMany({
       where: Object.keys(where).length ? where : undefined,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
       include: { collection: true },
     });
 
