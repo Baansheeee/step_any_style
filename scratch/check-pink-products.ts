@@ -1,0 +1,27 @@
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  const products = await prisma.product.findMany({
+    where: {
+      OR: [
+        { name: { contains: 'Pink', mode: 'insensitive' } },
+        { slug: { contains: 'pink', mode: 'insensitive' } }
+      ]
+    },
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      image: true,
+      images: true
+    }
+  });
+
+  console.log(JSON.stringify(products, null, 2));
+}
+
+main()
+  .catch(e => console.error(e))
+  .finally(() => prisma.$disconnect());
