@@ -122,25 +122,25 @@ export default function ReviewsSlideshow() {
   const currentReview = reviews[currentIndex];
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-white to-gray-50">
+    <section className="py-16 md:py-20 bg-lavender-light/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 uppercase tracking-tighter">
+            <span className="text-lavender-dark">
               What Our Customers Say
             </span>
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-500 text-sm uppercase tracking-widest font-bold">
             Real reviews from satisfied customers across Pakistan
           </p>
         </div>
 
         {/* Main Review Card */}
         <div className="max-w-4xl mx-auto mb-8">
-          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-purple-100 relative overflow-hidden">
+          <div className="bg-white rounded-[2rem] shadow-xl p-8 md:p-12 border border-lavender-main relative overflow-hidden">
             {/* Decorative gradient background */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full blur-3xl opacity-50 -z-0"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-pink-100 to-purple-100 rounded-full blur-3xl opacity-50 -z-0"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-lavender-light rounded-full blur-3xl opacity-50 -z-0"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-lavender-main rounded-full blur-3xl opacity-50 -z-0"></div>
             
             <div className="relative z-10">
               {/* Stars */}
@@ -148,10 +148,10 @@ export default function ReviewsSlideshow() {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <svg
                     key={star}
-                    className={`w-8 h-8 ${
+                    className={`w-6 h-6 ${
                       star <= currentReview.rating
                         ? 'text-yellow-400 fill-current'
-                        : 'text-gray-300'
+                        : 'text-lavender-main'
                     } transition-all duration-300`}
                     viewBox="0 0 20 20"
                   >
@@ -161,26 +161,26 @@ export default function ReviewsSlideshow() {
               </div>
 
               {/* Review Comment */}
-              <p className="text-xl md:text-2xl text-gray-700 text-center mb-8 leading-relaxed italic">
-                "{currentReview.comment}"
+              <p className="text-xl md:text-2xl text-gray-800 text-center mb-8 leading-relaxed italic font-medium">
+                &quot;{currentReview.comment}&quot;
               </p>
 
               {/* Customer Info */}
               <div className="flex items-center justify-center gap-4 mb-6">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                <div className="w-16 h-16 rounded-full bg-lavender-main flex items-center justify-center text-lavender-dark font-black text-xl shadow-inner">
                   {currentReview.name.charAt(0)}
                 </div>
                 <div className="text-left">
-                  <h4 className="font-semibold text-gray-900 text-lg">{currentReview.name}</h4>
-                  <p className="text-gray-500 text-sm">{currentReview.date}</p>
+                  <h4 className="font-bold text-gray-900 text-lg uppercase tracking-tight">{currentReview.name}</h4>
+                  <p className="text-gray-400 text-xs font-black uppercase tracking-widest">{currentReview.date}</p>
                 </div>
               </div>
 
               {/* Product Info */}
-              <div className="flex items-center justify-center gap-4 pt-6 border-t border-gray-200">
+              <div className="flex items-center justify-center gap-4 pt-6 border-t border-lavender-light">
                 {currentReview.productImage && (
                   <Link href={`/products/${currentReview.productId}`} className="group">
-                    <div className="w-20 h-20 rounded-lg overflow-hidden border-2 border-purple-200 group-hover:border-purple-400 transition-all shadow-md group-hover:shadow-lg">
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-lavender-main group-hover:border-lavender-dark transition-all shadow-md group-hover:shadow-lg">
                       <Image
                         src={currentReview.productImage}
                         alt={currentReview.productName}
@@ -192,10 +192,10 @@ export default function ReviewsSlideshow() {
                   </Link>
                 )}
                 <div className="text-left">
-                  <p className="text-sm text-gray-500">Reviewed Product</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Reviewed Product</p>
                   <Link 
                     href={`/products/${currentReview.productId}`}
-                    className="font-semibold text-purple-600 hover:text-purple-700 transition-colors"
+                    className="font-bold text-lavender-dark hover:text-purple-900 transition-colors uppercase text-sm tracking-tight"
                   >
                     {currentReview.productName}
                   </Link>
@@ -209,10 +209,10 @@ export default function ReviewsSlideshow() {
         <div className="flex items-center justify-center gap-4 mb-6">
           <button
             onClick={prevSlide}
-            className="w-12 h-12 rounded-full bg-white border-2 border-purple-200 hover:border-purple-400 flex items-center justify-center transition-all hover:shadow-lg group"
+            className="w-12 h-12 rounded-full bg-white border-2 border-lavender-main hover:border-lavender-dark flex items-center justify-center transition-all hover:shadow-lg group"
             aria-label="Previous review"
           >
-            <svg className="w-6 h-6 text-purple-600 group-hover:text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-lavender-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -225,8 +225,8 @@ export default function ReviewsSlideshow() {
                 onClick={() => goToSlide(index)}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 w-8'
-                    : 'bg-gray-300 hover:bg-gray-400'
+                    ? 'bg-lavender-dark w-8'
+                    : 'bg-lavender-main hover:bg-lavender-dark/50'
                 }`}
                 aria-label={`Go to review ${index + 1}`}
               />
@@ -235,10 +235,10 @@ export default function ReviewsSlideshow() {
 
           <button
             onClick={nextSlide}
-            className="w-12 h-12 rounded-full bg-white border-2 border-purple-200 hover:border-purple-400 flex items-center justify-center transition-all hover:shadow-lg group"
+            className="w-12 h-12 rounded-full bg-white border-2 border-lavender-main hover:border-lavender-dark flex items-center justify-center transition-all hover:shadow-lg group"
             aria-label="Next review"
           >
-            <svg className="w-6 h-6 text-purple-600 group-hover:text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-lavender-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -246,8 +246,8 @@ export default function ReviewsSlideshow() {
 
         {/* Review Stats */}
         <div className="text-center">
-          <p className="text-gray-600">
-            <span className="font-semibold text-purple-600">{reviews.length}+</span> Customer Reviews
+          <p className="text-gray-400 text-xs font-black uppercase tracking-widest">
+            <span className="text-lavender-dark">{reviews.length}+</span> Customer Reviews
           </p>
         </div>
       </div>

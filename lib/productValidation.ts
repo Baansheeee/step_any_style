@@ -125,6 +125,11 @@ export function parseProductPayload(
     data.images = toStringArray(body.images);
   }
 
+  if (body.videoUrl !== undefined) {
+    const videoValue = String(body.videoUrl ?? '').trim();
+    data.videoUrl = videoValue ? videoValue : null;
+  }
+
   if (body.advantages !== undefined) {
     data.advantages = toStringArray(body.advantages);
   }

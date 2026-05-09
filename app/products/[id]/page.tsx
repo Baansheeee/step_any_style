@@ -3,7 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import ImageLightbox from '../components/ImageLightbox';
 import SizeChartModal from '@/app/components/SizeChartModal';
 import Navbar from '@/app/components/Navbar';
@@ -12,22 +12,28 @@ import { useCart } from '@/app/context/CartContext';
 import type { AuthUser } from '@/app/components/AccountModal';
 import { formatPKR } from '@/lib/currency';
 import type { ProductDTO } from '@/types/product';
+import SliderSection from '@/app/components/SliderSection';
+import GlobalProductCard from '../components/ProductCard';
 
 const COLOR_MAP: Record<string, string> = {
-  golden: '#D4AF37',
-  gold: '#D4AF37',
-  silver: '#C0C0C0',
-  maroon: '#800000',
+  golden: '#FFD700',
+  gold: '#FFD700',
+  yellow: '#FACC15',
+  silver: '#E5E7EB',
+  maroon: '#7F1D1D',
   beige: '#F5F5DC',
-  nude: '#E3BC9A',
-  'rose gold': '#B76E79',
-  rosegold: '#B76E79',
+  nude: '#F3D2C1',
+  'rose gold': '#E1B3A8',
+  rosegold: '#E1B3A8',
   black: '#111111',
   white: '#FFFFFF',
   red: '#DC2626',
   blue: '#2563EB',
   pink: '#DB2777',
   purple: '#7C3AED',
+  tan: '#B45309',
+  brown: '#78350F',
+  peach: '#FFD1B3',
 };
 
 const getColorCode = (color: string) => {
@@ -124,6 +130,24 @@ export default function ProductDetailPage() {
     fetchUser();
   }, []);
 
+  const productMedia = useMemo(() => {
+    if (!product) return [];
+    
+    // Combine cover image and additional images, then deduplicate
+    const allImages = [
+      product.image,
+      ...(Array.isArray(product.images) ? product.images : [])
+    ].filter((url): url is string => typeof url === 'string' && url.length > 0);
+    
+    const uniqueImages = Array.from(new Set(allImages));
+    
+    const media = uniqueImages.map(url => ({ type: 'image', url }));
+    if (product.videoUrl) {
+      media.unshift({ type: 'video', url: product.videoUrl });
+    }
+    return media;
+  }, [product?.images, product?.image, product?.videoUrl]);
+
   if (isLoadingProduct) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -146,30 +170,24 @@ export default function ProductDetailPage() {
     );
   }
 
-  const productImages =
-    product.images && product.images.length > 0
-      ? product.images
-      : product.image
-        ? [product.image]
-        : [];
-
-  const fallbackImage = product.image ?? productImages[0] ?? '/IPL logo Main JPG.png';
-  const mainImage = productImages[selectedImageIndex] || fallbackImage;
+  const fallbackImage = product.image ?? (product.images?.[0]) ?? '/IPL logo Main JPG.png';
+  const currentMedia = productMedia[selectedImageIndex] || { type: 'image', url: fallbackImage };
+  const mainImage = currentMedia.type === 'image' ? currentMedia.url : fallbackImage;
 
   const isAdminUser = authUser?.role === 'ADMIN';
 
   const handleNextImage = () => {
-    if (productImages.length === 0) return;
-    setSelectedImageIndex((prev) => (prev + 1) % productImages.length);
+    if (productMedia.length === 0) return;
+    setSelectedImageIndex((prev) => (prev + 1) % productMedia.length);
   };
 
   const handlePreviousImage = () => {
-    if (productImages.length === 0) return;
-    setSelectedImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
+    if (productMedia.length === 0) return;
+    setSelectedImageIndex((prev) => (prev - 1 + productMedia.length) % productMedia.length);
   };
 
   const openLightbox = () => {
-    if (productImages.length > 0) {
+    if (productMedia.length > 0 && currentMedia.type === 'image') {
       setIsLightboxOpen(true);
     }
   };
@@ -207,16 +225,22 @@ export default function ProductDetailPage() {
     );
   };
 
-  const availableSizes = Array.from(new Set(product.variants?.map((v) => v.size) || [])).filter(
-    Boolean,
-  );
+  const availableSizes = Array.from(new Set(product.variants?.map((v) => v.size) || []))
+    .filter(Boolean)
+    .sort((a, b) => {
+      const numA = parseFloat(a as string);
+      const numB = parseFloat(b as string);
+      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+      return (a as string).localeCompare(b as string);
+    });
+
   const availableColors = Array.from(new Set(product.variants?.map((v) => v.color) || [])).filter(
     Boolean,
   );
 
   const selectedVariant = product.variants?.find(
-    (v) => 
-      (!availableSizes.length || v.size === selectedSize) && 
+    (v) =>
+      (!availableSizes.length || v.size === selectedSize) &&
       (!availableColors.length || v.color === selectedColor)
   );
 
@@ -230,225 +254,219 @@ export default function ProductDetailPage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Navigation */}
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-10 py-10">
         {/* Breadcrumb */}
-        <div className="mb-6 text-sm text-gray-600">
-          <Link href="/" className="hover:text-purple-600">Home</Link>
-          <span className="mx-2">/</span>
-          <Link href={`#${product.collection?.slug || ''}`} className="hover:text-purple-600">
-            {product.collection?.name || 'Premium'} Collection
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-gray-900">{product.name}</span>
-        </div>
+        <nav className="flex text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-10 gap-2 overflow-x-auto whitespace-nowrap pb-2 no-scrollbar">
+          <Link href="/" className="hover:text-black">Home</Link>
+          <span>/</span>
+          <Link href={`/products?collectionId=${product.collectionId}`} className="hover:text-black">{product.collection?.name}</Link>
+          <span>/</span>
+          <span className="text-black">{product.name}</span>
+        </nav>
 
-        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 mb-16">
-          {/* Product Image Gallery */}
-          <div className="relative">
-            {/* Main Image */}
-            {mainImage ? (
-              <div 
-                className={`h-96 md:h-[500px] rounded-2xl overflow-hidden mb-4 cursor-pointer group relative ${
-                  product.collection?.name === 'Kemei' 
-                    ? 'bg-gradient-to-br from-purple-100 to-pink-100' 
-                    : 'bg-gradient-to-br from-pink-100 to-purple-100'
-                }`}
-                onClick={openLightbox}
-              >
+        <div className="grid lg:grid-cols-12 gap-12 mb-20 items-start">
+          {/* LEFT: Image Gallery (Sticky) */}
+          <div className="lg:col-span-7 flex flex-col md:flex-row gap-4 lg:sticky lg:top-24">
+            {/* Thumbnails (Desktop side) */}
+            <div className="hidden md:flex flex-col gap-3 w-16 flex-shrink-0">
+              {productMedia.map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedImageIndex(idx)}
+                  className={`aspect-square rounded-lg overflow-hidden border-2 transition-all relative ${selectedImageIndex === idx ? 'border-purple-600 scale-105 shadow-md' : 'border-transparent hover:border-gray-200'
+                    }`}
+                >
+                  {item.type === 'image' ? (
+                    <Image src={item.url} alt="" width={64} height={64} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-black relative flex items-center justify-center">
+                      {item.url.includes('youtube.com') || item.url.includes('youtu.be') ? (
+                         <Image 
+                           src={`https://img.youtube.com/vi/${
+                              item.url.includes('v=') 
+                                ? item.url.split('v=')[1]?.split('&')[0] 
+                                : item.url.split('/').pop()
+                           }/mqdefault.jpg`} 
+                           alt="Video Preview"
+                           fill
+                           className="object-cover opacity-60"
+                         />
+                      ) : (
+                        <video 
+                          src={item.url} 
+                          muted 
+                          loop 
+                          autoPlay 
+                          playsInline
+                          className="w-full h-full object-cover opacity-60" 
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-purple-600/10" />
+                      <svg className="w-6 h-6 text-white relative z-10 drop-shadow-md" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* Main Image Container (Fixed Aspect) */}
+            <div className={`relative flex-1 aspect-[4/5] max-h-[80vh] bg-[#F9F9F9] rounded-2xl overflow-hidden group ${currentMedia.type === 'image' ? 'cursor-zoom-in' : ''}`} onClick={openLightbox}>
+              {currentMedia.type === 'image' ? (
                 <Image
-                  src={mainImage}
+                  src={currentMedia.url}
                   alt={product.name}
-                  width={800}
-                  height={800}
-                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                  fill
+                  className="object-contain p-4 md:p-8 transition-transform duration-700 group-hover:scale-110"
                   priority
                 />
-                {/* Click to enlarge overlay */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded-full p-3 shadow-lg">
-                    <svg
-                      className="w-6 h-6 text-gray-700"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                      />
-                    </svg>
-                  </div>
+              ) : (
+                <div className="w-full h-full p-0 flex items-center justify-center bg-black">
+                   {currentMedia.url.includes('youtube.com') || currentMedia.url.includes('youtu.be') ? (
+                     <iframe
+                        src={`https://www.youtube.com/embed/${
+                          currentMedia.url.includes('v=') 
+                            ? currentMedia.url.split('v=')[1]?.split('&')[0] 
+                            : currentMedia.url.split('/').pop()
+                        }?autoplay=1&mute=1&loop=1&playlist=${
+                          currentMedia.url.includes('v=') 
+                            ? currentMedia.url.split('v=')[1]?.split('&')[0] 
+                            : currentMedia.url.split('/').pop()
+                        }`}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                     />
+                   ) : (
+                     <video
+                       src={currentMedia.url}
+                       controls
+                       playsInline
+                       preload="metadata"
+                       className="w-full h-full object-contain"
+                       autoPlay
+                       muted
+                       loop
+                     />
+                   )}
                 </div>
-                
-                {/* Navigation Arrows (only show if multiple images) */}
-                {productImages.length > 1 && (
-                  <>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePreviousImage();
-                      }}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 hover:bg-white rounded-full p-2 shadow-lg z-10"
-                      aria-label="Previous image"
-                    >
-                      <svg
-                        className="w-5 h-5 text-gray-700"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNextImage();
-                      }}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 hover:bg-white rounded-full p-2 shadow-lg z-10"
-                      aria-label="Next image"
-                    >
-                      <svg
-                        className="w-5 h-5 text-gray-700"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </button>
-                  </>
+              )}
+              <div className="absolute top-4 left-4">
+                {product.isNew && (
+                  <span className="bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-widest shadow-sm">New</span>
                 )}
               </div>
-            ) : (
-              <div className={`h-96 md:h-[500px] rounded-2xl flex items-center justify-center ${
-                product.collection?.name === 'Kemei' 
-                  ? 'bg-gradient-to-br from-purple-100 to-pink-100' 
-                  : 'bg-gradient-to-br from-pink-100 to-purple-100'
-              }`}>
-                <div className="text-center">
-                  <div className="w-48 h-48 md:w-64 md:h-64 mx-auto bg-white rounded-full shadow-2xl flex items-center justify-center mb-4">
-                    <span className="text-8xl md:text-9xl">
-                      {product.collection?.name === 'Kemei' ? '✨' : '💫'}
-                    </span>
-                  </div>
-                  <p className={`font-semibold text-lg ${
-                    product.collection?.name === 'Kemei' ? 'text-purple-600' : 'text-pink-600'
-                  }`}>
-                    {product.collection?.name} Footwear
-                  </p>
-                </div>
-              </div>
-            )}
+            </div>
 
-            {/* Thumbnail Gallery */}
-            {productImages.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {productImages.map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImageIndex === index
-                        ? product.collection?.name === 'Kemei'
-                          ? 'border-purple-600 ring-2 ring-purple-200'
-                          : 'border-pink-600 ring-2 ring-pink-200'
-                        : 'border-gray-200 hover:border-gray-300'
+            {/* Thumbnails (Mobile bottom) */}
+            <div className="flex md:hidden gap-2 overflow-x-auto no-scrollbar py-2">
+              {productMedia.map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedImageIndex(idx)}
+                  className={`w-14 h-14 flex-shrink-0 rounded-lg overflow-hidden border-2 relative ${selectedImageIndex === idx ? 'border-purple-600' : 'border-transparent'
                     }`}
-                  >
-                    <Image
-                      src={img}
-                      alt={`${product.name} - Image ${index + 1}`}
-                      width={80}
-                      height={80}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Product Info */}
-          <div>
-            <div className="mb-4">
-              <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                product.collection?.name === 'Kemei'
-                  ? 'bg-purple-100 text-purple-700'
-                  : 'bg-pink-100 text-pink-700'
-              }`}>
-                {product.collection?.name}
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              {product.name}
-            </h1>
-            <p className="text-xl text-gray-600 mb-6 leading-relaxed">
-              {product.description}
-            </p>
-
-            {/* Price */}
-            <div className="mb-6">
-              <div className="flex items-baseline gap-4">
-                <span
-                  className={`text-4xl font-bold bg-gradient-to-r ${
-                    product.collection?.name === 'Kemei'
-                      ? 'from-purple-600 to-pink-600'
-                      : 'from-pink-600 to-purple-600'
-                  } bg-clip-text text-transparent`}
                 >
-                  {formatPKR(product.price)}
-                </span>
-                {product.originalPrice && (
-                  <>
-                    <span className="text-2xl text-gray-400 line-through">
-                      {formatPKR(product.originalPrice)}
-                    </span>
-                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
-                      Save {formatPKR(product.originalPrice - product.price)}
-                    </span>
-                  </>
-                )}
+                  {item.type === 'image' ? (
+                    <Image src={item.url} alt="" width={56} height={56} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-black relative flex items-center justify-center">
+                      {item.url.includes('youtube.com') || item.url.includes('youtu.be') ? (
+                         <Image 
+                           src={`https://img.youtube.com/vi/${
+                              item.url.includes('v=') 
+                                ? item.url.split('v=')[1]?.split('&')[0] 
+                                : item.url.split('/').pop()
+                           }/mqdefault.jpg`} 
+                           alt="Video Preview"
+                           fill
+                           className="object-cover opacity-60"
+                         />
+                      ) : (
+                        <video 
+                          src={item.url} 
+                          muted 
+                          loop 
+                          autoPlay 
+                          playsInline
+                          className="w-full h-full object-cover opacity-60" 
+                        />
+                      )}
+                      <svg className="w-5 h-5 text-white relative z-10" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* RIGHT: Product Info (Scrollable) */}
+          <div className="lg:col-span-5 space-y-10 lg:max-h-[85vh] lg:overflow-y-auto no-scrollbar lg:pr-6 pb-10">
+            <header className="space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="h-[1px] w-8 bg-purple-600"></span>
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-purple-600">{product.collection?.name}</p>
               </div>
+              <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-gray-900 leading-[1.1]">
+                {product.name}
+              </h1>
+              <p className="text-sm font-bold text-gray-400 italic tracking-wide">"{product.shortDescription}"</p>
+            </header>
+
+            {/* Pricing */}
+            <div className="flex items-baseline gap-4 pt-2">
+              <span className="text-4xl font-black text-[#DB2777] tracking-tighter">{formatPKR(product.price)}</span>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xl text-gray-300 line-through font-medium">{formatPKR(product.originalPrice)}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-white bg-[#DB2777] px-2 py-1 rounded">
+                    SALE
+                  </span>
+                </div>
+              )}
             </div>
 
-            {/* Variants selection */}
-            <div className="space-y-6 mb-8">
+            {/* Selection Options */}
+            <div className="space-y-10 pt-4">
               {availableColors.length > 0 && (
-                <div className="animate-in fade-in slide-in-from-left duration-500">
-                  <label className="block text-lg font-bold text-gray-900 mb-3">
-                    Color:
-                  </label>
-                  <div className="flex flex-wrap gap-2">
+                <div className="space-y-5">
+                  <div className="flex items-center gap-3">
+                    <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900">Color</label>
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-600">{selectedColor || 'Select'}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-5 items-center">
                     {availableColors.map((color) => {
+                      const colorHex = COLOR_MAP[color.toLowerCase()] || '#E5E7EB';
                       const isSelected = selectedColor === color;
+                      const isOutOfStock = !product.variants?.some(v => v.color === color && v.stock > 0);
+                      
                       return (
                         <button
                           key={color}
                           onClick={() => setSelectedColor(color)}
-                          className={`px-6 py-2 rounded-full text-sm font-bold transition-all duration-200 ${
-                            isSelected
-                              ? 'bg-[#A855F7] text-white shadow-md'
-                              : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
-                          }`}
+                          className={`group relative flex items-center justify-center p-1 ${isOutOfStock ? 'opacity-30' : ''}`}
+                          title={isOutOfStock ? `${color} (Out of Stock)` : color}
                         >
-                          {color}
+                          {/* Selection Ring */}
+                          <div className={`absolute inset-0 rounded-full border-2 transition-all duration-500 ${
+                            isSelected ? 'border-purple-600 scale-100' : 'border-transparent scale-50 opacity-0'
+                          }`} />
+                          
+                          {/* Color Circle */}
+                          <div 
+                            className={`w-7 h-7 rounded-full border border-gray-100 shadow-sm transition-all duration-300 ${
+                              isSelected ? 'scale-[0.6]' : 'group-hover:scale-110'
+                            }`}
+                            style={{ backgroundColor: colorHex }}
+                          />
+
+                          {/* Out of stock line */}
+                          {isOutOfStock && (
+                            <div className="absolute w-[120%] h-[1px] bg-gray-400 rotate-45 pointer-events-none" />
+                          )}
                         </button>
                       );
                     })}
@@ -457,30 +475,16 @@ export default function ProductDetailPage() {
               )}
 
               {availableSizes.length > 0 && (
-                <div className="animate-in fade-in slide-in-from-left duration-500 delay-100">
-                  <div className="flex justify-between items-center mb-3">
-                    <label className="text-lg font-bold text-gray-900">
-                      Size:
-                    </label>
-                    <button 
-                      onClick={() => setIsSizeChartOpen(true)}
-                      className="flex items-center gap-1.5 text-[#A855F7] font-bold text-sm hover:underline transition-all"
-                    >
-                      <svg className="w-4 h-4 rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 7h1m-1 4h1m-1 4h1m3-12h3c.552 0 1 .448 1 1v14c0 .552-.448 1-1 1h-3m-6 0H6c-.552 0-1-.448-1-1V5c0-.552.448-1 1-1h3m0 0v16" />
-                      </svg>
-                      Size Chart
-                    </button>
+                <div className="space-y-5">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900">Size</label>
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-600">{selectedSize || 'Select'}</span>
+                    </div>
+                    <button onClick={() => setIsSizeChartOpen(true)} className="text-[9px] font-black uppercase tracking-[0.3em] text-purple-600 hover:text-purple-800 underline underline-offset-4 transition-colors">Size Chart</button>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    {availableSizes.sort((a, b) => {
-                      const numA = parseFloat(a);
-                      const numB = parseFloat(b);
-                      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-                      return a.localeCompare(b);
-                    }).map((size) => {
-                      const isSelected = selectedSize === size;
-                      // Check if out of stock (if color is selected, check specifically for that color)
+                    {availableSizes.map((size) => {
                       const isOutOfStock = selectedColor 
                         ? !product.variants?.some(v => v.size === size && v.color === selectedColor && v.stock > 0)
                         : !product.variants?.some(v => v.size === size && v.stock > 0);
@@ -489,15 +493,21 @@ export default function ProductDetailPage() {
                         <button
                           key={size}
                           onClick={() => !isOutOfStock && setSelectedSize(size)}
-                          className={`w-12 h-12 flex items-center justify-center rounded-xl border transition-all duration-200 font-bold text-sm relative ${
-                            isSelected
-                              ? 'bg-[#A855F7] border-[#A855F7] text-white shadow-md'
-                              : isOutOfStock
-                              ? 'border-gray-200 bg-gray-50/50 text-gray-400 cursor-not-allowed diagonal-line'
-                              : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                          disabled={isOutOfStock}
+                          className={`relative w-14 h-14 flex items-center justify-center text-[13px] font-black transition-all border-2 overflow-hidden ${
+                            selectedSize === size
+                            ? 'bg-purple-600 text-white border-purple-600 shadow-xl shadow-purple-200'
+                            : isOutOfStock
+                            ? 'bg-gray-50 text-gray-200 border-gray-100 cursor-not-allowed'
+                            : 'bg-white text-gray-900 border-gray-100 hover:border-purple-600 hover:text-purple-600'
                           }`}
                         >
                           {size}
+                          {isOutOfStock && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="w-[150%] h-[1px] bg-gray-300 rotate-45" />
+                            </div>
+                          )}
                         </button>
                       );
                     })}
@@ -506,241 +516,239 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Stock Status */}
-            <div className="mb-8">
-              {product.inStock ? (
-                <div className="flex items-center gap-2 text-green-600 bg-green-50 px-4 py-2 rounded-2xl w-fit border border-green-100">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="font-bold text-xs uppercase tracking-widest">In Stock</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 text-red-600 bg-red-50 px-4 py-2 rounded-2xl w-fit border border-red-100">
-                  <span className="font-bold text-xs uppercase tracking-widest">Out of Stock</span>
-                </div>
-              )}
-            </div>
-
-            {/* Quantity Selector */}
-            <div className="mb-8">
-              <label className="block text-lg font-bold text-gray-900 mb-3">
-                Quantity:
-              </label>
-              <div className="flex items-center w-fit border border-gray-200 rounded-xl p-1 bg-white">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 12H4" />
-                  </svg>
+            {/* Quantity */}
+            <div className="space-y-5">
+              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900">Quantity</label>
+              <div className="flex items-center w-36 border-2 border-gray-100 rounded-sm overflow-hidden bg-white">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 flex items-center justify-center hover:bg-gray-50 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M20 12H4" /></svg>
                 </button>
-                <span className="text-lg font-bold w-12 text-center text-gray-900">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-                  </svg>
+                <span className="flex-1 text-center text-[13px] font-black text-gray-900">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-gray-50 transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" /></svg>
                 </button>
               </div>
             </div>
 
+            {/* Action Buttons */}
+            <div className="space-y-4 pt-6">
+              <button
+                onClick={handleAddToCart}
+                disabled={!canAddToCart}
+                className="w-full py-5 bg-white border-2 border-purple-600 text-purple-600 font-black uppercase tracking-[0.3em] text-[10px] hover:bg-purple-600 hover:text-white transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]"
+              >
+                {isAdminUser ? 'Admin Mode' : !product.inStock ? 'Sold Out' : 'Add to Bag'}
+              </button>
+              <button
+                className="w-full py-5 bg-[#DB2777] text-white font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#BE185D] transition-all duration-500 shadow-2xl shadow-pink-200 active:scale-[0.98]"
+              >
+                Buy it Now
+              </button>
+            </div>
 
-            {/* Add to Cart Button */}
-            <button
-              onClick={handleAddToCart}
-              disabled={!canAddToCart}
-              className={`w-full py-4 rounded-full font-semibold text-lg transition-all shadow-lg mb-4 ${
-                product.collection?.name === 'Kemei'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
-                  : 'bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700'
-              } text-white disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed`}
-            >
-              {isAdminUser 
-                ? 'Admins cannot purchase' 
-                : !canAddToCart && product.inStock
-                ? 'Select Size & Color'
-                : 'Add to Cart'}
-            </button>
-            {isAdminUser && (
-              <p className="text-sm text-red-500 mb-6">
-                Please manage inventory and orders from the admin dashboard instead of the storefront.
-              </p>
-            )}
+            {/* Delivery & Offers Banner */}
+            <div className="pt-8 space-y-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+              {/* Online Payment Benefit */}
+              <div className="flex items-center gap-4 bg-gradient-to-r from-green-50 to-emerald-50 p-5 border-b border-green-100 group">
+                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-green-200 transition-transform group-hover:scale-110">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </div>
+                <div className="flex-1">
+                  <p className="text-[11px] font-black text-green-700 uppercase tracking-wider">Free Delivery</p>
+                  <p className="text-[10px] text-green-600/70 font-medium">Only on Bank Transfer &amp; Online Payments</p>
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-widest text-green-600 bg-green-100 px-3 py-1 rounded-full">Free</span>
+              </div>
 
-            {/* Features */}
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="font-semibold text-gray-900 mb-3">Key Features:</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {product.features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
-                    <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span>{feature}</span>
+              {/* Direct Bank Transfer Discount */}
+              <div className="flex items-center gap-4 bg-gradient-to-r from-amber-50 to-orange-50 p-5 border-b border-amber-100 group">
+                <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-200 transition-transform group-hover:scale-110">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.407 2.67 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.407-2.67-1M12 16v1m4-12V3c0-1.105-.895-2-2-2H4c-1.105 0-2 .895-2 2v18c0 1.105.895 2 2 2h16c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-2z" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </div>
+                <div className="flex-1">
+                  <p className="text-[11px] font-black text-amber-700 uppercase tracking-wider">5% Extra Discount</p>
+                  <p className="text-[10px] text-amber-600/70 font-medium">Exclusively on Direct Bank Transfers</p>
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-widest text-amber-600 bg-amber-100 px-3 py-1 rounded-full">Save 5%</span>
+              </div>
+
+              {/* Standard Shipping (COD) */}
+              <div className="flex items-center gap-4 bg-white p-5 group">
+                <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center flex-shrink-0 border border-gray-100 transition-transform group-hover:scale-110">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </div>
+                <div className="flex-1">
+                  <p className="text-[11px] font-black text-gray-700 uppercase tracking-wider">Standard Shipping (COD)</p>
+                  <p className="text-[10px] text-gray-400 font-medium">Pay on delivery in 3-5 business days</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] font-black text-gray-900 tracking-tighter">Rs. 300 – 350</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Details Accordion */}
+            <div className="pt-10 space-y-0">
+              <Accordion title="Product Details" isOpenDefault={true}>
+                <div className="space-y-8">
+                  {/* Product Story */}
+                  <div>
+                    <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
                   </div>
-                ))}
-              </div>
+
+                  {/* Key Features */}
+                  {product.features && product.features.length > 0 && (
+                    <div>
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-600 mb-4">Key Features</h4>
+                      <ul className="space-y-2.5">
+                        {product.features.map((f, i) => (
+                          <li key={i} className="flex items-start gap-3 text-[12px] text-gray-600 leading-relaxed">
+                            <svg className="w-4 h-4 text-purple-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Specifications */}
+                  {product.specifications && Object.keys(product.specifications).length > 0 && (
+                    <div className="pt-4">
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-600 mb-6 flex items-center gap-2">
+                        <span>Specifications</span>
+                        <div className="h-[1px] flex-1 bg-purple-100" />
+                      </h4>
+                      <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                        {Object.entries(product.specifications as Record<string, string>).map(([key, val], i) => (
+                          <div 
+                            key={i} 
+                            className={`flex gap-8 px-6 py-5 text-[11px] border-b border-gray-50 last:border-0 ${
+                              i % 2 === 0 ? 'bg-white' : 'bg-[#F9FAFB]'
+                            }`}
+                          >
+                            <div className="w-1/3 flex-shrink-0">
+                              <span className="text-gray-400 uppercase tracking-[0.2em] font-black leading-relaxed">
+                                {key}
+                              </span>
+                            </div>
+                            <div className="flex-1">
+                              <span className="text-gray-900 font-black leading-relaxed text-right md:text-left block md:inline">
+                                {val}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Accordion>
+
+              <Accordion title="Advantages & Selling Points">
+                <div className="space-y-3">
+                  {product.advantages && product.advantages.length > 0 ? (
+                    product.advantages.map((adv, i) => (
+                      <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-purple-100 bg-gradient-to-r from-white to-purple-50/30 hover:shadow-md hover:border-purple-200 transition-all duration-300 group">
+                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-purple-200 transition-colors">
+                          <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                        </div>
+                        <span className="text-[12px] font-bold text-gray-700">{adv}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-400 italic">Premium craftsmanship, designed for you.</p>
+                  )}
+                </div>
+              </Accordion>
+
+              <Accordion title="Shipping & Returns">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-5 rounded-xl border border-purple-100 space-y-3">
+                      <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      </div>
+                      <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900">Shipping</h5>
+                      <p className="text-[10px] leading-relaxed text-gray-500 font-medium">Standard: Rs. 300 – 350. Free on instant payments &amp; bank transfers.</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-5 rounded-xl border border-purple-100 space-y-3">
+                      <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      </div>
+                      <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900">Returns</h5>
+                      <p className="text-[10px] leading-relaxed text-gray-500 font-medium">Faulty or size issues only. No returns for change of mind.</p>
+                    </div>
+                  </div>
+                </div>
+              </Accordion>
             </div>
           </div>
         </div>
 
-        {/* Advantages Section */}
-        <section className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
-            <span className={`bg-gradient-to-r ${
-              product.collection?.name === 'Kemei'
-                ? 'from-purple-600 to-pink-600'
-                : 'from-pink-600 to-purple-600'
-            } bg-clip-text text-transparent`}>
-              Advantages & Benefits
-            </span>
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {product.advantages.map((advantage, index) => (
-              <div
-                key={index}
-                className={`p-6 rounded-xl border-2 transition-all hover:shadow-lg ${
-                  product.collection?.name === 'Kemei'
-                    ? 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200 hover:border-purple-300'
-                    : 'bg-gradient-to-br from-pink-50 to-purple-50 border-pink-200 hover:border-pink-300'
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-                    product.collection?.name === 'Kemei'
-                      ? 'bg-purple-100'
-                      : 'bg-pink-100'
-                  }`}>
-                    <svg className={`w-6 h-6 ${
-                      product.collection?.name === 'Kemei' ? 'text-purple-600' : 'text-pink-600'
-                    }`} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <p className="text-gray-700 font-medium leading-relaxed">{advantage}</p>
-                </div>
-              </div>
+        <style jsx global>{`
+          .no-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+          .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}</style>
+
+        {/* RELATED PRODUCTS */}
+        <div className="border-t border-gray-100 pt-20 mt-20">
+          <SliderSection
+            title="You May Also Like"
+            subtitle="Complete The Look"
+            viewAllLink={`/products?collectionId=${product.collectionId}`}
+            accentColor="#6B21A8"
+          >
+            {relatedProducts.map((p) => (
+              <GlobalProductCard key={p.id} product={p} index={0} />
             ))}
-          </div>
-        </section>
+          </SliderSection>
+        </div>
 
-        {/* Specifications Section */}
-        <section className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
-            <span className={`bg-gradient-to-r ${
-              product.collection?.name === 'Kemei'
-                ? 'from-purple-600 to-pink-600'
-                : 'from-pink-600 to-purple-600'
-            } bg-clip-text text-transparent`}>
-              Specifications
-            </span>
-          </h2>
-          <div className={`max-w-3xl mx-auto rounded-2xl p-6 md:p-8 ${
-            product.collection?.name === 'Kemei'
-              ? 'bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200'
-              : 'bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-200'
-          }`}>
-            <div className="grid sm:grid-cols-2 gap-6">
-              {Object.entries(product.specifications as Record<string, unknown>).map(([key, value]) => (
-                <div key={key} className="border-b border-gray-200 pb-4 last:border-0">
-                  <dt className="text-sm font-medium text-gray-500 mb-1 capitalize">
-                    {key.replace(/([A-Z])/g, ' $1').trim()}
-                  </dt>
-                  <dd className="text-lg font-semibold text-gray-900">{String(value)}</dd>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Reviews Section */}
-        <ProductReviews 
-          productId={product.slug}
-          productName={product.name}
-          productImage={product.image || product.images?.[0]}
-        />
-
-        {/* Related Products */}
-        <section>
-          <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
-            More {product.collection?.name} Products
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {relatedProducts.length === 0 ? (
-              <p className="col-span-full text-center text-gray-500">
-                {loadError ? 'No additional products available.' : 'Exploring more items soon.'}
-              </p>
-            ) : (
-              relatedProducts.map((relatedProduct) => (
-                <Link
-                  key={relatedProduct.id}
-                  href={`/products/${relatedProduct.slug}`}
-                  className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border ${
-                    relatedProduct.collection?.name === 'Kemei' ? 'border-purple-100' : 'border-pink-100'
-                  }`}
-                >
-                  <div
-                    className={`h-48 ${
-                      relatedProduct.collection?.name === 'Kemei'
-                        ? 'bg-gradient-to-br from-purple-100 to-pink-100'
-                        : 'bg-gradient-to-br from-pink-100 to-purple-100'
-                    } flex items-center justify-center overflow-hidden`}
-                  >
-                    {relatedProduct.image ? (
-                      <Image
-                        src={relatedProduct.image}
-                        alt={relatedProduct.name}
-                        width={200}
-                        height={200}
-                        className="w-full h-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-6xl">
-                        {relatedProduct.collection?.name === 'Kemei' ? '✨' : '💫'}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{relatedProduct.name}</h3>
-                    <p className="text-gray-600 mb-4 text-sm">{relatedProduct.shortDescription}</p>
-                    <div className="flex justify-between items-center">
-                      <span
-                        className={`text-2xl font-bold bg-gradient-to-r ${
-                          relatedProduct.collection?.name === 'Kemei'
-                            ? 'from-purple-600 to-pink-600'
-                            : 'from-pink-600 to-purple-600'
-                        } bg-clip-text text-transparent`}
-                      >
-                        {formatPKR(relatedProduct.price)}
-                      </span>
-                      <span className="text-purple-600 font-medium">View Details →</span>
-                    </div>
-                  </div>
-                </Link>
-              ))
-            )}
-          </div>
-        </section>
+        {/* REVIEWS SECTION */}
+        <div className="mt-20 border-t border-gray-100 pt-20">
+          <ProductReviews
+            productId={product.slug}
+            productName={product.name}
+            productImage={product.image || product.images?.[0]}
+          />
+        </div>
       </div>
 
-      {/* Image Lightbox */}
+      {/* Lightbox & Size Chart */}
       <ImageLightbox
-        images={productImages.length ? productImages : [fallbackImage]}
-        currentIndex={selectedImageIndex}
+        images={productMedia.filter(m => m.type === 'image').map(m => m.url)}
+        currentIndex={product.videoUrl ? Math.max(0, selectedImageIndex - 1) : selectedImageIndex}
         isOpen={isLightboxOpen}
         onClose={() => setIsLightboxOpen(false)}
         onNext={handleNextImage}
         onPrevious={handlePreviousImage}
         onSelectImage={(index) => setSelectedImageIndex(index)}
       />
+      <SizeChartModal isOpen={isSizeChartOpen} onClose={() => setIsSizeChartOpen(false)} />
+    </div>
+  );
+}
 
-      {/* Size Chart Modal */}
-      <SizeChartModal 
-        isOpen={isSizeChartOpen}
-        onClose={() => setIsSizeChartOpen(false)}
-      />
+// Simple Accordion Component for Details
+function Accordion({ title, children, isOpenDefault = false }: { title: string, children: React.ReactNode, isOpenDefault?: boolean }) {
+  const [isOpen, setIsOpen] = useState(isOpenDefault);
+  return (
+    <div className="border-b border-gray-100 last:border-0">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full py-5 flex items-center justify-between text-[11px] font-black uppercase tracking-[0.3em] text-gray-900 hover:text-purple-600 transition-colors"
+      >
+        <span>{title}</span>
+        <svg className={`w-5 h-5 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M19 9l-7 7-7-7" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      {isOpen && <div className="pb-8 animate-in fade-in slide-in-from-top-4 duration-500">{children}</div>}
     </div>
   );
 }

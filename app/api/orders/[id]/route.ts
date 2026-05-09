@@ -190,7 +190,10 @@ export async function PUT(
 
               await prisma.product.update({
                 where: { id: product.id },
-                data: { variants },
+                data: { 
+                  variants,
+                  saleCount: { increment: quantityToReduce }
+                },
               });
             }
           }

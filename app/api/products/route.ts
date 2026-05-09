@@ -40,8 +40,15 @@ export async function GET(request: NextRequest) {
     const maxPrice = searchParams.get('maxPrice');
     const sort = searchParams.get('sort');
     const search = searchParams.get('search');
+    const gender = searchParams.get('gender');
 
     const where: any = {};
+    if (gender) {
+      where.collection = {
+        ...where.collection,
+        targetGender: gender.toUpperCase(),
+      };
+    }
     if (collectionSlug) {
       where.collection = { slug: { equals: collectionSlug, mode: 'insensitive' } };
     }
@@ -52,6 +59,23 @@ export async function GET(request: NextRequest) {
       where.inStock = true;
     } else if (inStock === 'false') {
       where.inStock = false;
+    }
+
+    const isNew = searchParams.get('isNew') === 'true';
+    const isTrending = searchParams.get('isTrending') === 'true';
+
+    if (isNew) {
+      const fifteenDaysAgo = new Date();
+      fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
+      where.createdAt = { gte: fifteenDaysAgo };
+    }
+
+    if (isTrending) {
+      where.OR = [
+        ...(where.OR || []),
+        { saleCount: { gt: 10 } }, // Lowered threshold for demonstration
+        { rating: { gt: 4.0 } }
+      ];
     }
 
     if (minPrice || maxPrice) {
@@ -75,6 +99,12 @@ export async function GET(request: NextRequest) {
       orderBy = { price: 'desc' };
     } else if (sort === 'newest') {
       orderBy = { createdAt: 'desc' };
+    } else if (sort === 'trending') {
+      orderBy = [
+        { saleCount: 'desc' },
+        { rating: 'desc' },
+        { createdAt: 'desc' }
+      ];
     }
 
     const products = await prisma.product.findMany({
@@ -121,6 +151,7 @@ export async function POST(request: NextRequest) {
         inStock: data.inStock ?? true,
         image: data.image ?? null,
         images: toJsonInput(data.images ?? []),
+        videoUrl: data.videoUrl ?? null,
         advantages: toJsonInput(data.advantages ?? []),
         specifications: toJsonInput(data.specifications ?? {}),
         features: toJsonInput(data.features ?? []),

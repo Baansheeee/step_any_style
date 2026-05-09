@@ -15,6 +15,7 @@ export interface FilterState {
   maxPrice: string;
   sort: string;
   inStock: boolean | null;
+  gender: string;
 }
 
 export default function ProductFilters({ onFilterChange, initialFilters }: ProductFiltersProps) {
@@ -55,19 +56,20 @@ export default function ProductFilters({ onFilterChange, initialFilters }: Produ
       maxPrice: '',
       sort: 'newest',
       inStock: null,
+      gender: '',
     };
     setFilters(resetFilters);
     onFilterChange(resetFilters);
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-purple-100 overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
       {/* Mobile Toggle */}
-      <div className="lg:hidden p-4 flex justify-between items-center bg-gradient-to-r from-purple-50 to-pink-50">
+      <div className="lg:hidden p-4 flex justify-between items-center bg-[#F5F3FF]">
         <h3 className="font-bold text-gray-900">Filters</h3>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-purple-600 font-semibold flex items-center gap-1"
+          className="text-[#6B21A8] font-semibold flex items-center gap-1"
         >
           {isOpen ? 'Close' : 'Show Filters'}
           <svg
@@ -84,14 +86,14 @@ export default function ProductFilters({ onFilterChange, initialFilters }: Produ
       <div className={`${isOpen ? 'block' : 'hidden'} lg:block p-6 space-y-8`}>
         {/* Search */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Search</label>
+          <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">Search</label>
           <div className="relative">
             <input
               type="text"
               value={filters.search}
               onChange={(e) => handleChange('search', e.target.value)}
               placeholder="Search products..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-700"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-100 focus:ring-2 focus:ring-[#E9D5FF] focus:border-transparent outline-none transition-all text-gray-700 bg-gray-50/50"
             />
             <svg
               className="absolute left-3 top-3 w-5 h-5 text-gray-400"
@@ -104,16 +106,41 @@ export default function ProductFilters({ onFilterChange, initialFilters }: Produ
           </div>
         </div>
 
+        {/* Gender */}
+        <div>
+          <label className="block text-xs font-bold text-gray-400 mb-3 uppercase tracking-widest">Shop For</label>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { id: '', label: 'All' },
+              { id: 'MEN', label: 'Men' },
+              { id: 'WOMEN', label: 'Women' },
+              { id: 'UNISEX', label: 'Unisex' }
+            ].map((g) => (
+              <button
+                key={g.id}
+                onClick={() => handleChange('gender', g.id)}
+                className={`text-center px-4 py-2 rounded-lg transition-all text-[11px] font-bold uppercase tracking-widest border ${
+                  filters.gender === g.id
+                    ? 'bg-[#6B21A8] text-white border-[#6B21A8] shadow-md'
+                    : 'text-gray-600 border-gray-100 hover:bg-[#F5F3FF] hover:text-[#6B21A8]'
+                }`}
+              >
+                {g.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Categories */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Category</label>
+          <label className="block text-xs font-bold text-gray-400 mb-3 uppercase tracking-widest">Category</label>
           <div className="space-y-2">
             <button
               onClick={() => handleChange('collectionId', '')}
-              className={`w-full text-left px-4 py-2 rounded-lg transition-all ${
+              className={`w-full text-left px-4 py-2 rounded-lg transition-all text-[11px] font-bold uppercase tracking-widest ${
                 filters.collectionId === ''
-                  ? 'bg-purple-600 text-white font-semibold shadow-md'
-                  : 'text-gray-600 hover:bg-purple-50 hover:text-purple-600'
+                  ? 'bg-[#6B21A8] text-white shadow-md'
+                  : 'text-gray-600 hover:bg-[#F5F3FF] hover:text-[#6B21A8]'
               }`}
             >
               All Categories
@@ -122,10 +149,10 @@ export default function ProductFilters({ onFilterChange, initialFilters }: Produ
               <button
                 key={coll.id}
                 onClick={() => handleChange('collectionId', coll.id)}
-                className={`w-full text-left px-4 py-2 rounded-lg transition-all ${
+                className={`w-full text-left px-4 py-2 rounded-lg transition-all text-[11px] font-bold uppercase tracking-widest ${
                   filters.collectionId === coll.id
-                    ? 'bg-purple-600 text-white font-semibold shadow-md'
-                    : 'text-gray-600 hover:bg-purple-50 hover:text-purple-600'
+                    ? 'bg-[#6B21A8] text-white shadow-md'
+                    : 'text-gray-600 hover:bg-[#F5F3FF] hover:text-[#6B21A8]'
                 }`}
               >
                 {coll.name}
@@ -136,32 +163,32 @@ export default function ProductFilters({ onFilterChange, initialFilters }: Produ
 
         {/* Price Range */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Price Range (PKR)</label>
+          <label className="block text-xs font-bold text-gray-400 mb-3 uppercase tracking-widest">Price Range (PKR)</label>
           <div className="grid grid-cols-2 gap-3">
             <input
               type="number"
               placeholder="Min"
               value={filters.minPrice}
               onChange={(e) => handleChange('minPrice', e.target.value)}
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-700"
+              className="w-full px-4 py-2 rounded-xl border border-gray-100 focus:ring-2 focus:ring-[#E9D5FF] focus:border-transparent outline-none transition-all text-gray-700 bg-gray-50/50"
             />
             <input
               type="number"
               placeholder="Max"
               value={filters.maxPrice}
               onChange={(e) => handleChange('maxPrice', e.target.value)}
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all text-gray-700"
+              className="w-full px-4 py-2 rounded-xl border border-gray-100 focus:ring-2 focus:ring-[#E9D5FF] focus:border-transparent outline-none transition-all text-gray-700 bg-gray-50/50"
             />
           </div>
         </div>
 
         {/* Sorting */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Sort By</label>
+          <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">Sort By</label>
           <select
             value={filters.sort}
             onChange={(e) => handleChange('sort', e.target.value)}
-            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em] text-gray-700"
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-100 focus:ring-2 focus:ring-[#E9D5FF] focus:border-transparent outline-none transition-all appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em] text-gray-700 bg-gray-50/50"
             style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpolyline points=\'6 9 12 15 18 9\'%3E%3C/polyline%3E%3C/svg%3E")' }}
           >
             <option value="newest">Newest First</option>
@@ -177,9 +204,9 @@ export default function ProductFilters({ onFilterChange, initialFilters }: Produ
             id="inStockOnly"
             checked={filters.inStock === true}
             onChange={(e) => handleChange('inStock', e.target.checked ? true : null)}
-            className="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+            className="w-5 h-5 text-[#6B21A8] border-gray-300 rounded focus:ring-[#A855F7]"
           />
-          <label htmlFor="inStockOnly" className="text-sm font-semibold text-gray-700 cursor-pointer">
+          <label htmlFor="inStockOnly" className="text-xs font-bold uppercase tracking-widest text-gray-600 cursor-pointer">
             In Stock Only
           </label>
         </div>
@@ -187,7 +214,7 @@ export default function ProductFilters({ onFilterChange, initialFilters }: Produ
         {/* Reset */}
         <button
           onClick={handleReset}
-          className="w-full py-3 rounded-xl border-2 border-purple-100 text-purple-600 font-bold hover:bg-purple-50 hover:border-purple-200 transition-all active:scale-95"
+          className="w-full py-3 rounded-xl border-2 border-gray-100 text-gray-400 text-xs font-bold uppercase tracking-widest hover:bg-gray-50 hover:text-gray-900 transition-all active:scale-95"
         >
           Reset Filters
         </button>

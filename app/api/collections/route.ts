@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { name, slug, description, image } = await request.json();
+    const { name, slug, description, image, targetGender } = await request.json();
 
     if (!name || !slug) {
       return NextResponse.json({ success: false, error: 'Name and slug are required' }, { status: 400 });
@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
         slug: slug.toLowerCase(),
         description,
         image,
+        targetGender: targetGender || 'UNISEX',
       },
     });
 

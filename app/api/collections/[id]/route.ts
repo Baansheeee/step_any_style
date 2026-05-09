@@ -17,7 +17,7 @@ export async function PATCH(
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { name, slug, description, image } = await request.json();
+    const { name, slug, description, image, targetGender } = await request.json();
 
     const collection = await prisma.collection.update({
       where: { id },
@@ -26,6 +26,7 @@ export async function PATCH(
         slug: slug?.toLowerCase(),
         description,
         image,
+        targetGender,
       },
     });
 

@@ -111,6 +111,12 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum Gender {
+  MEN
+  WOMEN
+  UNISEX
+}
+
 model AffiliateApplication {
   id            String                    @id @default(cuid()) @map("_id")
   email         String
@@ -141,6 +147,7 @@ model Product {
   inStock          Boolean  @default(true)
   image            String?
   images           Json?
+  videoUrl         String?
   advantages       Json?
   specifications   Json?
   features         Json?
@@ -148,6 +155,8 @@ model Product {
   collectionId     String?
   collection       Collection? @relation(fields: [collectionId], references: [id])
   reviews          Review[]
+  rating           Float    @default(0)
+  saleCount        Int      @default(0)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -161,19 +170,22 @@ model Review {
   productId String
   product   Product  @relation(fields: [productId], references: [id])
   isFeatured Boolean @default(false)
+  images     Json?
+  videoUrl   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Collection {
-  id          String    @id @default(cuid()) @map("_id")
-  name        String    @unique
-  slug        String    @unique
-  description String?
-  image       String?
-  products    Product[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           String    @id @default(cuid()) @map("_id")
+  name         String    @unique
+  slug         String    @unique
+  description  String?
+  image        String?
+  targetGender Gender    @default(UNISEX)
+  products     Product[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model ShippingRegion {

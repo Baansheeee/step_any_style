@@ -1,18 +1,32 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { Fragment, Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import Navbar from '@/app/components/Navbar';
 import ProductCard from './components/ProductCard';
-import ProductFilters, { FilterState } from './components/ProductFilters';
 import type { ProductDTO } from '@/types/product';
-import ScrollAnimate from '@/app/components/ScrollAnimate';
+import type { CollectionDTO } from '@/types/product';
+import { formatPKR } from '@/lib/currency';
+
+interface FilterState {
+  search: string;
+  collectionId: string;
+  minPrice: string;
+  maxPrice: string;
+  sort: string;
+  inStock: boolean | null;
+  gender: string;
+  isNew: boolean | null;
+  isTrending: boolean | null;
+}
 
 function ProductsContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [products, setProducts] = useState<ProductDTO[]>([]);
+  const [collections, setCollections] = useState<CollectionDTO[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortOpen, setSortOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     search: searchParams.get('search') || '',
     collectionId: searchParams.get('collectionId') || '',
@@ -20,6 +34,9 @@ function ProductsContent() {
     maxPrice: searchParams.get('maxPrice') || '',
     sort: searchParams.get('sort') || 'newest',
     inStock: searchParams.get('inStock') === 'true' ? true : null,
+    gender: searchParams.get('gender') || '',
+    isNew: searchParams.get('isNew') === 'true' ? true : null,
+    isTrending: searchParams.get('isTrending') === 'true' ? true : null,
   });
 
   useEffect(() => {
@@ -30,8 +47,26 @@ function ProductsContent() {
       maxPrice: searchParams.get('maxPrice') || '',
       sort: searchParams.get('sort') || 'newest',
       inStock: searchParams.get('inStock') === 'true' ? true : null,
+      gender: searchParams.get('gender') || '',
+      isNew: searchParams.get('isNew') === 'true' ? true : null,
+      isTrending: searchParams.get('isTrending') === 'true' ? true : null,
     });
   }, [searchParams]);
+
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const response = await fetch('/api/collections');
+        const data = await response.json();
+        if (data.success) {
+          setCollections(data.collections);
+        }
+      } catch (error) {
+        console.error('Failed to fetch collections:', error);
+      }
+    };
+    fetchCollections();
+  }, []);
 
   const fetchProducts = async (currentFilters: FilterState) => {
     try {
@@ -43,8 +78,10 @@ function ProductsContent() {
       if (currentFilters.maxPrice) params.append('maxPrice', currentFilters.maxPrice);
       if (currentFilters.sort) params.append('sort', currentFilters.sort);
       if (currentFilters.inStock !== null) params.append('inStock', currentFilters.inStock.toString());
+      if (currentFilters.gender) params.append('gender', currentFilters.gender);
+      if (currentFilters.isNew) params.append('isNew', 'true');
+      if (currentFilters.isTrending) params.append('isTrending', 'true');
 
-      // Update URL without reloading
       const newUrl = `/products?${params.toString()}`;
       window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
 
@@ -63,83 +100,277 @@ function ProductsContent() {
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchProducts(filters);
-    }, 300); // Debounce search/filters
+    }, 300);
     return () => clearTimeout(timer);
   }, [filters]);
 
+  const handleChange = (key: keyof FilterState, value: any) => {
+    const newFilters = { ...filters, [key]: value };
+    setFilters(newFilters);
+  };
+
+  const handleReset = () => {
+    setFilters({
+      search: '',
+      collectionId: '',
+      minPrice: '',
+      maxPrice: '',
+      sort: 'newest',
+      inStock: null,
+      gender: '',
+      isNew: null,
+      isTrending: null,
+    });
+  };
+
+  const activeCollection = collections.find(c => c.id === filters.collectionId);
+  const pageTitle = filters.gender === 'MEN' ? 'Men' : filters.gender === 'WOMEN' ? 'Women' : activeCollection ? activeCollection.name : 'All Products';
+
+  const sortOptions = [
+    { value: 'newest', label: 'Newest' },
+    { value: 'price-asc', label: 'Price: Low → High' },
+    { value: 'price-desc', label: 'Price: High → Low' },
+  ];
+  const activeSort = sortOptions.find(s => s.value === filters.sort);
+
+  // Insert a promo card after every 8 products
+  const PROMO_POSITION = 8;
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <header className="mb-12">
-          <ScrollAnimate animation="fade-in">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-              Explore Our Collection
-            </h1>
-            <p className="text-gray-600 text-lg max-w-2xl">
-              From elegant bridal heels to comfortable everyday slippers, find the perfect pair for every step of your journey.
-            </p>
-          </ScrollAnimate>
-        </header>
+      <main className="max-w-[1440px] mx-auto px-4 md:px-10 pt-8 pb-20">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight text-gray-900 mb-2">
+            {pageTitle}
+          </h1>
+          <p className="text-sm text-gray-400 font-medium">
+            {loading ? 'Loading...' : `${products.length} product${products.length !== 1 ? 's' : ''} found`}
+          </p>
+        </div>
 
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Sidebar Filters */}
-          <aside className="lg:col-span-1">
-            <ProductFilters 
-              initialFilters={filters} 
-              onFilterChange={(newFilters) => setFilters(newFilters)} 
+        {/* Filter Bar */}
+        <div className="flex flex-wrap items-center gap-3 mb-10 pb-6 border-b border-gray-100">
+          {/* Search */}
+          <div className="relative flex-1 min-w-[200px] max-w-[320px]">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <input
+              type="text"
+              value={filters.search}
+              onChange={(e) => handleChange('search', e.target.value)}
+              placeholder="Search..."
+              className="w-full pl-9 pr-4 py-2.5 text-[12px] font-medium border border-gray-100 rounded-lg focus:ring-2 focus:ring-purple-200 focus:border-purple-400 outline-none transition-all bg-gray-50/50"
             />
-          </aside>
+          </div>
 
-          {/* Product Grid */}
-          <section className="lg:col-span-3">
-            {loading ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="bg-white rounded-2xl h-96 animate-pulse shadow-sm"></div>
+          {/* Divider */}
+          <div className="w-[1px] h-6 bg-gray-100 hidden md:block" />
+
+          {/* Gender Chips */}
+          {['', 'WOMEN', 'MEN'].map((g) => (
+            <button
+              key={g}
+              onClick={() => handleChange('gender', g)}
+              className={`px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] border rounded-full transition-all duration-300 ${
+                filters.gender === g
+                  ? 'bg-purple-600 text-white border-purple-600 shadow-lg shadow-purple-200'
+                  : 'text-gray-500 border-gray-100 hover:border-purple-300 hover:text-purple-600'
+              }`}
+            >
+              {g === '' ? 'All' : g === 'WOMEN' ? 'Women' : 'Men'}
+            </button>
+          ))}
+
+          {/* Divider */}
+          <div className="w-[1px] h-6 bg-gray-100 hidden md:block" />
+
+          {/* New & Trending Chips */}
+          {[
+            { id: 'isNew', label: 'New', action: () => handleChange('isNew', !filters.isNew) },
+            { id: 'isTrending', label: 'Trending', action: () => handleChange('isTrending', !filters.isTrending) }
+          ].map((item) => {
+            const isActive = item.id === 'isNew' ? filters.isNew : filters.isTrending;
+            return (
+              <button
+                key={item.id}
+                onClick={item.action}
+                className={`px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] border rounded-full transition-all duration-300 ${
+                  isActive
+                    ? 'bg-purple-600 text-white border-purple-600 shadow-lg shadow-purple-200'
+                    : 'text-gray-500 border-gray-100 hover:border-purple-300 hover:text-purple-600'
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+
+          {/* Divider */}
+          <div className="w-[1px] h-6 bg-gray-100 hidden md:block" />
+
+          {/* Collection Chips */}
+          <div className="flex flex-wrap items-center gap-2 overflow-x-auto no-scrollbar">
+            <button
+              onClick={() => handleChange('collectionId', '')}
+              className={`px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] border rounded-full transition-all duration-300 whitespace-nowrap ${
+                filters.collectionId === ''
+                  ? 'bg-purple-600 text-white border-purple-600 shadow-lg shadow-purple-200'
+                  : 'text-gray-500 border-gray-100 hover:border-purple-300 hover:text-purple-600'
+              }`}
+            >
+              All
+            </button>
+            {collections.map((coll) => (
+              <button
+                key={coll.id}
+                onClick={() => handleChange('collectionId', coll.id)}
+                className={`px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] border rounded-full transition-all duration-300 whitespace-nowrap ${
+                  filters.collectionId === coll.id
+                    ? 'bg-purple-600 text-white border-purple-600 shadow-lg shadow-purple-200'
+                    : 'text-gray-500 border-gray-100 hover:border-purple-300 hover:text-purple-600'
+                }`}
+              >
+                {coll.name}
+              </button>
+            ))}
+          </div>
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Sort Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setSortOpen(!sortOpen)}
+              className="flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-600 border border-gray-100 rounded-full hover:border-purple-300 hover:text-purple-600 transition-all"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" /></svg>
+              {activeSort?.label || 'Sort'}
+              <svg className={`w-3 h-3 transition-transform ${sortOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            {sortOpen && (
+              <div className="absolute right-0 top-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl z-50 min-w-[180px] overflow-hidden">
+                {sortOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => { handleChange('sort', opt.value); setSortOpen(false); }}
+                    className={`w-full text-left px-5 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${
+                      filters.sort === opt.value ? 'bg-purple-50 text-purple-600' : 'text-gray-500 hover:bg-purple-50 hover:text-purple-600'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
                 ))}
-              </div>
-            ) : products.length > 0 ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {products.map((product, index) => (
-                  <ScrollAnimate key={product.id} animation="fade-in" delay={`${(index % 3) * 0.1}s`}>
-                    <ProductCard product={product} index={index} />
-                  </ScrollAnimate>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-purple-100">
-                <div className="text-6xl mb-4">👟</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">No products found</h3>
-                <p className="text-gray-500 max-w-sm mx-auto mb-8">
-                  We couldn't find any products matching your current filters. Try adjusting your search or category selection.
-                </p>
-                <button
-                  onClick={() => setFilters({
-                    search: '',
-                    collectionId: '',
-                    minPrice: '',
-                    maxPrice: '',
-                    sort: 'newest',
-                    inStock: null,
-                  })}
-                  className="bg-purple-600 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-700 transition-all shadow-lg"
-                >
-                  Clear All Filters
-                </button>
               </div>
             )}
-          </section>
+          </div>
+
+          {/* Reset if filters active */}
+          {(filters.search || filters.collectionId || filters.gender || filters.minPrice || filters.maxPrice) && (
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-red-400 border border-red-100 rounded-full hover:bg-red-50 hover:text-red-600 transition-all"
+            >
+              Clear
+            </button>
+          )}
         </div>
+
+        {/* Product Grid */}
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="aspect-square bg-gray-50 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : products.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {products.map((product, index) => (
+              <Fragment key={product.id}>
+                {/* Insert Free Shipping promo card */}
+                {index === PROMO_POSITION && (
+                  <div key="promo-shipping" className="aspect-square bg-gray-900 rounded-xl flex flex-col items-center justify-center text-center p-8 relative overflow-hidden group">
+                    {/* Background glow */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-pink-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative z-10">
+                      <div className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-5">
+                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      </div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60 mb-2">Exclusive</p>
+                      <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight mb-3">Free<br />Shipping</h3>
+                      <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest">On Instant Payments<br />&amp; Bank Transfers</p>
+                    </div>
+                  </div>
+                )}
+                <ProductCard product={product} index={index} />
+              </Fragment>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-28">
+            <div className="text-7xl mb-6">👟</div>
+            <h3 className="text-2xl font-black uppercase tracking-tight text-gray-900 mb-3">No products found</h3>
+            <p className="text-sm text-gray-400 max-w-md mx-auto mb-8">
+              We couldn&apos;t find any products matching your filters. Try adjusting your search or explore a different category.
+            </p>
+            <button
+              onClick={handleReset}
+              className="px-8 py-3 bg-purple-600 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-purple-700 transition-all shadow-xl shadow-purple-200"
+            >
+              Clear All Filters
+            </button>
+          </div>
+        )}
+
+        {/* Bottom Promo Banner - Refined Lifestyle Style */}
+        {!loading && products.length > 0 && (
+          <div className="mt-20 rounded-2xl overflow-hidden bg-white flex flex-col md:min-h-[500px] md:flex-row items-stretch border border-gray-100 shadow-sm relative group/banner">
+            {/* Left: Image Section */}
+            <div className="relative w-full md:w-1/2 min-h-[400px] md:min-h-full">
+              <Image 
+                src="/Banner/summer_essentials.webp" 
+                alt="Summer Essentials" 
+                fill 
+                className="object-cover"
+              />
+            </div>
+
+            {/* Right: Text Section */}
+            <div className="relative z-10 flex-1 p-10 md:p-20 flex flex-col justify-center items-start text-left bg-white">
+              <div className="relative z-10 space-y-8 max-w-lg">
+                <div className="space-y-4">
+                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#7C3AED]">New Arrivals</p>
+                  <h2 className="text-4xl md:text-[64px] font-black text-gray-900 uppercase tracking-tighter leading-[0.9]">
+                    Summer<br />Essentials
+                  </h2>
+                </div>
+                <p className="text-sm md:text-lg text-gray-500 font-medium leading-relaxed">
+                  Refined style for the modern look. From polished loafers to everyday sneakers, find your signature look for the season.
+                </p>
+                <div className="pt-4">
+                  <button className="px-12 py-4 bg-[#F5F3FF] text-[#6B21A8] text-[11px] font-black uppercase tracking-[0.3em] rounded-sm hover:bg-[#EDE9FE] transition-all shadow-sm active:scale-95">
+                    Shop Collection
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
-          <p>&copy; 2026 Step & Style. All rights reserved.</p>
+      {/* Minimal Footer */}
+      <footer className="border-t border-gray-100 py-8">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-10 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-300">&copy; 2026 Step &amp; Style. All rights reserved.</p>
         </div>
       </footer>
+
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }
@@ -147,8 +378,11 @@ function ProductsContent() {
 export default function ProductsPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-3 border-purple-200 border-t-purple-600 rounded-full animate-spin" />
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Loading Products</p>
+        </div>
       </div>
     }>
       <ProductsContent />

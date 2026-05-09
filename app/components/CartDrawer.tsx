@@ -43,160 +43,165 @@ export default function CartDrawer({ isOpen, onClose, currentUserRole }: CartDra
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40" onClick={onClose} />
-      <div className="fixed top-0 right-0 h-full w-full max-w-xl bg-white shadow-2xl z-50 flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b">
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] transition-opacity duration-500" 
+        onClick={onClose} 
+      />
+
+      {/* Drawer */}
+      <div className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.3)] z-[101] flex flex-col transform transition-transform duration-500 ease-out border-l border-gray-100">
+        
+        {/* Premium Header */}
+        <div className="flex items-center justify-between px-8 py-8 border-b border-gray-50">
           <div>
-            <p className="text-xs uppercase tracking-wide text-gray-500">Cart</p>
-            <h3 className="text-xl font-semibold text-gray-900">Items ({totalCount})</h3>
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-600 mb-1">Your Shopping Bag</p>
+            <h3 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">Items ({totalCount})</h3>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center"
+            className="w-10 h-10 rounded-full border border-gray-100 text-gray-400 hover:text-purple-600 hover:border-purple-200 flex items-center justify-center transition-all group"
             aria-label="Close cart"
           >
-            ✕
+            <svg className="w-5 h-5 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+        {/* Scrollable Item List */}
+        <div className="flex-1 overflow-y-auto px-8 py-6 no-scrollbar">
           {items.length === 0 ? (
-            <div className="text-center text-gray-500 mt-10">
-              <p className="text-lg font-semibold text-gray-800">Your cart is empty</p>
-              <p className="text-sm">Add products to see them here.</p>
+            <div className="flex flex-col items-center justify-center h-full text-center py-10">
+              <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-10 h-10 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+              </div>
+              <p className="text-xl font-black text-gray-900 uppercase tracking-tight mb-2">Empty Bag</p>
+              <p className="text-sm text-gray-400 font-medium mb-8">Start adding items to see them here.</p>
+              <button 
+                onClick={onClose}
+                className="px-8 py-3 bg-purple-600 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-purple-700 transition-all shadow-lg shadow-purple-200"
+              >
+                Continue Shopping
+              </button>
             </div>
           ) : (
-            items.map((item) => (
-              <div key={item.id} className="flex gap-4 rounded-xl border border-gray-100 p-4 shadow-sm">
-                <div className="w-20 h-20 bg-gray-50 rounded-lg flex items-center justify-center overflow-hidden">
-                  {item.image ? (
-                    <Image src={item.image} alt={item.name} width={80} height={80} className="object-cover" />
-                  ) : (
-                    <span className="text-gray-400 text-xs">No Image</span>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
+            <div className="space-y-6">
+              {items.map((item) => (
+                <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-6 pb-6 border-b border-gray-50 last:border-0 group">
+                  <div className="relative w-24 h-24 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 border border-gray-100">
+                    {item.image ? (
+                      <Image src={item.image} alt={item.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-300">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <p className="font-semibold text-gray-900">{item.name}</p>
-                      <p className="text-sm text-gray-900">{formatPKR(item.price)}</p>
+                      <div className="flex justify-between items-start mb-1">
+                        <h4 className="text-[13px] font-black text-gray-900 uppercase tracking-tight line-clamp-1 group-hover:text-purple-600 transition-colors">
+                          {item.name}
+                        </h4>
+                        <button
+                          onClick={() => removeItem(item.id, item.size, item.color)}
+                          className="text-gray-300 hover:text-red-500 transition-colors p-1"
+                          title="Remove item"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                      </div>
+                      <p className="text-[13px] font-bold text-gray-900">{formatPKR(item.price)}</p>
+                      
                       {(item.size || item.color) && (
-                        <div className="flex gap-2 mt-1">
+                        <div className="flex flex-wrap gap-2 mt-3">
                           {item.size && (
-                            <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-medium">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 px-2 py-1 rounded">
                               Size: {item.size}
                             </span>
                           )}
                           {item.color && (
-                            <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-medium">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 px-2 py-1 rounded">
                               Color: {item.color}
                             </span>
                           )}
                         </div>
                       )}
                     </div>
-                    <button
-                      className="text-sm text-red-500 hover:text-red-600"
-                      onClick={() => removeItem(item.id, item.size, item.color)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-3 mt-3">
-                    <div className="flex items-center border rounded-full">
-                      <button
-                        className="w-9 h-9 text-lg text-gray-600 hover:text-purple-600 disabled:opacity-40"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1, item.size, item.color)}
-                        disabled={item.quantity <= 1}
-                      >
-                        -
-                      </button>
-                      <span className="w-10 text-center font-semibold text-gray-900">{item.quantity}</span>
-                      <button
-                        className="w-9 h-9 text-lg text-gray-600 hover:text-purple-600"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1, item.size, item.color)}
-                      >
-                        +
-                      </button>
+
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-50/50">
+                      <div className="flex items-center bg-gray-50 rounded-full px-2">
+                        <button
+                          className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-purple-600 disabled:opacity-30 transition-colors font-bold"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1, item.size, item.color)}
+                          disabled={item.quantity <= 1}
+                        >
+                          −
+                        </button>
+                        <span className="w-8 text-center text-[11px] font-black text-gray-900">{item.quantity}</span>
+                        <button
+                          className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-purple-600 transition-colors font-bold"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1, item.size, item.color)}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <p className="text-[13px] font-black text-gray-900">
+                        {formatPKR(item.quantity * item.price)}
+                      </p>
                     </div>
-                    <p className="font-semibold text-gray-900">
-                      {formatPKR(item.quantity * item.price)}
-                    </p>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
 
-        <div className="border-t px-6 py-4 space-y-4">
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-sm font-semibold text-gray-900">Promo Code (optional)</label>
-              {promoCode && (
-                <button className="text-xs text-gray-600 underline" onClick={() => setPromoInput('')}>
-                  Clear
-                </button>
+        {/* Footer / Summary Section */}
+        <div className="px-8 py-5 border-t border-gray-100 bg-white shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
+          <div className="space-y-4">
+            {/* Price Breakdown */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Subtotal</span>
+                <span className="text-base font-black text-gray-900 tracking-tight">{formatPKR(subtotal)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Shipping</span>
+                <span className="text-[9px] font-black text-green-600 uppercase tracking-widest">Calculated at next step</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col gap-2 pt-2">
+              {isAdmin ? (
+                <div className="w-full bg-red-50 text-red-600 p-3 rounded-lg text-[9px] font-bold uppercase tracking-widest text-center">
+                  Admins manage orders from dashboard
+                </div>
+              ) : (
+                <Link
+                  href="/checkout"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-center shadow-lg shadow-purple-100 hover:scale-[1.01] active:scale-95 transition-all"
+                  onClick={onClose}
+                >
+                  Proceed to Checkout
+                </Link>
               )}
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={promoInput}
-                onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                placeholder="Enter promo code"
-                className="flex-1 border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all uppercase hover:border-gray-300"
-              />
               <button
-                onClick={handleApplyPromo}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700 transition"
+                className="w-full py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 hover:text-red-500 transition-colors"
+                onClick={clearCart}
+                disabled={items.length === 0}
               >
-                Apply
+                Clear Cart
               </button>
             </div>
-            {statusMessage && <p className="text-xs text-green-600 mt-1">{statusMessage}</p>}
           </div>
-
-          <div className="flex items-center justify-between text-lg font-semibold text-gray-900">
-            <span>Subtotal</span>
-            <span>{formatPKR(subtotal)}</span>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition"
-              onClick={clearCart}
-              disabled={items.length === 0}
-            >
-              Clear Cart
-            </button>
-            {isAdmin ? (
-              <button
-                className="flex-1 bg-gray-200 text-gray-500 py-3 rounded-lg font-semibold cursor-not-allowed"
-                disabled
-              >
-                Admins cannot checkout
-              </button>
-            ) : (
-              <Link
-                href="/checkout"
-                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition text-center"
-                onClick={onClose}
-              >
-                Proceed to Checkout
-              </Link>
-            )}
-          </div>
-          <p className="text-xs text-gray-500 text-center">
-            Promo code discounts will be applied during checkout.
-          </p>
-          {isAdmin && (
-            <p className="text-xs text-red-500 text-center mt-2">
-              Administrators manage orders from the dashboard and cannot place new ones.
-            </p>
-          )}
         </div>
       </div>
+
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </>
   );
 }

@@ -29,13 +29,13 @@ export default function MobileNav({
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden p-2 rounded-lg text-purple-600 hover:bg-purple-100 transition"
+        className="md:hidden p-2 rounded-lg text-lavender-dark hover:bg-lavender-light transition"
         aria-label="Toggle menu"
       >
         <svg
           className={`w-6 h-6 transition-transform ${isOpen ? 'rotate-90' : ''}`}
           fill="none"
-          strokeWidth="2"
+          strokeWidth="2.5"
           stroke="currentColor"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -52,7 +52,7 @@ export default function MobileNav({
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          className="fixed inset-0 bg-lavender-dark/20 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -61,21 +61,21 @@ export default function MobileNav({
       <div
   className={`
     fixed top-0 left-0 
-    h-screen w-72 
-    bg-purple-700 
-    text-white 
+    h-screen w-80 
+    bg-white 
+    text-gray-900 
     shadow-2xl 
     z-50 
-    transition-transform duration-300 
+    transition-transform duration-500 ease-in-out
     md:hidden
     ${isOpen ? 'translate-x-0' : '-translate-x-full'}
   `}
 >
 
-        <div className="flex flex-col h-full p-6">
+        <div className="flex flex-col h-full p-8">
 
           {/* Logo + Close */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-12">
             <Image
               src="/IPL logo Main JPG.png"
               alt="Step & Style Logo"
@@ -85,13 +85,13 @@ export default function MobileNav({
             />
             <button
               onClick={() => setIsOpen(false)}
-              className="p-2 rounded-lg hover:bg-purple-600 transition"
+              className="p-2 rounded-full hover:bg-lavender-light transition-all"
             >
               <svg
-                className="w-6 h-6"
+                className="w-6 h-6 text-lavender-dark"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 viewBox="0 0 24 24"
@@ -102,50 +102,66 @@ export default function MobileNav({
           </div>
 
           {/* Navigation */}
-          <nav className="flex flex-col space-y-2 flex-1">
+          <nav className="flex flex-col space-y-2 flex-1 overflow-y-auto custom-scrollbar">
             <Link
-              href="#products"
+              href="/products"
               onClick={() => setIsOpen(false)}
-              className="text-lg p-3 hover:bg-purple-600 rounded"
+              className="text-sm font-black uppercase tracking-[0.2em] p-4 hover:bg-lavender-light hover:text-lavender-dark rounded-xl transition-all"
             >
-              Products
+              All Products
+            </Link>
+
+            <Link
+              href="/products?gender=WOMEN"
+              onClick={() => setIsOpen(false)}
+              className="text-sm font-black uppercase tracking-[0.2em] p-4 hover:bg-lavender-light hover:text-lavender-dark rounded-xl transition-all"
+            >
+              Women
+            </Link>
+
+            <Link
+              href="/products?gender=MEN"
+              onClick={() => setIsOpen(false)}
+              className="text-sm font-black uppercase tracking-[0.2em] p-4 hover:bg-lavender-light hover:text-lavender-dark rounded-xl transition-all"
+            >
+              Men
             </Link>
 
             {/* Category Dropdown */}
             <div>
               <button
                 onClick={() => setIsCategoryOpen((prev) => !prev)}
-                className="w-full text-left text-lg p-3 hover:bg-purple-600 rounded flex items-center justify-between"
+                className="w-full text-left text-sm font-black uppercase tracking-[0.2em] p-4 hover:bg-lavender-light hover:text-lavender-dark rounded-xl flex items-center justify-between transition-all"
               >
-                <span>Category</span>
+                <span>Collections</span>
                 <svg
-                  className={`w-5 h-5 transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               {isCategoryOpen && (
-                <div className="ml-4 mt-1 space-y-1">
+                <div className="ml-4 mt-2 space-y-1 border-l-2 border-lavender-light pl-4">
                   <Link
-                    href="#bridal"
+                    href="/products?collectionId=bridal"
                     onClick={() => {
                       setIsOpen(false);
                       setIsCategoryOpen(false);
                     }}
-                    className="block text-base p-2 hover:bg-purple-600 rounded"
+                    className="block text-xs font-bold uppercase tracking-widest p-3 hover:text-lavender-dark transition-colors"
                   >
                     Bridal
                   </Link>
                   <Link
-                    href="#footwear"
+                    href="/products?collectionId=heels"
                     onClick={() => {
                       setIsOpen(false);
                       setIsCategoryOpen(false);
                     }}
-                    className="block text-base p-2 hover:bg-purple-600 rounded"
+                    className="block text-xs font-bold uppercase tracking-widest p-3 hover:text-lavender-dark transition-colors"
                   >
                     Casual & Heels
                   </Link>
@@ -153,69 +169,54 @@ export default function MobileNav({
               )}
             </div>
 
-            <Link
-              href="#features"
-              onClick={() => setIsOpen(false)}
-              className="text-lg p-3 hover:bg-purple-600 rounded"
-            >
-              Features
-            </Link>
+            <div className="h-[1px] bg-lavender-light my-4 mx-4" />
 
             <Link
-              href="#about"
+              href="/#about"
               onClick={() => setIsOpen(false)}
-              className="text-lg p-3 hover:bg-purple-600 rounded"
+              className="text-sm font-black uppercase tracking-[0.2em] p-4 hover:bg-lavender-light hover:text-lavender-dark rounded-xl transition-all"
             >
-              About
+              Our Story
             </Link>
 
             <Link
               href="/affiliate"
               onClick={() => setIsOpen(false)}
-              className="text-lg p-3 hover:bg-purple-600 rounded"
+              className="text-sm font-black uppercase tracking-[0.2em] p-4 text-[#6B21A8] bg-[#F5F3FF] rounded-xl transition-all"
             >
-              Affiliate Program
+              Affiliate
             </Link>
 
             {isAdmin && (
               <Link
                 href="/admin"
                 onClick={() => setIsOpen(false)}
-                className="text-lg p-3 border border-white/40 rounded hover:bg-purple-600"
+                className="text-sm font-black uppercase tracking-[0.2em] p-4 bg-lavender-light text-lavender-dark rounded-xl hover:bg-lavender-main transition-all"
               >
-                Admin Dashboard
-              </Link>
-            )}
-            {isInfluencer && (
-              <Link
-                href="/influencer"
-                onClick={() => setIsOpen(false)}
-                className="text-lg p-3 border border-white/40 rounded hover:bg-purple-600"
-              >
-                Influencer Dashboard
+                Admin Console
               </Link>
             )}
 
             <button
               onClick={() => {
                 setIsOpen(false);
-                onOpenAccount('register');
+                onOpenAccount('login');
               }}
-              className="text-lg p-3 border border-white/40 rounded hover:bg-purple-600 text-left"
+              className="text-sm font-black uppercase tracking-[0.2em] p-4 border border-lavender-main rounded-xl hover:bg-lavender-light transition-all text-left"
             >
-              {isAuthenticated ? 'My Account' : 'Login / Register'}
+              {isAuthenticated ? 'My Account' : 'Sign In'}
             </button>
           </nav>
 
           {/* Cart Button */}
           <button
-            className="w-full bg-white text-purple-700 font-semibold py-3 mt-6 rounded-full shadow hover:bg-gray-100 transition"
+            className="w-full bg-lavender-dark text-white font-black uppercase tracking-[0.2em] py-5 mt-8 rounded-2xl shadow-xl hover:bg-[#110C1F] transition-all"
             onClick={() => {
               setIsOpen(false);
               onOpenCart();
             }}
           >
-            Cart ({cartCount})
+            My Cart ({cartCount})
           </button>
         </div>
       </div>

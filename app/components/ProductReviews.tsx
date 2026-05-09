@@ -11,6 +11,8 @@ interface Review {
   comment: string;
   verified: boolean;
   productImage?: string;
+  images?: string[];
+  videoUrl?: string;
 }
 
 interface ProductReviewsProps {
@@ -84,7 +86,9 @@ export default function ProductReviews({ productId, productName, productImage }:
     name: '',
     email: '',
     rating: 5,
-    comment: ''
+    comment: '',
+    images: '',
+    videoUrl: ''
   });
 
   const fetchReviews = async () => {
@@ -100,8 +104,10 @@ export default function ProductReviews({ productId, productName, productImage }:
           rating: r.rating,
           date: new Date(r.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
           comment: r.comment,
-          verified: true, // Assuming for now, could be based on purchase history later
-          productImage
+          verified: true,
+          productImage,
+          images: Array.isArray(r.images) ? r.images : [],
+          videoUrl: r.videoUrl || undefined
         }));
         setReviews(mappedReviews);
       }
@@ -134,14 +140,16 @@ export default function ProductReviews({ productId, productName, productImage }:
           rating: formData.rating,
           comment: formData.comment,
           userName: formData.name,
-          userEmail: formData.email
+          userEmail: formData.email,
+          images: formData.images.split(',').map(img => img.trim()).filter(Boolean),
+          videoUrl: formData.videoUrl.trim() || null
         })
       });
 
       const data = await response.json();
       if (data.success) {
         setSubmitStatus({ type: 'success', message: 'Review submitted successfully! Thank you for your feedback.' });
-        setFormData({ name: '', email: '', rating: 5, comment: '' });
+        setFormData({ name: '', email: '', rating: 5, comment: '', images: '', videoUrl: '' });
         fetchReviews();
       } else {
         throw new Error(data.error || 'Failed to submit review');
@@ -299,6 +307,31 @@ export default function ProductReviews({ productId, productName, productImage }:
               />
             </div>
 
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">Photo URLs (Comma separated)</label>
+                <input
+                  type="text"
+                  name="images"
+                  value={formData.images}
+                  onChange={handleInputChange}
+                  placeholder="url1.jpg, url2.jpg"
+                  className="w-full bg-white border-2 border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all hover:border-gray-300"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">Video URL (Optional)</label>
+                <input
+                  type="text"
+                  name="videoUrl"
+                  value={formData.videoUrl}
+                  onChange={handleInputChange}
+                  placeholder="YouTube or direct video link"
+                  className="w-full bg-white border-2 border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all hover:border-gray-300"
+                />
+              </div>
+            </div>
+
             <div className="flex justify-center md:justify-end">
               <button
                 type="submit"
@@ -371,20 +404,42 @@ export default function ProductReviews({ productId, productName, productImage }:
                   {/* Comment */}
                   <p className="text-gray-700 leading-relaxed">{review.comment}</p>
 
-                  {/* Product Image if available */}
-                  {review.productImage && (
-                    <div className="mt-4">
-                      <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-200">
-                        <Image
-                          src={review.productImage}
-                          alt={productName}
-                          width={80}
-                          height={80}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+                  {/* Shared Media */}
+                  {(review.images && review.images.length > 0) || review.videoUrl ? (
+                    <div className="mt-6 flex flex-wrap gap-3">
+                      {review.images?.map((img, idx) => (
+                        <div key={idx} className="w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-100 shadow-sm transition-transform hover:scale-105 cursor-zoom-in">
+                          <Image
+                            src={img}
+                            alt="User upload"
+                            width={100}
+                            height={100}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+                      {review.videoUrl && (
+                        <div className="w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-100 bg-black relative group cursor-pointer">
+                           {review.videoUrl.includes('youtube.com') || review.videoUrl.includes('youtu.be') ? (
+                             <div className="w-full h-full flex items-center justify-center">
+                               <svg className="w-8 h-8 text-white z-10" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>
+                               <Image 
+                                 src={`https://img.youtube.com/vi/${review.videoUrl.split('/').pop()?.split('=')[1] || review.videoUrl.split('/').pop()}/mqdefault.jpg`}
+                                 alt="Video"
+                                 fill
+                                 className="object-cover opacity-50"
+                               />
+                             </div>
+                           ) : (
+                             <video src={review.videoUrl} className="w-full h-full object-cover opacity-60" muted loop onMouseOver={e => e.currentTarget.play()} onMouseOut={e => e.currentTarget.pause()} />
+                           )}
+                           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <svg className="w-6 h-6 text-white drop-shadow-md" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>
+                           </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </div>

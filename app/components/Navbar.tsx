@@ -104,69 +104,74 @@ export default function Navbar() {
     <>
       <nav className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? 'bg-white/98 backdrop-blur-lg border-b border-purple-200 shadow-lg' 
-          : 'bg-white/95 backdrop-blur-md border-b border-purple-100 shadow-sm'
+          ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm' 
+          : 'bg-white border-b border-transparent'
       }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-20">
           <div className="flex justify-between items-center h-20">
-            {/* Logo with Animation */}
+            {/* Logo */}
             <div className="flex items-center">
-              <Link href="/" className="flex items-center group">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-300 animate-pulse"></div>
-                  <div className="relative bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-2.5 group-hover:from-purple-100 group-hover:to-pink-100 transition-all duration-300 transform group-hover:scale-105 shadow-md group-hover:shadow-lg">
-                    <Image
-                      src="/IPL logo Main JPG.png"
-                      alt="Step & Style - Premium Footwear"
-                      width={140}
-                      height={45}
-                      className="object-contain h-10 w-auto transition-transform duration-300 group-hover:scale-110"
-                      priority
-                    />
-                  </div>
-                </div>
+              <Link href="/" className="group">
+                <Image
+                  src="/IPL logo Main JPG.png"
+                  alt="Step & Style"
+                  width={140}
+                  height={45}
+                  className="object-contain h-10 w-auto"
+                  priority
+                />
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+            <div className="hidden md:flex items-center space-x-12">
+              <Link
+                href="/products?gender=WOMEN"
+                className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1"
+              >
+                Women
+              </Link>
+              <Link
+                href="/products?gender=MEN"
+                className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1"
+              >
+                Men
+              </Link>
               <Link
                 href="/products"
-                className="text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 relative group py-2"
+                className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1"
               >
                 Products
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
 
               {/* Category Dropdown */}
               <div className="relative" ref={categoryMenuRef}>
                 <button
                   onClick={() => setIsCategoryMenuOpen((prev) => !prev)}
-                  className="text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 relative group py-2"
+                  className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all flex items-center"
                 >
                   Category
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
                   <svg
-                    className={`ml-1 inline-block w-4 h-4 transition-transform ${isCategoryMenuOpen ? 'rotate-180' : ''}`}
+                    className={`ml-2 w-3 h-3 transition-transform ${isCategoryMenuOpen ? 'rotate-180' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 
                 {isCategoryMenuOpen && (
-                  <div className="absolute left-0 mt-3 w-48 rounded-2xl bg-white shadow-xl border border-purple-100 p-2 space-y-1 z-50">
+                  <div className="absolute left-0 mt-6 w-64 bg-white shadow-2xl border border-[#F5F3FF] py-6 z-50 rounded-xl">
                     {collections.length === 0 ? (
-                      <span className="block px-4 py-2 text-gray-400 text-xs italic">No collections</span>
+                      <span className="block px-8 py-2 text-gray-400 text-[10px] italic uppercase tracking-[0.2em]">No collections</span>
                     ) : (
                       collections.map((coll) => (
                         <Link
                           key={coll.id}
                           href={`/products?collectionId=${coll.id}`}
                           onClick={() => setIsCategoryMenuOpen(false)}
-                          className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors"
+                          className="block px-8 py-3 text-[11px] font-black uppercase tracking-[0.2em] text-gray-900 hover:bg-[#F5F3FF] hover:text-[#6B21A8] transition-colors"
                         >
                           {coll.name}
                         </Link>
@@ -175,81 +180,55 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
-
-              {['features', 'about'].map((href) => (
-                <Link
-                  key={href}
-                  href={`#${href}`}
-                  className="text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 relative group py-2"
-                >
-                  {href.charAt(0).toUpperCase() + href.slice(1)}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
-                </Link>
-              ))}
-              <Link
+               <Link
                 href="/affiliate"
-                className="text-gray-700 hover:text-purple-600 font-medium transition-all duration-300 relative group py-2"
+                className="text-[13px] font-black uppercase tracking-[0.2em] text-[#6B21A8] hover:text-purple-900 transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1 bg-purple-50 px-3 py-1 rounded-full"
               >
-                Affiliate Program
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+                Affiliate
               </Link>
+               
+
+              <div className="h-4 w-[1px] bg-gray-200 mx-2" />
 
               <div className="relative" ref={accountMenuRef}>
                 <button
-                  onClick={authUser ? () => setIsAccountMenuOpen((prev) => !prev) : () => openAccountModal('register')}
-                  className="text-purple-600 hover:text-purple-700 font-semibold transition-all duration-300 relative group py-2"
+                  onClick={authUser ? () => setIsAccountMenuOpen((prev) => !prev) : () => openAccountModal('login')}
+                  className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all"
                 >
-                  {authUser
-                    ? `Account (${authUser.role === 'ADMIN' ? 'Admin' : authUser.role === 'INFLUENCER' ? 'Influencer' : 'User'})`
-                    : 'Account'}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
+                  {authUser ? 'Account' : 'Login'}
                 </button>
 
                 {authUser && isAccountMenuOpen && (
-                  <div className="absolute right-0 mt-3 w-64 rounded-2xl bg-white shadow-xl border border-purple-100 p-4 space-y-3">
-                    <div>
-                      <p className="text-sm text-gray-500">Signed in as</p>
-                      <p className="font-semibold text-gray-800">{authUser.name || authUser.email}</p>
-                      <p className="text-xs text-purple-600 font-medium mt-1">{authUser.role === 'ADMIN' ? 'Administrator' : 'Customer'}</p>
+                  <div className="absolute right-0 mt-6 w-64 bg-white shadow-2xl border border-[#F5F3FF] p-8 z-50 rounded-2xl">
+                    <div className="mb-6">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Authenticated as</p>
+                      <p className="text-sm font-black text-gray-900 truncate uppercase tracking-tight">{authUser.name || authUser.email}</p>
                     </div>
-                    {authUser.role === 'ADMIN' && (
-                      <Link
-                        href="/admin"
-                        className="block text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors"
-                        onClick={() => setIsAccountMenuOpen(false)}
-                      >
-                        Go to Admin Dashboard
-                      </Link>
-                    )}
-                    {authUser.role === 'INFLUENCER' && (
-                      <Link
-                        href="/influencer"
-                        className="block text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors"
-                        onClick={() => setIsAccountMenuOpen(false)}
-                      >
-                        Go to Influencer Dashboard
-                      </Link>
-                    )}
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-sm font-semibold text-red-500 hover:text-red-600 transition-colors text-left"
-                    >
-                      Logout
-                    </button>
+                    <div className="space-y-5">
+                      {authUser.role === 'ADMIN' && (
+                        <Link href="/admin" className="block text-[11px] font-black uppercase tracking-[0.2em] text-[#6B21A8] hover:text-purple-900" onClick={() => setIsAccountMenuOpen(false)}>Admin Console</Link>
+                      )}
+                      {authUser.role === 'INFLUENCER' && (
+                        <Link href="/influencer" className="block text-[11px] font-black uppercase tracking-[0.2em] text-[#6B21A8] hover:text-purple-900" onClick={() => setIsAccountMenuOpen(false)}>Dashboard</Link>
+                      )}
+                      <button onClick={handleLogout} className="w-full text-left text-[11px] font-black uppercase tracking-[0.2em] text-red-500 hover:text-red-700">Sign Out</button>
+                    </div>
                   </div>
                 )}
               </div>
 
               <button
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2.5 rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold transform hover:scale-105 active:scale-95 relative overflow-hidden group"
+                className="relative flex items-center group"
                 onClick={() => setIsCartDrawerOpen(true)}
               >
-                <span className="relative z-10">Cart ({cartCount})</span>
-                <span className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 group-hover:text-[#6B21A8] transition-all">Cart</span>
+                <div className="ml-2 w-6 h-6 bg-[#E9D5FF] text-[#6B21A8] text-[10px] flex items-center justify-center rounded-full font-black group-hover:bg-[#6B21A8] group-hover:text-white transition-colors">
+                  {cartCount}
+                </div>
               </button>
             </div>
 
-            {/* Mobile Navigation Button */}
+            {/* Mobile Nav */}
             <MobileNav
               onOpenAccount={openAccountModal}
               onOpenCart={() => setIsCartDrawerOpen(true)}

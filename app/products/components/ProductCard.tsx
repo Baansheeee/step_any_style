@@ -14,59 +14,81 @@ export default function ProductCard({ product, index }: ProductCardProps) {
   return (
     <Link
       href={`/products/${product.slug}`}
-      className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-purple-100 block group h-full flex flex-col"
+      className="group block"
     >
-      <div className="h-64 bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center overflow-hidden relative">
-        {product.image ? (
-          <Image
-            src={product.image}
-            alt={product.name}
-            width={300}
-            height={300}
-            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
-          />
-        ) : (
-          <div className="text-4xl text-purple-200">{product.name.charAt(0)}</div>
-        )}
-        {!product.inStock && (
-          <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
-            Out of Stock
-          </div>
-        )}
+      <div className="relative aspect-square bg-gray-50 rounded-xl overflow-hidden mb-5">
+        <Image
+          src={product.image || '/IPL logo Main JPG.png'}
+          alt={product.name}
+          fill
+          className="object-cover transition-transform duration-1000 group-hover:scale-105"
+        />
+        <div className="absolute top-4 left-4 flex flex-col gap-2 z-10 items-start">
+          {!product.inStock && (
+            <div className="bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-red-600 shadow-sm border border-gray-100">
+              Sold Out
+            </div>
+          )}
+          {product.isNew && (
+            <div className="bg-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-black shadow-sm border border-gray-100">
+              New
+            </div>
+          )}
+          {product.isTrending && (
+            <div className="bg-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-amber-600 shadow-sm border border-gray-100">
+              Trending
+            </div>
+          )}
+        </div>
         {product.originalPrice && product.originalPrice > product.price && (
-          <div className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md">
+          <div className="absolute top-4 right-4 bg-black text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest shadow-lg">
             Sale
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/10 transition-all duration-300"></div>
-      </div>
-      <div className="p-6 flex-grow flex flex-col">
-        <div className="mb-2">
-          <span className="text-xs font-semibold text-purple-600 uppercase tracking-wider">
-            {product.collection?.name || 'Uncategorized'}
-          </span>
+        <div className="absolute inset-x-0 bottom-0 bg-white/10 backdrop-blur-md p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <span className="block text-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 bg-white py-3 shadow-lg">Quick View</span>
         </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-purple-600 transition-colors">
-          {product.name}
-        </h3>
-        <p className="text-gray-600 mb-4 text-sm line-clamp-2 flex-grow">
-          {product.shortDescription}
-        </p>
-        <div className="mt-auto">
-          <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              {formatPKR(product.price)}
-            </span>
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-sm text-gray-400 line-through">
-                {formatPKR(product.originalPrice)}
-              </span>
+      </div>
+      <div className="space-y-1.5">
+        <h3 className="font-medium text-[14px] text-gray-800 group-hover:text-black transition-colors">{product.name}</h3>
+        <div className="flex items-center gap-3">
+          <p className="font-bold text-[15px] text-gray-900">{formatPKR(product.price)}</p>
+          {product.originalPrice && product.originalPrice > product.price && (
+            <p className="text-gray-400 text-[12px] line-through font-medium">{formatPKR(product.originalPrice)}</p>
+          )}
+        </div>
+        {/* Color Swatches */}
+        {product.variants && product.variants.length > 0 && (
+          <div className="flex items-center gap-1.5 pt-1">
+            {Array.from(new Set(product.variants.map(v => v.color))).slice(0, 3).map((color, i) => {
+              const colors: Record<string, string> = {
+                golden: '#D4AF37',
+                gold: '#FFD700',
+                silver: '#C0C0C0',
+                white: '#FFFFFF',
+                black: '#000000',
+                nude: '#E3BC9A',
+                ivory: '#FFFFF0',
+                champagne: '#F7E7CE',
+                'rose gold': '#B76E79',
+                pink: '#FFC0CB',
+              };
+              const hex = colors[color.toLowerCase()] || color.toLowerCase();
+              
+              return (
+                <div 
+                  key={i} 
+                  className="w-3.5 h-3.5 rounded-full border border-gray-200 shadow-sm" 
+                  style={{ backgroundColor: hex }}
+                  title={color}
+                />
+              );
+            })}
+            {new Set(product.variants.map(v => v.color)).size > 3 && (
+              <span className="text-[10px] text-gray-400 font-medium ml-0.5">+{new Set(product.variants.map(v => v.color)).size - 3}</span>
             )}
           </div>
-          <span className="w-full inline-block bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2.5 rounded-full hover:from-purple-700 hover:to-pink-700 transition-all font-semibold text-center shadow-md group-hover:shadow-lg transform group-hover:-translate-y-0.5">
-            View Details
-          </span>
-        </div>
+        )}
       </div>
     </Link>
   );

@@ -15,6 +15,7 @@ interface ProductFormState {
   description: string;
   image: string;
   images: string;
+  videoUrl: string;
   advantages: string;
   features: string;
   specifications: string;
@@ -38,6 +39,7 @@ const defaultFormState: ProductFormState = {
   description: '',
   image: '',
   images: '',
+  videoUrl: '',
   advantages: '',
   features: '',
   specifications: '',
@@ -147,6 +149,7 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
       description: product.description,
       image: product.image ?? '',
       images: csvFromArray(product.images),
+      videoUrl: product.videoUrl ?? '',
       advantages: csvFromArray(product.advantages),
       features: csvFromArray(product.features),
       specifications: specsToString(product.specifications),
@@ -216,6 +219,7 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
         originalPrice: formValues.originalPrice ? Number(formValues.originalPrice) : null,
         image: formValues.image || null,
         images: csvToArray(formValues.images),
+        videoUrl: formValues.videoUrl || null,
         advantages: csvToArray(formValues.advantages),
         features: csvToArray(formValues.features),
         specifications: specsToObject(formValues.specifications),
@@ -334,9 +338,20 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
               </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs uppercase tracking-widest font-bold text-purple-500">
-                    {product.collection?.name || 'No Collection'}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs uppercase tracking-widest font-bold text-purple-500">
+                      {product.collection?.name || 'No Collection'}
+                    </p>
+                    {product.collection?.targetGender && (
+                      <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-tighter ${
+                        product.collection.targetGender === 'MEN' ? 'bg-blue-50 text-blue-600' :
+                        product.collection.targetGender === 'WOMEN' ? 'bg-pink-50 text-pink-600' :
+                        'bg-gray-50 text-gray-600'
+                      }`}>
+                        {product.collection.targetGender}
+                      </span>
+                    )}
+                  </div>
                   <span
                     className={`text-[10px] uppercase tracking-tighter font-bold px-2 py-0.5 rounded-full ${
                       product.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
@@ -595,6 +610,16 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
                       className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
                       rows={2}
                       placeholder="url1.jpg, url2.jpg, url3.jpg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Product Video URL (MP4/YouTube/etc.)</label>
+                    <textarea
+                      value={formValues.videoUrl}
+                      onChange={(e) => handleInputChange('videoUrl', e.target.value)}
+                      className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
+                      rows={2}
+                      placeholder="e.g. /videos/product.mp4"
                     />
                   </div>
                   <div>

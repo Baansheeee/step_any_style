@@ -2,20 +2,26 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
+  --lavender-light: #F5F3FF;
+  --lavender-main: #E9D5FF;
+  --lavender-dark: #6B21A8;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-lavender-light: var(--lavender-light);
+  --color-lavender-main: var(--lavender-main);
+  --color-lavender-dark: var(--lavender-dark);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff; /* Keeping it light as per user request */
+    --foreground: #111111;
   }
 }
 

@@ -5,11 +5,10 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "./components/Navbar";
 import ReviewsSlideshow from "./components/ReviewsSlideshow";
-import BannerSlideshow from "./components/BannerSlideshow";
 import ScrollAnimate from "./components/ScrollAnimate";
-import { formatPKR } from "@/lib/currency";
-import type { ProductDTO } from "@/types/product";
 import { products as seedProducts } from "./data/products";
+import GlobalProductCard from "./products/components/ProductCard";
+import SliderSection from "./components/SliderSection";
 
 export default function Home() {
   const seedToDto = (product: typeof seedProducts[number]): ProductDTO => ({
@@ -23,6 +22,7 @@ export default function Home() {
       slug: product.brand.toLowerCase(),
       description: null,
       image: null,
+      targetGender: 'UNISEX',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
@@ -42,10 +42,13 @@ export default function Home() {
   });
 
   const [productList, setProductList] = useState<ProductDTO[]>(() => seedProducts.map(seedToDto));
+  const [collections, setCollections] = useState<CollectionDTO[]>([]);
+  const [reviewMedia, setReviewMedia] = useState<any[]>([]);
   const [isFetchingProducts, setIsFetchingProducts] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
+
     const loadProducts = async () => {
       try {
         setIsFetchingProducts(true);
@@ -66,256 +69,309 @@ export default function Home() {
       }
     };
 
+    const loadCollections = async () => {
+      try {
+        const response = await fetch('/api/collections', { cache: 'no-store' });
+        const payload = await response.json();
+        if (payload.success && Array.isArray(payload.collections)) {
+          if (isMounted) {
+            setCollections(payload.collections);
+          }
+        }
+      } catch (error) {
+        console.warn('Unable to fetch collections', error);
+      }
+    };
+
+    const loadReviewMedia = async () => {
+      try {
+        const response = await fetch('/api/reviews/media', { cache: 'no-store' });
+        const payload = await response.json();
+        if (payload.success && Array.isArray(payload.media)) {
+          if (isMounted) {
+            setReviewMedia(payload.media);
+          }
+        }
+      } catch (error) {
+        console.warn('Unable to fetch review media', error);
+      }
+    };
+
     loadProducts();
+    loadCollections();
+    loadReviewMedia();
+
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const bridalProducts = useMemo(
-    () => productList.filter((product) => product.collection?.name?.toLowerCase() === 'bridal').slice(0, 3),
-    [productList],
+  // Products filtered by gender
+  const womenProducts = useMemo(() =>
+    productList.filter(p => p.collection?.targetGender === 'WOMEN').slice(0, 8),
+    [productList]
   );
-  const footwearProducts = useMemo(
-    () => productList.filter((product) => product.collection?.name?.toLowerCase() !== 'bridal').slice(0, 3),
-    [productList],
+
+  const menProducts = useMemo(() =>
+    productList.filter(p => p.collection?.targetGender === 'MEN').slice(0, 8),
+    [productList]
+  );
+
+  // Collections filtered by gender
+  const womenCollections = useMemo(() =>
+    collections.filter(c => c.targetGender === 'WOMEN'),
+    [collections]
+  );
+
+  const menCollections = useMemo(() =>
+    collections.filter(c => c.targetGender === 'MEN'),
+    [collections]
+  );
+
+
+
+  // Reusable Product Card Wrapper
+  const ProductCardWrapper = ({ product, index }: { product: ProductDTO; index: number }) => (
+    <ScrollAnimate key={product.id} animation="fade-in" delay={`${index * 0.1}s`}>
+      <GlobalProductCard product={product} />
+    </ScrollAnimate>
+  );
+
+  // Reusable Collection Card Component
+  const CollectionCard = ({ collection, index }: { collection: CollectionDTO; index: number }) => (
+    <ScrollAnimate key={collection.id} animation="fade-in" delay={`${index * 0.12}s`}>
+      <Link href={`/products?collectionId=${collection.id}`} className="relative group block overflow-hidden rounded-3xl">
+        <div className="relative aspect-[4/5] overflow-hidden">
+          <Image
+            src={collection.image || '/IPL logo Main JPG.png'}
+            alt={collection.name}
+            fill
+            className="object-cover transition-transform duration-1000 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-[#6B21A8]/10 transition-all duration-500" />
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-8">
+            <h3 className="text-white text-xl md:text-2xl font-black uppercase tracking-[0.15em] drop-shadow-lg mb-2">{collection.name}</h3>
+            <span className="text-white/90 text-[10px] font-black uppercase tracking-[0.2em] border border-white/50 px-5 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all">
+              Shop Now
+            </span>
+          </div>
+        </div>
+      </Link>
+    </ScrollAnimate>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Navigation */}
+    <div className="min-h-screen bg-white font-sans text-gray-900">
       <Navbar />
 
-      {/* Banner Slideshow Section */}
-      <BannerSlideshow />
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*                  WOMEN'S SECTION                       */}
+      {/* ═══════════════════════════════════════════════════════ */}
 
-      {/* Products Section - Bridal Collection */}
-      <section id="products" className="py-16 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollAnimate animation="fade-in" delay="0s">
-          <div className="text-center mb-12">
-            <h2 id="bridal" className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-              Luxury Bridal Collection
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Exquisite heels and slippers for your special day, hand-crafted for elegance and comfort.
+      {/* Hero Section - Women */}
+      <section className="relative h-[85vh] w-full overflow-hidden bg-[#F5F3FF]">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        >
+          <source src="/banner.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute inset-0 bg-[#6B21A8]/10" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+          <ScrollAnimate animation="fade-in">
+            <h1 className="text-white text-5xl md:text-8xl font-black mb-6 tracking-tighter uppercase drop-shadow-lg">
+              The Women&apos;s Edit
+            </h1>
+            <p className="text-white text-lg md:text-xl mb-10 max-w-xl font-medium tracking-wide drop-shadow-md">
+              Elegance in every step. Discover our curated collection of luxury heels and sandals.
             </p>
-          </div>
+            <Link
+              href="/products?gender=WOMEN"
+              className="bg-[#E9D5FF] text-[#6B21A8] px-12 py-4 text-sm font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all duration-300 shadow-2xl border border-white/20"
+            >
+              Shop Women
+            </Link>
           </ScrollAnimate>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {bridalProducts.length === 0 ? (
-              <div className="col-span-full text-center text-gray-500">
-                {isFetchingProducts ? 'Loading products...' : 'Bridal items coming soon.'}
-              </div>
-            ) : (
-              bridalProducts.map((product, index) => (
-                <ScrollAnimate key={product.id} animation="fade-in" delay={`${index * 0.1}s`}>
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-purple-100 block group"
-                  >
-                    <div className="h-64 bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center overflow-hidden relative">
-                      {product.image ? (
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          width={300}
-                          height={300}
-                          className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+        </div>
+      </section>
+
+      {/* Women's Products Slider */}
+      <SliderSection 
+        title="In The Spotlight: Women" 
+        subtitle="Trending Now" 
+        viewAllLink="/products?gender=WOMEN"
+        accentColor="#A855F7"
+      >
+        {womenProducts.map((product, index) => (
+          <GlobalProductCard key={product.id} product={product} />
+        ))}
+      </SliderSection>
+
+      {/* Shop By Collection Slider - Women */}
+      {womenCollections.length > 0 && (
+        <SliderSection 
+          title="Shop By Collection" 
+          subtitle="Curated For Her" 
+          viewAllLink="/products?gender=WOMEN"
+          accentColor="#A855F7"
+          itemWidth="min-w-[280px] md:min-w-[380px]"
+        >
+          {womenCollections.map((collection, index) => (
+            <CollectionCard key={collection.id} collection={collection} index={index} />
+          ))}
+        </SliderSection>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*                   MEN'S SECTION                        */}
+      {/* ═══════════════════════════════════════════════════════ */}
+
+      {/* Hero Section - Men */}
+      <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
+        <div className="max-w-[1600px] mx-auto grid md:grid-cols-2 items-stretch">
+          <div className="relative h-[60vh] md:h-auto overflow-hidden">
+            <Image
+              src="https://images.unsplash.com/photo-1531310197839-ccf54634509e?auto=format&fit=crop&q=80&w=1000"
+              alt="Men's Collection"
+              fill
+              className="object-cover transition-all duration-1000"
+            />
+            <div className="absolute inset-0 bg-[#6B21A8]/10" />
+          </div>
+          <div className="flex flex-col justify-center p-12 md:p-24 space-y-8">
+            <ScrollAnimate animation="slide-in-right">
+              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">New Arrivals</h2>
+              <h3 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
+                The Men&apos;s <br /> Essentials
+              </h3>
+              <p className="text-gray-500 text-lg font-light leading-relaxed max-w-md">
+                Refined style for the modern man. From polished loafers to everyday sneakers, find your signature look.
+              </p>
+              <Link
+                href="/products?gender=MEN"
+                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-12 py-5 text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl"
+              >
+                Shop Men
+              </Link>
+            </ScrollAnimate>
+          </div>
+        </div>
+      </section>
+
+      {/* Men's Products Slider */}
+      {menProducts.length > 0 && (
+        <SliderSection 
+          title="In The Spotlight: Men" 
+          subtitle="Modern Classic" 
+          viewAllLink="/products?gender=MEN"
+          accentColor="#6B21A8"
+        >
+          {menProducts.map((product, index) => (
+            <GlobalProductCard key={product.id} product={product} />
+          ))}
+        </SliderSection>
+      )}
+
+      {/* Shop By Collection Slider - Men */}
+      {menCollections.length > 0 && (
+        <SliderSection 
+          title="Shop By Collection" 
+          subtitle="Crafted For Him" 
+          viewAllLink="/products?gender=MEN"
+          accentColor="#6B21A8"
+          itemWidth="min-w-[280px] md:min-w-[380px]"
+        >
+          {menCollections.map((collection, index) => (
+            <CollectionCard key={collection.id} collection={collection} index={index} />
+          ))}
+        </SliderSection>
+      )}
+
+      {/* Trending Products Slider */}
+      <SliderSection 
+        title="Trending Now" 
+        subtitle="Most Wanted" 
+        viewAllLink="/products"
+        accentColor="#B45309"
+      >
+        {productList.filter(p => p.isTrending).map((product) => (
+          <GlobalProductCard key={product.id} product={product} />
+        ))}
+      </SliderSection>
+
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*              COMMUNITY & REVIEWS                       */}
+      {/* ═══════════════════════════════════════════════════════ */}
+
+      {/* As Seen On You */}
+      <section className="py-24 px-6 md:px-20 max-w-[1600px] mx-auto border-t border-[#F5F3FF] bg-[#FAF9FF]">
+        <ScrollAnimate animation="fade-in" className="text-center mb-16">
+          <h2 className="text-4xl font-bold tracking-tight mb-4 uppercase text-gray-900">As Seen On You</h2>
+          <p className="text-[#A855F7] font-medium tracking-widest text-xs uppercase italic">Tag @StepAndStyle to be featured</p>
+        </ScrollAnimate>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {(reviewMedia.length > 0 ? reviewMedia : [1, 2, 3, 4, 5, 6]).map((item, index) => {
+            const isDynamic = typeof item === 'object';
+            const mediaUrl = isDynamic ? item.url : `https://images.unsplash.com/photo-${1500000000000 + (item * 1000)}?auto=format&fit=crop&q=80&w=400`;
+            const productSlug = isDynamic ? item.productSlug : '#';
+            const isVideo = isDynamic && item.type === 'video';
+
+            return (
+              <ScrollAnimate key={isDynamic ? `media-${index}` : item} animation="scale-in" delay={`${index * 0.1}s`} className="relative aspect-square overflow-hidden bg-white group rounded-xl shadow-sm">
+                <Link href={isDynamic ? `/products/${productSlug}` : '#'}>
+                  {isVideo ? (
+                    <div className="w-full h-full bg-black relative flex items-center justify-center">
+                      {mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be') ? (
+                        <Image 
+                          src={`https://img.youtube.com/vi/${mediaUrl.split('/').pop()?.split('=')[1] || mediaUrl.split('/').pop()}/mqdefault.jpg`} 
+                          alt="Video"
+                          fill
+                          className="object-cover opacity-80"
                         />
                       ) : (
-                        <div className="text-4xl text-purple-200">{product.name.charAt(0)}</div>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-purple-500/0 to-purple-500/0 group-hover:from-purple-500/10 transition-all duration-300"></div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h3>
-                      <p className="text-gray-600 mb-4 text-sm">{product.shortDescription}</p>
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                        <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                          {formatPKR(product.price)}
-                        </span>
-                        <span className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full hover:from-purple-700 hover:to-pink-700 transition-all font-semibold text-center">
-                          View Details
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                </ScrollAnimate>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Products Section - Casual & Party Footwear */}
-      <section id="footwear" className="py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollAnimate animation="fade-in" delay="0s">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              Premium Footwear & Heels
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Step into style with our collection of comfort slippers and high-end heels for every occasion.
-            </p>
-          </div>
-          </ScrollAnimate>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {footwearProducts.length === 0 ? (
-              <div className="col-span-full text-center text-gray-500">
-                {isFetchingProducts ? 'Loading products...' : 'Footwear coming soon.'}
-              </div>
-            ) : (
-              footwearProducts.map((product, index) => (
-                <ScrollAnimate key={product.id} animation="fade-in" delay={`${index * 0.1}s`}>
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-pink-100 block group"
-                  >
-                    <div className="h-64 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center overflow-hidden relative">
-                      {product.image ? (
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          width={300}
-                          height={300}
-                          className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                        <video 
+                          src={mediaUrl} 
+                          className="w-full h-full object-cover opacity-80" 
+                          muted 
+                          loop 
+                          autoPlay 
+                          playsInline 
                         />
-                      ) : (
-                        <div className="text-4xl text-pink-200">{product.name.charAt(0)}</div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-pink-500/0 to-pink-500/0 group-hover:from-pink-500/10 transition-all duration-300"></div>
+                      <div className="absolute inset-0 bg-purple-600/5 group-hover:bg-purple-600/20 transition-colors" />
                     </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h3>
-                      <p className="text-gray-600 mb-4 text-sm">{product.shortDescription}</p>
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                        <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                          {formatPKR(product.price)}
-                        </span>
-                        <span className="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 py-2 rounded-full hover:from-pink-700 hover:to-pink-700 transition-all font-semibold text-center">
-                          View Details
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                </ScrollAnimate>
-              ))
-            )}
-          </div>
+                  ) : (
+                    <Image
+                      src={mediaUrl}
+                      alt="Social"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-purple-600/10 group-hover:bg-purple-600/30 transition-colors flex flex-col items-center justify-center opacity-0 group-hover:opacity-100">
+                    <span className="text-white text-[9px] font-black tracking-widest uppercase border border-white px-4 py-2 bg-purple-600/20 backdrop-blur-sm mb-2">Shop The Look</span>
+                    {isDynamic && <span className="text-white/80 text-[8px] font-bold uppercase tracking-tight">@{item.userName}</span>}
+                  </div>
+                </Link>
+              </ScrollAnimate>
+            );
+          })}
         </div>
+        <ScrollAnimate animation="fade-in" className="text-center mt-12">
+          <Link href="/reviews">
+            <button className="bg-[#E9D5FF] text-[#6B21A8] px-12 py-4 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all shadow-xl">
+              Get Inspired
+            </button>
+          </Link>
+        </ScrollAnimate>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-16 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollAnimate animation="fade-in" delay="0s">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Why Choose Our Footwear?
-            </span>
-          </h2>
-          </ScrollAnimate>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-12">
-            <ScrollAnimate animation="fade-in" delay="0s">
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-lg transition-all border border-purple-100">
-              <div className="text-5xl mb-4">✨</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Premium Materials</h3>
-              <p className="text-gray-600 text-sm md:text-base">
-                We use only the finest velvet, silk, and synthetic leather for a truly luxurious feel.
-              </p>
-            </div>
-            </ScrollAnimate>
-            <ScrollAnimate animation="fade-in" delay="0.1s">
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-lg transition-all border border-purple-100">
-              <div className="text-5xl mb-4">☁️</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Maximum Comfort</h3>
-              <p className="text-gray-600 text-sm md:text-base">
-                Designed with cushioned insoles and ergonomic support to keep you comfortable all day.
-              </p>
-            </div>
-            </ScrollAnimate>
-            <ScrollAnimate animation="fade-in" delay="0.2s">
-            <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 hover:shadow-lg transition-all border border-purple-100">
-              <div className="text-5xl mb-4">💎</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Exquisite Design</h3>
-              <p className="text-gray-600 text-sm md:text-base">
-                Each piece is carefully designed to blend modern trends with timeless elegance.
-              </p>
-            </div>
-            </ScrollAnimate>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <ScrollAnimate animation="fade-in" delay="0s">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              About Step & Style
-            </span>
-          </h2>
-          </ScrollAnimate>
-          <ScrollAnimate animation="fade-in" delay="0.1s">
-          <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-            We are dedicated to providing the highest quality bridal heels, luxury slippers, and party footwear. 
-            Our products combine professional craftsmanship with innovative comfort technology, giving you the best 
-            experience for your special occasions. Step into luxury with our premium collection.
-          </p>
-          </ScrollAnimate>
-        </div>
-      </section>
-
-      {/* Reviews Slideshow Section */}
       <ReviewsSlideshow />
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-br from-gray-900 to-purple-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-            <Image
-                src="/IPL logo Main JPG.png"
-                alt="Footwear Store Logo"
-                width={150}
-                height={50}
-                className="object-contain mb-4"
-              />
-              <p className="text-gray-400 text-sm">Luxury footwear for every special moment in your life.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Shop</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><Link href="#bridal" className="hover:text-white transition-colors">Bridal Heels</Link></li>
-                <li><Link href="#footwear" className="hover:text-white transition-colors">Casual Slippers</Link></li>
-                <li><Link href="#products" className="hover:text-white transition-colors">All Products</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><Link href="#" className="hover:text-white transition-colors">Contact Us</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Shipping</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Returns</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Connect</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><Link href="#" className="hover:text-white transition-colors">Facebook</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Instagram</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Twitter</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-purple-800 mt-8 pt-8 text-center text-gray-400 text-sm">
-            <p>&copy; 2026 Step & Style. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

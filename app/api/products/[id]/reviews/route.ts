@@ -39,7 +39,7 @@ export async function POST(
     const params = await context.params;
     const slug = params.id;
     const body = await request.json();
-    const { rating, comment, userName, userEmail } = body;
+    const { rating, comment, userName, userEmail, images, videoUrl } = body;
 
     if (!rating || !comment || !userName) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -61,8 +61,23 @@ export async function POST(
         comment,
         userName,
         userEmail,
+        images: images || [],
+        videoUrl: videoUrl || null,
         productId: product.id
       }
+    });
+
+    // Recalculate average rating
+    const allReviews = await prisma.review.findMany({
+      where: { productId: product.id },
+      select: { rating: true }
+    });
+
+    const averageRating = allReviews.reduce((acc, r) => acc + r.rating, 0) / allReviews.length;
+
+    await prisma.product.update({
+      where: { id: product.id },
+      data: { rating: averageRating }
     });
 
     return NextResponse.json({ success: true, review });

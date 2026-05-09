@@ -9,6 +9,7 @@ interface CollectionFormState {
   slug: string;
   description: string;
   image: string;
+  targetGender: 'MEN' | 'WOMEN' | 'UNISEX';
 }
 
 const defaultFormState: CollectionFormState = {
@@ -16,6 +17,7 @@ const defaultFormState: CollectionFormState = {
   slug: '',
   description: '',
   image: '',
+  targetGender: 'UNISEX',
 };
 
 export default function AdminCollectionsPanel() {
@@ -72,6 +74,7 @@ export default function AdminCollectionsPanel() {
       slug: collection.slug,
       description: collection.description || '',
       image: collection.image || '',
+      targetGender: collection.targetGender,
     });
     setIsModalOpen(true);
     setStatus({ type: 'idle', message: '' });
@@ -207,7 +210,16 @@ export default function AdminCollectionsPanel() {
                 )}
               </div>
               <div className="flex-1 space-y-2">
-                <h3 className="text-lg font-semibold text-gray-900">{collection.name}</h3>
+                <div className="flex justify-between items-start">
+                  <h3 className="text-lg font-semibold text-gray-900">{collection.name}</h3>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest ${
+                    collection.targetGender === 'MEN' ? 'bg-blue-100 text-blue-700' :
+                    collection.targetGender === 'WOMEN' ? 'bg-pink-100 text-pink-700' :
+                    'bg-gray-100 text-gray-700'
+                  }`}>
+                    {collection.targetGender}
+                  </span>
+                </div>
                 <p className="text-xs text-purple-600 font-mono">/{collection.slug}</p>
                 <p className="text-sm text-gray-500 line-clamp-2">{collection.description || 'No description provided.'}</p>
               </div>
@@ -296,6 +308,19 @@ export default function AdminCollectionsPanel() {
                   rows={3}
                   placeholder="Describe this footwear collection..."
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Target Gender</label>
+                <select
+                  value={formValues.targetGender}
+                  onChange={(e) => handleInputChange('targetGender', e.target.value as any)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all hover:border-slate-400"
+                >
+                  <option value="MEN">Men</option>
+                  <option value="WOMEN">Women</option>
+                  <option value="UNISEX">Unisex</option>
+                </select>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-4">

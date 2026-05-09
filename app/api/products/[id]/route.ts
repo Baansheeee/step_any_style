@@ -90,6 +90,7 @@ export async function PUT(
         inStock: data.inStock ?? undefined,
         image: data.image === undefined ? undefined : data.image,
         images: toJsonInput(data.images),
+        videoUrl: data.videoUrl === undefined ? undefined : data.videoUrl,
         advantages: toJsonInput(data.advantages),
         specifications: toJsonInput(data.specifications),
         features: toJsonInput(data.features),

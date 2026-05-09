@@ -53,17 +53,17 @@ export default function AffiliateProgramPage() {
         {/* Header with Apply Button */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
           <div className="flex-1">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-              Step & Style Affiliate Program
+            <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-4 uppercase tracking-tighter">
+              Affiliate <span className="text-[#A855F7]">Program</span>
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-[12px] font-black uppercase tracking-[0.2em] text-gray-500 italic">
               Your Official Guide to Earning with Pakistan's #1 Premium Footwear Store
             </p>
           </div>
           {!showApplicationForm && (
             <button
               onClick={() => setShowApplicationForm(true)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 whitespace-nowrap"
+              className="bg-[#E9D5FF] text-[#6B21A8] px-12 py-4 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#6B21A8] hover:text-white transition-all shadow-xl"
             >
               Apply Now
             </button>
@@ -75,7 +75,7 @@ export default function AffiliateProgramPage() {
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Apply for Affiliate Program</h2>
+                <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Apply for Affiliate Program</h2>
                 <button
                   onClick={() => {
                     setShowApplicationForm(false);
@@ -145,7 +145,7 @@ export default function AffiliateProgramPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-60"
+                    className="flex-1 bg-[#6B21A8] text-white px-8 py-4 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-black transition-all shadow-xl disabled:opacity-60"
                   >
                     {isSubmitting ? 'Submitting...' : 'Submit Application'}
                   </button>
@@ -155,7 +155,7 @@ export default function AffiliateProgramPage() {
                       setShowApplicationForm(false);
                       setSubmitStatus({ type: 'idle', message: '' });
                     }}
-                    className="px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition"
+                    className="px-8 py-4 border-2 border-gray-200 text-[11px] font-black uppercase tracking-[0.3em] text-gray-700 hover:bg-gray-50 transition"
                   >
                     Cancel
                   </button>
@@ -166,8 +166,8 @@ export default function AffiliateProgramPage() {
         )}
 
         {/* Welcome Section */}
-        <section className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl shadow-md p-8 mb-8 border border-purple-100">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to the Step & Style Affiliate Family</h2>
+        <section className="bg-[#FAF9FF] rounded-3xl p-10 mb-12 border border-[#F5F3FF]">
+          <h2 className="text-3xl font-black text-gray-900 mb-6 uppercase tracking-tight">Welcome to the Family</h2>
           <p className="text-lg text-gray-700 mb-4">
             We are excited to have you on board!
           </p>
@@ -178,8 +178,8 @@ export default function AffiliateProgramPage() {
         </section>
 
         {/* Program Overview */}
-        <section className="bg-white rounded-2xl shadow-md p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">1. Program Overview</h2>
+        <section className="bg-white rounded-3xl p-10 mb-12 border border-gray-50">
+          <h2 className="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tight">1. Program Overview</h2>
           <p className="text-gray-700 mb-6">
             Our affiliate program allows you to earn commission for every verified sale you refer using your unique affiliate link or discount coupon.
           </p>
@@ -230,12 +230,12 @@ export default function AffiliateProgramPage() {
         </section>
 
         {/* How You Earn */}
-        <section className="bg-white rounded-2xl shadow-md p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">2. How You Earn</h2>
+        <section className="bg-white rounded-3xl p-10 mb-12 border border-gray-50">
+          <h2 className="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tight">2. How You Earn</h2>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-100">
-              <h3 className="text-xl font-semibold text-purple-600 mb-3">Step 1 – Get your link or coupon</h3>
+            <div className="bg-[#FAF9FF] p-8 rounded-2xl border border-[#F5F3FF]">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#A855F7] mb-4">Step 1 – Link & Coupon</h3>
               <p className="text-gray-700 mb-2">You will receive:</p>
               <ul className="list-disc list-inside text-gray-600 space-y-1 ml-4">
                 <li>A unique affiliate link</li>
@@ -243,8 +243,8 @@ export default function AffiliateProgramPage() {
               </ul>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-100">
-              <h3 className="text-xl font-semibold text-purple-600 mb-3">Step 2 – Share</h3>
+            <div className="bg-[#FAF9FF] p-8 rounded-2xl border border-[#F5F3FF]">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#A855F7] mb-4">Step 2 – Share</h3>
               <p className="text-gray-700 mb-2">Promote your link or coupon on:</p>
               <div className="grid grid-cols-2 gap-2 text-gray-600 text-sm">
                 <div>• Instagram Stories</div>
@@ -256,15 +256,15 @@ export default function AffiliateProgramPage() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-100">
-              <h3 className="text-xl font-semibold text-purple-600 mb-3">Step 3 – Customer Buys</h3>
+            <div className="bg-[#FAF9FF] p-8 rounded-2xl border border-[#F5F3FF]">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#A855F7] mb-4">Step 3 – Customer Buys</h3>
               <p className="text-gray-700">
                 When someone purchases using your link or coupon, you earn commission.
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-100">
-              <h3 className="text-xl font-semibold text-purple-600 mb-3">Step 4 – Monthly Payout</h3>
+            <div className="bg-[#FAF9FF] p-8 rounded-2xl border border-[#F5F3FF]">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#A855F7] mb-4">Step 4 – Monthly Payout</h3>
               <p className="text-gray-700 mb-2">Your earnings are paid every month through:</p>
               <div className="grid grid-cols-2 gap-2 text-gray-600 text-sm">
                 <div>• JazzCash</div>
@@ -277,8 +277,8 @@ export default function AffiliateProgramPage() {
         </section>
 
         {/* What You Get */}
-        <section className="bg-white rounded-2xl shadow-md p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">3. What You Get as an Affiliate</h2>
+        <section className="bg-white rounded-3xl p-10 mb-12 border border-gray-50">
+          <h2 className="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tight">3. What You Get</h2>
           
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-green-50 p-6 rounded-lg border border-green-100">
@@ -302,8 +302,8 @@ export default function AffiliateProgramPage() {
         </section>
 
         {/* Content Guidelines */}
-        <section className="bg-white rounded-2xl shadow-md p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">4. Content Guidelines (What Works Best)</h2>
+        <section className="bg-white rounded-3xl p-10 mb-12 border border-gray-50">
+          <h2 className="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tight">4. Content Guidelines</h2>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
@@ -334,8 +334,8 @@ export default function AffiliateProgramPage() {
         </section>
 
         {/* Program Rules */}
-        <section className="bg-white rounded-2xl shadow-md p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">5. Program Rules</h2>
+        <section className="bg-white rounded-3xl p-10 mb-12 border border-gray-50">
+          <h2 className="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tight">5. Program Rules</h2>
           <p className="text-gray-700 mb-6">These rules protect your earnings and maintain program quality.</p>
           
           <div className="grid md:grid-cols-2 gap-6">
@@ -366,8 +366,8 @@ export default function AffiliateProgramPage() {
         </section>
 
         {/* Payout Policy */}
-        <section className="bg-white rounded-2xl shadow-md p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">6. Payout Policy</h2>
+        <section className="bg-white rounded-3xl p-10 mb-12 border border-gray-50">
+          <h2 className="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tight">6. Payout Policy</h2>
           
           <div className="space-y-6">
             <div className="bg-purple-50 p-6 rounded-lg border border-purple-100">
@@ -404,8 +404,8 @@ export default function AffiliateProgramPage() {
         </section>
 
         {/* Support & Community */}
-        <section className="bg-white rounded-2xl shadow-md p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">7. Affiliate Support & Community</h2>
+        <section className="bg-white rounded-3xl p-10 mb-12 border border-gray-50">
+          <h2 className="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tight">7. Support & Community</h2>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-blue-50 p-6 rounded-lg border border-blue-100">
@@ -430,8 +430,8 @@ export default function AffiliateProgramPage() {
         </section>
 
         {/* Tips to Increase Earnings */}
-        <section className="bg-white rounded-2xl shadow-md p-8 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">8. Tips to Increase Your Earnings Fast</h2>
+        <section className="bg-white rounded-3xl p-10 mb-12 border border-gray-50">
+          <h2 className="text-2xl font-black text-gray-900 mb-8 uppercase tracking-tight">8. Tips To Win</h2>
           
           <div className="grid md:grid-cols-2 gap-4">
             <div className="flex items-start">
@@ -462,15 +462,17 @@ export default function AffiliateProgramPage() {
         </section>
 
         {/* Contact & Support */}
-        <section className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl shadow-lg p-8 text-white">
-          <h2 className="text-3xl font-bold mb-6">9. Contact & Support</h2>
+        <section className="bg-gray-900 rounded-[3rem] p-12 md:p-20 text-center text-white">
+          <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-10 leading-none">Contact <span className="text-[#A855F7]">& Support</span></h2>
           
           <p className="mb-4 text-lg">For any questions or help:</p>
-          <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg">
-            <p className="font-semibold text-lg mb-2">Affiliate Support – Step & Style</p>
-            <p className="mb-1">WhatsApp: +92 333 4555282</p>
-            <p className="mb-1">Email: stepnstyle007@gmail.com</p>
-            <p>Location: Islamabad, Pakistan</p>
+          <div className="bg-white/5 border border-white/10 backdrop-blur-sm p-10 rounded-3xl inline-block text-left">
+            <p className="font-black text-lg uppercase tracking-[0.1em] mb-6 text-[#A855F7]">Affiliate Support – Step & Style</p>
+            <div className="space-y-4 text-gray-400 font-medium uppercase tracking-widest text-xs">
+              <p className="flex justify-between gap-20"><span>WhatsApp:</span> <span className="text-white">+92 333 4555282</span></p>
+              <p className="flex justify-between gap-20"><span>Email:</span> <span className="text-white">stepnstyle007@gmail.com</span></p>
+              <p className="flex justify-between gap-20"><span>Location:</span> <span className="text-white">Islamabad, Pakistan</span></p>
+            </div>
           </div>
         </section>
       </div>
