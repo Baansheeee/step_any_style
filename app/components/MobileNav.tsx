@@ -84,9 +84,17 @@ export default function MobileNav({
                 height={45}
                 className="h-10 object-contain"
               />
-              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900 -ml-2">
-                Step & Style
-              </span>
+              <div className="flex items-center -ml-5 mb-0.5 gap-1">
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900">
+                  Step
+                </span>
+                <span className="text-[14px] font-black uppercase tracking-[0.2em] text-yellow-600">
+                  &
+                </span>
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900">
+                  Style
+                </span>
+              </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}

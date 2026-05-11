@@ -47,7 +47,20 @@ export default function OrderSuccessPage() {
 
         {/* Brand Decoration */}
         <div className="mt-12 opacity-10 flex gap-8 grayscale select-none">
-           <img src="/main_logo.png" alt="Stylo Logo" className="h-8 w-auto" />
+         <div className="flex items-center">
+            <img src="/main_logo.png" alt="Step & Style" className="h-10 w-auto" />
+            <div className="flex items-center -ml-4 mb-0.5 gap-1">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900">
+                Step
+              </span>
+              <span className="text-[12px] font-black uppercase tracking-[0.2em] text-yellow-600">
+                &
+              </span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900">
+                Style
+              </span>
+            </div>
+         </div>
         </div>
       </div>
 

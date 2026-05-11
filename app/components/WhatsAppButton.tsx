@@ -1,16 +1,20 @@
 'use client';
 
-import React from 'react';
+import { usePathname } from 'next/navigation';
 
 const WhatsAppButton = () => {
+  const pathname = usePathname();
   const whatsappUrl = "https://wa.me/message/BTBNGKTP3BWGO1";
+
+  // Hide on admin pages
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <a
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-8 right-8 z-[100] group"
+      className="fixed bottom-5 right-5 sm:bottom-8 sm:right-8 z-[50] group"
       aria-label="Contact us on WhatsApp"
     >
       <div className="relative">

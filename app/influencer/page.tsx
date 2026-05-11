@@ -99,15 +99,24 @@ export default function InfluencerDashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <Link href="/" className="flex items-center group">
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-2 group-hover:from-purple-100 group-hover:to-pink-100 transition-all">
-                  <Image
-                    src="/final_logo.jpeg"
-                    alt="Step & Style - Influencer Dashboard"
-                    width={120}
-                    height={40}
-                    className="object-contain h-10 w-auto"
-                  />
+              <Link href="/" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
+                <Image
+                  src="/main_logo.png"
+                  alt="Step & Style"
+                  width={140}
+                  height={45}
+                  className="h-10 md:h-12 w-auto object-contain"
+                />
+                <div className="flex items-center -ml-4 md:-ml-6 mb-0.5 gap-1">
+                  <span className="text-[10px] md:text-[13px] font-black uppercase tracking-[0.2em] text-gray-900">
+                    Step
+                  </span>
+                  <span className="text-[12px] md:text-[15px] font-black uppercase tracking-[0.2em] text-yellow-600">
+                    &
+                  </span>
+                  <span className="text-[10px] md:text-[13px] font-black uppercase tracking-[0.2em] text-gray-900">
+                    Style
+                  </span>
                 </div>
               </Link>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">

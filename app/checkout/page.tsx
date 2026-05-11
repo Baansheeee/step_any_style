@@ -55,8 +55,25 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-white font-sans text-gray-900">
       {/* Mini Header */}
       <header className="border-b border-gray-100 py-6 px-4 md:px-10 flex justify-between items-center bg-white sticky top-0 z-[100]">
-        <Link href="/" className="transition-transform hover:scale-105">
-           <img src="/main_logo.png" alt="Stylo Logo" className="h-10 w-auto" />
+        <Link href="/" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
+           <Image 
+             src="/main_logo.png" 
+             alt="Step & Style" 
+             width={180}
+             height={60}
+             className="h-12 md:h-16 w-auto object-contain" 
+           />
+           <div className="flex items-center -ml-4 md:-ml-7 mb-0.5 gap-1">
+             <span className="text-[10px] md:text-[13px] font-black uppercase tracking-[0.2em] text-gray-900">
+               Step
+             </span>
+             <span className="text-[12px] md:text-[15px] font-black uppercase tracking-[0.2em] text-yellow-600">
+               &
+             </span>
+             <span className="text-[10px] md:text-[13px] font-black uppercase tracking-[0.2em] text-gray-900">
+               Style
+             </span>
+           </div>
         </Link>
         <Link href="/products" className="text-gray-400 hover:text-purple-600 transition-colors">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -545,19 +562,33 @@ function CheckoutContent({
           </div>
 
           {/* Discount Section */}
-          <div className="flex gap-3">
-             <input 
-               type="text" value={promoInput}
-               onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-               placeholder="Discount code"
-               className="flex-1 bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:border-purple-400"
-             />
-             <button 
-               type="button" onClick={handleValidatePromo}
-               className="px-6 py-3 bg-purple-500 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-purple-600 hover:text-white transition-all"
-             >
-               Apply
-             </button>
+          <div className="space-y-2 relative z-[60]">
+            <div className="flex gap-3">
+               <input 
+                 type="text" value={promoInput}
+                 onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoError(null); }}
+                 placeholder="Discount code"
+                 className={`flex-1 bg-white border rounded-lg px-4 py-3 text-sm outline-none transition-colors ${promoError ? 'border-red-300 focus:border-red-400' : validatedPromo ? 'border-green-300 focus:border-green-400' : 'border-gray-200 focus:border-purple-400'}`}
+               />
+               <button 
+                 type="button" onClick={handleValidatePromo}
+                 className="px-6 py-3 bg-purple-500 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-purple-600 hover:text-white transition-all active:scale-95"
+               >
+                 Apply
+               </button>
+            </div>
+            {promoError && (
+              <p className="text-xs font-bold text-red-500 flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {promoError}
+              </p>
+            )}
+            {validatedPromo && (
+              <p className="text-xs font-bold text-green-600 flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                Code &quot;{validatedPromo.code}&quot; applied — {validatedPromo.discountPercent}% off!
+              </p>
+            )}
           </div>
 
           {/* Pricing Summary */}
