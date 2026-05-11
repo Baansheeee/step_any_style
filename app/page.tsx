@@ -188,11 +188,11 @@ export default function Home() {
         </video>
         <div className="absolute inset-0 bg-[#6B21A8]/10" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          <ScrollAnimate animation="fade-in">
-            <h1 className="text-white text-3xl sm:text-5xl md:text-8xl font-black mb-4 md:mb-6 tracking-tighter uppercase drop-shadow-lg">
+          <ScrollAnimate animation="fade-in" className="flex flex-col items-center">
+            <h1 className="text-white text-3xl sm:text-5xl md:text-8xl font-black mb-4 md:mb-6 tracking-tighter uppercase drop-shadow-lg text-center">
               The Women&apos;s Edit
             </h1>
-            <p className="text-white text-sm md:text-xl mb-8 md:mb-10 max-w-xl font-medium tracking-wide drop-shadow-md px-4 md:px-0">
+            <p className="text-white text-sm md:text-xl mb-8 md:mb-10 max-w-xl font-medium tracking-wide drop-shadow-md px-4 md:px-0 text-center mx-auto">
               Elegance in every step. Discover our curated collection of luxury heels and sandals.
             </p>
             <Link
