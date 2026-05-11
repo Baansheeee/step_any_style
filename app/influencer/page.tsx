@@ -95,74 +95,92 @@ export default function InfluencerDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Influencer Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Link href="/" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
+          <div className="flex justify-between items-center h-16 md:h-20">
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <Link href="/" className="group flex items-center -ml-2 md:-ml-8 transition-transform hover:scale-105 shrink-0">
                 <Image
                   src="/main_logo.png"
                   alt="Step & Style"
                   width={140}
                   height={45}
-                  className="h-10 md:h-18 w-auto object-contain"
+                  className="h-8 md:h-16 w-auto object-contain"
                 />
               </Link>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent -ml-10">
+              <h1 className="text-sm md:text-2xl font-black uppercase tracking-tight md:tracking-tighter bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent max-w-[150px] md:max-w-none">
                 Influencer Dashboard
               </h1>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center shrink-0">
               <Link
                 href="/"
-                className="text-gray-600 hover:text-purple-600 font-medium transition-colors text-sm"
+                className="text-[10px] md:text-sm font-black uppercase tracking-widest text-gray-500 hover:text-purple-600 transition-colors bg-gray-50 px-3 py-2 rounded-lg md:bg-transparent md:px-0 md:py-0"
               >
-                ← Back to Store
+                <span className="hidden md:inline">← Back to Store</span>
+                <span className="md:hidden">Store</span>
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-gray-700">
-          <MetricCard label="Total Orders" value={metrics.totalOrders.toString()} />
-          <MetricCard label="Gross Sales" value={`Rs. ${metrics.grossSales.toFixed(2)}`} />
-          <MetricCard label="Discount Given" value={`Rs. ${metrics.totalDiscount.toFixed(2)}`} />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 space-y-6 md:space-y-12">
+        {/* Profile Welcome */}
+        <section className="bg-white p-6 md:p-10 rounded-3xl border border-gray-100 shadow-sm">
+           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-600 mb-2">Welcome Back</p>
+           <h2 className="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
+             {profile.user.name || profile.user.email.split('@')[0]}
+           </h2>
+           <div className="flex items-center gap-2 mt-2">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Account Status: {profile.status}</p>
+           </div>
+        </section>
+
+        {/* Metrics Grid */}
+        <section className="grid gap-3 md:gap-6 grid-cols-2 lg:grid-cols-4">
+          <MetricCard label="Orders" value={metrics.totalOrders.toString()} />
+          <MetricCard label="Gross Sales" value={`Rs. ${Math.round(metrics.grossSales)}`} />
+          <MetricCard label="Discount" value={`Rs. ${Math.round(metrics.totalDiscount)}`} />
           <MetricCard
-            label="Estimated Commission"
-            value={`Rs. ${metrics.estimatedCommission.toFixed(2)}`}
+            label="Commission"
+            value={`Rs. ${Math.round(metrics.estimatedCommission)}`}
             accent
           />
         </section>
 
         <section className="grid gap-6 lg:grid-cols-2">
-          <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">
-            <div className="flex items-center justify-between mb-4">
+          {/* Promo Codes */}
+          <div className="bg-white rounded-3xl shadow-sm p-6 md:p-8 border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Promo Codes</h2>
-                <p className="text-sm text-gray-500">Codes created for your referral campaigns</p>
+                <h2 className="text-lg md:text-xl font-black text-gray-900 uppercase tracking-tight">Promo Codes</h2>
+                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Campaign Referrals</p>
               </div>
-              <span className="text-sm font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
-                {metrics.promoCodeCount} Codes
+              <span className="text-[10px] font-black text-purple-600 bg-purple-50 px-3 py-1.5 rounded-full uppercase tracking-widest">
+                {metrics.promoCodeCount} Active
               </span>
             </div>
 
             {promoCodes.length === 0 ? (
-              <p className="text-gray-500 text-sm">No promo codes assigned yet.</p>
+              <div className="text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">No active codes</p>
+              </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {promoCodes.map((code) => (
-                  <div key={code.id} className="border border-gray-100 rounded-xl p-4">
+                  <div key={code.id} className="group bg-gray-50/50 hover:bg-white border border-gray-100 hover:border-purple-100 hover:shadow-md rounded-2xl p-4 md:p-6 transition-all">
                     <div className="flex justify-between items-center">
                       <div>
-                        <p className="font-mono text-lg font-semibold text-purple-700">{code.code}</p>
-                        <p className="text-sm text-gray-500">
-                          Discount: {code.discountPercent}% • Uses: {code._count.orders}
+                        <p className="font-mono text-base md:text-lg font-black text-purple-700 tracking-wider">{code.code}</p>
+                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">
+                          {code.discountPercent}% Off • {code._count.orders} Orders
                         </p>
                       </div>
-                      <div className="text-right text-sm text-gray-500">
-                        <p>Valid until {new Date(code.validUntil).toLocaleDateString()}</p>
+                      <div className="text-right">
+                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Expires</p>
+                        <p className="text-[11px] font-bold text-gray-900">{new Date(code.validUntil).toLocaleDateString()}</p>
                       </div>
                     </div>
                   </div>
@@ -171,42 +189,46 @@ export default function InfluencerDashboardPage() {
             )}
           </div>
 
-          <div className="bg-white rounded-2xl shadow p-6 border border-gray-100">
-            <div className="flex items-center justify-between mb-4">
+          {/* Recent Orders */}
+          <div className="bg-white rounded-3xl shadow-sm p-6 md:p-8 border border-gray-100">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Recent Orders</h2>
-                <p className="text-sm text-gray-500">Latest 20 orders using your codes</p>
+                <h2 className="text-lg md:text-xl font-black text-gray-900 uppercase tracking-tight">Recent Orders</h2>
+                <p className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Last 20 Activities</p>
               </div>
             </div>
 
             {orders.length === 0 ? (
-              <p className="text-gray-500 text-sm">No orders yet.</p>
+              <div className="text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">No orders yet</p>
+              </div>
             ) : (
-              <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2">
+              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
                 {orders.map((order) => (
-                  <div key={order.id} className="border border-gray-100 rounded-xl p-4">
-                    <div className="flex justify-between">
+                  <div key={order.id} className="bg-gray-50/50 border border-gray-100 rounded-2xl p-4 md:p-6 hover:bg-white transition-all">
+                    <div className="flex justify-between items-start">
                       <div>
-                        <p className="font-semibold text-gray-900">Order #{order.id.slice(0, 8)}</p>
-                        <p className="text-sm text-gray-500">
-                          {new Date(order.createdAt).toLocaleString()} • Code {order.promoCode?.code ?? '-'}
+                        <p className="text-xs font-black text-gray-900 uppercase tracking-tight">Order #{order.id.slice(-6).toUpperCase()}</p>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                          {new Date(order.createdAt).toLocaleDateString()} • {order.promoCode?.code || '-'}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-gray-900">Rs. {Number(order.total).toFixed(2)}</p>
-                        <p className="text-xs text-gray-500">Discount Rs. {Number(order.discountAmount).toFixed(2)}</p>
+                        <p className="text-xs font-black text-gray-900">Rs. {Math.round(Number(order.total))}</p>
+                        <p className="text-[9px] font-bold text-green-600 uppercase tracking-widest mt-0.5">Comm: Rs. {Math.round(Number(order.total) * Number(profile.commissionRate))}</p>
                       </div>
                     </div>
-                    <div className="mt-2">
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                    <div className="mt-4 flex items-center justify-between">
+                       <span
+                        className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.15em] ${
                           order.status === 'COMPLETED'
                             ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-100 text-gray-600'
+                            : 'bg-yellow-100 text-yellow-700'
                         }`}
                       >
                         {order.status}
                       </span>
+                      <p className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">Verified Sale</p>
                     </div>
                   </div>
                 ))}
@@ -230,12 +252,14 @@ function MetricCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-5 shadow-sm ${
-        accent ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white border-transparent' : 'bg-white border-gray-100'
+      className={`rounded-2xl md:rounded-3xl border p-4 md:p-8 transition-all hover:scale-[1.02] ${
+        accent 
+          ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white border-transparent shadow-lg shadow-purple-100' 
+          : 'bg-white border-gray-100 shadow-sm'
       }`}
     >
-      <p className={`text-sm ${accent ? 'text-white/80' : 'text-gray-500'}`}>{label}</p>
-      <p className="text-2xl font-bold mt-2">{value}</p>
+      <p className={`text-[9px] md:text-xs font-black uppercase tracking-[0.2em] ${accent ? 'text-white/80' : 'text-gray-400'}`}>{label}</p>
+      <p className="text-lg md:text-3xl font-black mt-2 md:mt-4 truncate tracking-tight">{value}</p>
     </div>
   );
 }
