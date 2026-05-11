@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       const items: any[] = [];
       
       if (Array.isArray(review.images)) {
-        review.images.forEach((img: string) => {
+        (review.images as string[]).forEach((img: string) => {
           items.push({
             type: 'image',
             url: img,

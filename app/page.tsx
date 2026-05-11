@@ -9,6 +9,7 @@ import ScrollAnimate from "./components/ScrollAnimate";
 import { products as seedProducts } from "./data/products";
 import GlobalProductCard from "./products/components/ProductCard";
 import SliderSection from "./components/SliderSection";
+import type { ProductDTO, CollectionDTO } from "@/types/product";
 
 export default function Home() {
   const seedToDto = (product: typeof seedProducts[number]): ProductDTO => ({
@@ -37,6 +38,11 @@ export default function Home() {
     specifications: product.specifications ?? {},
     features: product.features ?? [],
     variants: [],
+    videoUrl: null,
+    rating: 5,
+    saleCount: 0,
+    isNew: false,
+    isTrending: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
@@ -133,7 +139,7 @@ export default function Home() {
   // Reusable Product Card Wrapper
   const ProductCardWrapper = ({ product, index }: { product: ProductDTO; index: number }) => (
     <ScrollAnimate key={product.id} animation="fade-in" delay={`${index * 0.1}s`}>
-      <GlobalProductCard product={product} />
+      <GlobalProductCard product={product} index={index} />
     </ScrollAnimate>
   );
 
@@ -207,7 +213,7 @@ export default function Home() {
         accentColor="#A855F7"
       >
         {womenProducts.map((product, index) => (
-          <GlobalProductCard key={product.id} product={product} />
+          <GlobalProductCard key={product.id} product={product} index={index} />
         ))}
       </SliderSection>
 
@@ -271,7 +277,7 @@ export default function Home() {
           accentColor="#6B21A8"
         >
           {menProducts.map((product, index) => (
-            <GlobalProductCard key={product.id} product={product} />
+            <GlobalProductCard key={product.id} product={product} index={index} />
           ))}
         </SliderSection>
       )}
@@ -298,8 +304,8 @@ export default function Home() {
         viewAllLink="/products"
         accentColor="#B45309"
       >
-        {productList.filter(p => p.isTrending).map((product) => (
-          <GlobalProductCard key={product.id} product={product} />
+        {productList.filter(p => p.isTrending).map((product, index) => (
+          <GlobalProductCard key={product.id} product={product} index={index} />
         ))}
       </SliderSection>
 
