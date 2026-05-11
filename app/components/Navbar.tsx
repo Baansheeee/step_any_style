@@ -119,7 +119,7 @@ export default function Navbar() {
                   className="object-contain h-16 md:h-24 w-auto transition-all duration-300 group-hover:scale-105"
                   priority
                 />
-                <div className="flex items-center -ml-6 md:-ml-10 mb-1 gap-1">
+                <div className="flex items-center -ml-6 md:-ml-10 gap-1">
                   <span className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] text-gray-900 transition-all group-hover:text-[#6B21A8]">
                     Step
                   </span>
@@ -134,31 +134,37 @@ export default function Navbar() {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-12 ml-16">
+            <div className="hidden md:flex items-center space-x-12 ml-16 h-full">
               <Link
                 href="/products?gender=WOMEN"
-                className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1"
+                className="group h-full flex items-center"
               >
-                Women
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 group-hover:text-[#6B21A8] transition-all border-b-2 border-transparent group-hover:border-[#A855F7] py-1">
+                  Women
+                </span>
               </Link>
               <Link
                 href="/products?gender=MEN"
-                className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1"
+                className="group h-full flex items-center"
               >
-                Men
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 group-hover:text-[#6B21A8] transition-all border-b-2 border-transparent group-hover:border-[#A855F7] py-1">
+                  Men
+                </span>
               </Link>
               <Link
                 href="/products"
-                className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1"
+                className="group h-full flex items-center"
               >
-                Products
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 group-hover:text-[#6B21A8] transition-all border-b-2 border-transparent group-hover:border-[#A855F7] py-1">
+                  Products
+                </span>
               </Link>
 
               {/* Category Dropdown */}
-              <div className="relative" ref={categoryMenuRef}>
+              <div className="relative h-full flex items-center" ref={categoryMenuRef}>
                 <button
                   onClick={() => setIsCategoryMenuOpen((prev) => !prev)}
-                  className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all flex items-center"
+                  className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all flex items-center h-full"
                 >
                   Category
                   <svg
@@ -192,7 +198,7 @@ export default function Navbar() {
               </div>
               <Link
                 href="/affiliate"
-                className="text-[13px] font-black uppercase tracking-[0.2em] text-[#6B21A8] hover:text-purple-900 transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1 bg-purple-50 px-3 py-1 rounded-full"
+                className="text-[13px] font-black uppercase tracking-[0.2em] text-[#6B21A8] hover:text-purple-900 transition-all bg-purple-50 px-4 py-2 rounded-full flex items-center"
               >
                 Affiliate
               </Link>
@@ -200,10 +206,10 @@ export default function Navbar() {
 
               <div className="h-4 w-[1px] bg-gray-200 mx-2" />
 
-              <div className="relative" ref={accountMenuRef}>
+              <div className="relative h-full flex items-center" ref={accountMenuRef}>
                 <button
                   onClick={authUser ? () => setIsAccountMenuOpen((prev) => !prev) : () => openAccountModal('login')}
-                  className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all"
+                  className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all h-full flex items-center"
                 >
                   {authUser ? 'Account' : 'Login'}
                 </button>
@@ -228,7 +234,7 @@ export default function Navbar() {
               </div>
 
               <button
-                className="relative flex items-center group"
+                className="relative flex items-center group h-full"
                 onClick={() => setIsCartDrawerOpen(true)}
               >
                 <span className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 group-hover:text-[#6B21A8] transition-all">Cart</span>

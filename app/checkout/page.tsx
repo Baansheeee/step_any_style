@@ -63,7 +63,7 @@ export default function CheckoutPage() {
              height={60}
              className="h-12 md:h-16 w-auto object-contain" 
            />
-           <div className="flex items-center -ml-4 md:-ml-7 mb-0.5 gap-1">
+           <div className="flex items-center -ml-4 md:-ml-7 gap-1">
              <span className="text-[10px] md:text-[13px] font-black uppercase tracking-[0.2em] text-gray-900">
                Step
              </span>

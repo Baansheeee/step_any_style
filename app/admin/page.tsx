@@ -112,7 +112,7 @@ export default function AdminDashboard() {
                   className="h-10 md:h-18 w-auto object-contain"
                 />
               </Link>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent -ml-10 mb-1">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent -ml-10">
                 Admin Dashboard
               </h1>
             </div>
