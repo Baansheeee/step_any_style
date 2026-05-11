@@ -18,7 +18,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     >
       <div className="relative aspect-square bg-gray-50 rounded-xl overflow-hidden mb-5">
         <Image
-          src={product.image || '/IPL logo Main JPG.png'}
+          src={product.image || '/final_logo.jpeg'}
           alt={product.name}
           fill
           className="object-cover transition-transform duration-1000 group-hover:scale-105"
@@ -52,7 +52,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       <div className="space-y-1.5">
         <h3 className="font-medium text-[14px] text-gray-800 group-hover:text-black transition-colors">{product.name}</h3>
         <div className="flex items-center gap-3">
-          <p className="font-bold text-[15px] text-gray-900">{formatPKR(product.price)}</p>
+          <p className="font-bold text-[15px] text-[#6B21A8]">{formatPKR(product.price)}</p>
           {product.originalPrice && product.originalPrice > product.price && (
             <p className="text-gray-400 text-[12px] line-through font-medium">{formatPKR(product.originalPrice)}</p>
           )}

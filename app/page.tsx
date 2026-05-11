@@ -149,7 +149,7 @@ export default function Home() {
       <Link href={`/products?collectionId=${collection.id}`} className="relative group block overflow-hidden rounded-3xl">
         <div className="relative aspect-[4/5] overflow-hidden">
           <Image
-            src={collection.image || '/IPL logo Main JPG.png'}
+            src={collection.image || '/final_logo.jpeg'}
             alt={collection.name}
             fill
             className="object-cover transition-transform duration-1000 group-hover:scale-110"

@@ -56,7 +56,7 @@ export default function CheckoutPage() {
       {/* Mini Header */}
       <header className="border-b border-gray-100 py-6 px-4 md:px-10 flex justify-between items-center bg-white sticky top-0 z-[100]">
         <Link href="/" className="transition-transform hover:scale-105">
-           <img src="/IPL logo Main JPG.png" alt="Stylo Logo" className="h-10 w-auto" />
+           <img src="/final_logo.jpeg" alt="Stylo Logo" className="h-10 w-auto" />
         </Link>
         <Link href="/products" className="text-gray-400 hover:text-purple-600 transition-colors">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

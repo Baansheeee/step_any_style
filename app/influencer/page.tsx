@@ -102,7 +102,7 @@ export default function InfluencerDashboardPage() {
               <Link href="/" className="flex items-center group">
                 <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-2 group-hover:from-purple-100 group-hover:to-pink-100 transition-all">
                   <Image
-                    src="/IPL logo Main JPG.png"
+                    src="/final_logo.jpeg"
                     alt="Step & Style - Influencer Dashboard"
                     width={120}
                     height={40}

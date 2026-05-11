@@ -86,7 +86,7 @@ export default function ReviewsPage() {
                 <Link href={`/products/${review.product.slug}`} className="flex items-center gap-4 mb-8 p-3 bg-gray-50 rounded-2xl hover:bg-[#F5F3FF] transition-colors">
                   <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-white border border-gray-200">
                     <Image 
-                      src={review.product.image || '/IPL logo Main JPG.png'} 
+                      src={review.product.image || '/final_logo.jpeg'} 
                       alt={review.product.name}
                       width={48}
                       height={48}

@@ -170,7 +170,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  const fallbackImage = product.image ?? (product.images?.[0]) ?? '/IPL logo Main JPG.png';
+  const fallbackImage = product.image ?? (product.images?.[0]) ?? '/final_logo.jpeg';
   const currentMedia = productMedia[selectedImageIndex] || { type: 'image', url: fallbackImage };
   const mainImage = currentMedia.type === 'image' ? currentMedia.url : fallbackImage;
 
@@ -223,6 +223,24 @@ export default function ProductDetailPage() {
       },
       quantity,
     );
+  };
+  
+  const handleBuyNow = () => {
+    if (availableSizes.length > 0 && !selectedSize) return;
+    if (availableColors.length > 0 && !selectedColor) return;
+
+    addItem(
+      {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: mainImage,
+        size: selectedSize || undefined,
+        color: selectedColor || undefined,
+      },
+      quantity,
+    );
+    router.push('/checkout');
   };
 
   const availableSizes = Array.from(new Set(product.variants?.map((v) => v.size) || []))
@@ -418,11 +436,11 @@ export default function ProductDetailPage() {
 
             {/* Pricing */}
             <div className="flex items-baseline gap-4 pt-2">
-              <span className="text-4xl font-black text-[#DB2777] tracking-tighter">{formatPKR(product.price)}</span>
+              <span className="text-4xl font-black text-black tracking-tighter">{formatPKR(product.price)}</span>
               {product.originalPrice && product.originalPrice > product.price && (
                 <div className="flex items-center gap-2">
                   <span className="text-xl text-gray-300 line-through font-medium">{formatPKR(product.originalPrice)}</span>
-                  <span className="text-[9px] font-black uppercase tracking-widest text-white bg-[#DB2777] px-2 py-1 rounded">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-white bg-[#6B21A8] px-2 py-1 rounded">
                     SALE
                   </span>
                 </div>
@@ -535,12 +553,14 @@ export default function ProductDetailPage() {
               <button
                 onClick={handleAddToCart}
                 disabled={!canAddToCart}
-                className="w-full py-5 bg-white border-2 border-purple-600 text-purple-600 font-black uppercase tracking-[0.3em] text-[10px] hover:bg-purple-600 hover:text-white transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]"
+                className="w-full py-5 bg-white border-2 border-purple-600 text-purple-600 font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#5B1A8F] hover:text-white transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]"
               >
                 {isAdminUser ? 'Admin Mode' : !product.inStock ? 'Sold Out' : 'Add to Bag'}
               </button>
               <button
-                className="w-full py-5 bg-[#DB2777] text-white font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#BE185D] transition-all duration-500 shadow-2xl shadow-pink-200 active:scale-[0.98]"
+                onClick={handleBuyNow}
+                disabled={!canAddToCart}
+                className="w-full py-5 bg-purple-500 text-white font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#5B1A8F] transition-all duration-500 shadow-2xl shadow-purple-200 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 Buy it Now
               </button>

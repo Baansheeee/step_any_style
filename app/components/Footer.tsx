@@ -11,11 +11,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
           <div className="lg:col-span-1">
             <Image
-              src="/IPL logo Main JPG.png"
+              src="/final_logo.jpeg"
               alt="Logo"
-              width={120}
-              height={40}
-              className="brightness-0 invert mb-8 opacity-90"
+              width={160}
+              height={50}
+              className="mb-8 opacity-95 object-contain rounded-2xl shadow-lg border border-white/5"
             />
             <p className="text-gray-400 text-[13px] font-medium leading-relaxed tracking-wide uppercase">
               Premium footwear for the modern individual. Designed for comfort, crafted for style.

@@ -77,11 +77,11 @@ export default function MobileNav({
           {/* Logo + Close */}
           <div className="flex justify-between items-center mb-12">
             <Image
-              src="/IPL logo Main JPG.png"
+              src="/final_logo.jpeg"
               alt="Step & Style Logo"
-              width={120}
-              height={40}
-              className="h-10 object-contain"
+              width={140}
+              height={45}
+              className="h-10 object-contain rounded-xl shadow-sm"
             />
             <button
               onClick={() => setIsOpen(false)}

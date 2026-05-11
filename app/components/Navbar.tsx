@@ -113,11 +113,11 @@ export default function Navbar() {
             <div className="flex items-center">
               <Link href="/" className="group">
                 <Image
-                  src="/IPL logo Main JPG.png"
+                  src="/final_logo.jpeg"
                   alt="Step & Style"
-                  width={140}
-                  height={45}
-                  className="object-contain h-10 w-auto"
+                  width={200}
+                  height={64}
+                  className="object-contain h-16 w-auto rounded-xl shadow-sm hover:shadow-md transition-all duration-300 group-hover:scale-105"
                   priority
                 />
               </Link>
