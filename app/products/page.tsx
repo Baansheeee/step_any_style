@@ -360,13 +360,6 @@ function ProductsContent() {
         )}
       </main>
 
-      {/* Minimal Footer */}
-      <footer className="border-t border-gray-100 py-8">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-10 text-center">
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-300">&copy; 2026 Step &amp; Style. All rights reserved.</p>
-        </div>
-      </footer>
-
       <style jsx global>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
