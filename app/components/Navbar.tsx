@@ -178,7 +178,7 @@ export default function Navbar() {
                 </button>
 
                 {isCategoryMenuOpen && (
-                  <div className="absolute left-0 mt-6 w-64 bg-white shadow-2xl border border-[#F5F3FF] py-6 z-50 rounded-xl">
+                  <div className="absolute left-0 top-full mt-2 w-64 bg-white shadow-2xl border border-[#F5F3FF] py-6 z-50 rounded-xl">
                     {collections.length === 0 ? (
                       <span className="block px-8 py-2 text-gray-400 text-[10px] italic uppercase tracking-[0.2em]">No collections</span>
                     ) : (
@@ -215,7 +215,7 @@ export default function Navbar() {
                 </button>
 
                 {authUser && isAccountMenuOpen && (
-                  <div className="absolute right-0 mt-6 w-64 bg-white shadow-2xl border border-[#F5F3FF] p-8 z-50 rounded-2xl">
+                  <div className="absolute right-0 top-full -mt-2 w-64 bg-white shadow-2xl border border-[#F5F3FF] p-8 z-50 rounded-2xl">
                     <div className="mb-6">
                       <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Authenticated as</p>
                       <p className="text-sm font-black text-gray-900 truncate uppercase tracking-tight">{authUser.name || authUser.email}</p>
@@ -252,6 +252,7 @@ export default function Navbar() {
               isAdmin={isAdmin}
               isInfluencer={isInfluencer}
               cartCount={cartCount}
+              onLogout={handleLogout}
             />
           </div>
         </div>

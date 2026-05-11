@@ -7,6 +7,7 @@ import Image from 'next/image';
 interface MobileNavProps {
   onOpenAccount: (mode?: 'login' | 'register') => void;
   onOpenCart: () => void;
+  onLogout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
   isInfluencer: boolean;
@@ -16,6 +17,7 @@ interface MobileNavProps {
 export default function MobileNav({
   onOpenAccount,
   onOpenCart,
+  onLogout,
   isAuthenticated,
   isAdmin,
   isInfluencer,
@@ -23,6 +25,7 @@ export default function MobileNav({
 }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
 
   return (
     <>
@@ -200,25 +203,66 @@ export default function MobileNav({
               Affiliate
             </Link>
 
-            {isAdmin && (
-              <Link
-                href="/admin"
-                onClick={() => setIsOpen(false)}
-                className="text-sm font-black uppercase tracking-[0.2em] p-4 bg-lavender-light text-lavender-dark rounded-xl hover:bg-lavender-main transition-all"
+            {/* Account Section */}
+            <div>
+              <button
+                onClick={() => {
+                  if (isAuthenticated) {
+                    setIsAccountOpen((prev) => !prev);
+                  } else {
+                    setIsOpen(false);
+                    onOpenAccount('login');
+                  }
+                }}
+                className={`w-full text-left text-sm font-black uppercase tracking-[0.2em] p-4 border rounded-xl flex items-center justify-between transition-all ${
+                  isAuthenticated ? 'border-lavender-main bg-white text-lavender-dark' : 'border-lavender-main hover:bg-lavender-light'
+                }`}
               >
-                Admin Console
-              </Link>
-            )}
-
-            <button
-              onClick={() => {
-                setIsOpen(false);
-                onOpenAccount('login');
-              }}
-              className="text-sm font-black uppercase tracking-[0.2em] p-4 border border-lavender-main rounded-xl hover:bg-lavender-light transition-all text-left"
-            >
-              {isAuthenticated ? 'My Account' : 'Sign In'}
-            </button>
+                <span>{isAuthenticated ? 'My Account' : 'Sign In'}</span>
+                {isAuthenticated && (
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isAccountOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                  </svg>
+                )}
+              </button>
+              
+              {isAuthenticated && isAccountOpen && (
+                <div className="ml-4 mt-2 space-y-1 border-l-2 border-lavender-light pl-4">
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsOpen(false)}
+                      className="block text-xs font-bold uppercase tracking-widest p-3 hover:text-lavender-dark transition-colors text-purple-600"
+                    >
+                      Admin Console
+                    </Link>
+                  )}
+                  {isInfluencer && (
+                    <Link
+                      href="/influencer"
+                      onClick={() => setIsOpen(false)}
+                      className="block text-xs font-bold uppercase tracking-widest p-3 hover:text-lavender-dark transition-colors text-purple-600"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      onLogout();
+                    }}
+                    className="w-full text-left text-xs font-bold uppercase tracking-widest p-3 text-red-500 hover:text-red-700 transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Cart Button */}
