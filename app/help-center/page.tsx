@@ -48,9 +48,14 @@ export default function HelpCenterPage() {
           <div className="mt-20 p-10 bg-[#FAF9FF] rounded-3xl border border-[#F5F3FF] text-center">
             <h2 className="text-2xl font-black uppercase tracking-tight text-gray-900 mb-4">Still have questions?</h2>
             <p className="text-gray-500 mb-8 uppercase tracking-widest text-xs font-bold">Our support team is here to help you 24/7.</p>
-            <button className="bg-[#6B21A8] text-white px-12 py-4 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-black transition-all shadow-xl">
+            <a 
+              href="https://wa.me/message/BTBNGKTP3BWGO1" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block bg-[#6B21A8] text-white px-12 py-4 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-black transition-all shadow-xl"
+            >
               Contact Support
-            </button>
+            </a>
           </div>
         </div>
       </main>
