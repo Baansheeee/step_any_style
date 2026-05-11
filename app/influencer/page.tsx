@@ -105,21 +105,10 @@ export default function InfluencerDashboardPage() {
                   alt="Step & Style"
                   width={140}
                   height={45}
-                  className="h-10 md:h-12 w-auto object-contain"
+                  className="h-10 md:h-18 w-auto object-contain"
                 />
-                <div className="flex items-center -ml-4 md:-ml-6 mb-0.5 gap-1">
-                  <span className="text-[10px] md:text-[13px] font-black uppercase tracking-[0.2em] text-gray-900">
-                    Step
-                  </span>
-                  <span className="text-[12px] md:text-[15px] font-black uppercase tracking-[0.2em] text-yellow-600">
-                    &
-                  </span>
-                  <span className="text-[10px] md:text-[13px] font-black uppercase tracking-[0.2em] text-gray-900">
-                    Style
-                  </span>
-                </div>
               </Link>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent -ml-10 mb-1">
                 Influencer Dashboard
               </h1>
             </div>
