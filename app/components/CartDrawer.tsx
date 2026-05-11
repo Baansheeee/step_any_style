@@ -157,45 +157,47 @@ export default function CartDrawer({ isOpen, onClose, currentUserRole }: CartDra
         </div>
 
         {/* Footer / Summary Section */}
-        <div className="px-8 py-5 border-t border-gray-100 bg-white shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
-          <div className="space-y-4">
-            {/* Price Breakdown */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Subtotal</span>
-                <span className="text-base font-black text-gray-900 tracking-tight">{formatPKR(subtotal)}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Shipping</span>
-                <span className="text-[9px] font-black text-green-600 uppercase tracking-widest">Calculated at next step</span>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-2 pt-2">
-              {isAdmin ? (
-                <div className="w-full bg-red-50 text-red-600 p-3 rounded-lg text-[9px] font-bold uppercase tracking-widest text-center">
-                  Admins manage orders from dashboard
+        {items.length > 0 && (
+          <div className="px-8 py-5 border-t border-gray-100 bg-white shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
+            <div className="space-y-4">
+              {/* Price Breakdown */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Subtotal</span>
+                  <span className="text-base font-black text-gray-900 tracking-tight">{formatPKR(subtotal)}</span>
                 </div>
-              ) : (
-                <Link
-                  href="/checkout"
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-center shadow-lg shadow-purple-100 hover:scale-[1.01] active:scale-95 transition-all"
-                  onClick={onClose}
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Shipping</span>
+                  <span className="text-[9px] font-black text-green-600 uppercase tracking-widest">Calculated at next step</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-2 pt-2">
+                {isAdmin ? (
+                  <div className="w-full bg-red-50 text-red-600 p-3 rounded-lg text-[9px] font-bold uppercase tracking-widest text-center">
+                    Admins manage orders from dashboard
+                  </div>
+                ) : (
+                  <Link
+                    href="/checkout"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-center shadow-lg shadow-purple-100 hover:scale-[1.01] active:scale-95 transition-all"
+                    onClick={onClose}
+                  >
+                    Proceed to Checkout
+                  </Link>
+                )}
+                <button
+                  className="w-full py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 hover:text-red-500 transition-colors"
+                  onClick={clearCart}
+                  disabled={items.length === 0}
                 >
-                  Proceed to Checkout
-                </Link>
-              )}
-              <button
-                className="w-full py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 hover:text-red-500 transition-colors"
-                onClick={clearCart}
-                disabled={items.length === 0}
-              >
-                Clear Cart
-              </button>
+                  Clear Cart
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       <style jsx global>{`

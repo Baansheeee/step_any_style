@@ -314,67 +314,69 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════════════ */}
 
       {/* As Seen On You */}
-      <section className="py-24 px-6 md:px-20 max-w-[1600px] mx-auto border-t border-[#F5F3FF] bg-[#FAF9FF]">
-        <ScrollAnimate animation="fade-in" className="text-center mb-16">
-          <h2 className="text-4xl font-bold tracking-tight mb-4 uppercase text-gray-900">As Seen On You</h2>
-          <p className="text-[#A855F7] font-medium tracking-widest text-xs uppercase italic">Tag @StepAndStyle to be featured</p>
-        </ScrollAnimate>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {(reviewMedia.length > 0 ? reviewMedia : [1, 2, 3, 4, 5, 6]).map((item, index) => {
-            const isDynamic = typeof item === 'object';
-            const mediaUrl = isDynamic ? item.url : `https://images.unsplash.com/photo-${1500000000000 + (item * 1000)}?auto=format&fit=crop&q=80&w=400`;
-            const productSlug = isDynamic ? item.productSlug : '#';
-            const isVideo = isDynamic && item.type === 'video';
+      {reviewMedia.length > 0 && (
+        <section className="py-24 px-6 md:px-20 max-w-[1600px] mx-auto border-t border-[#F5F3FF] bg-[#FAF9FF]">
+          <ScrollAnimate animation="fade-in" className="text-center mb-16">
+            <h2 className="text-4xl font-bold tracking-tight mb-4 uppercase text-gray-900">As Seen On You</h2>
+            <p className="text-[#A855F7] font-medium tracking-widest text-xs uppercase italic">Tag @StepAndStyle to be featured</p>
+          </ScrollAnimate>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {reviewMedia.map((item, index) => {
+              const isDynamic = typeof item === 'object';
+              const mediaUrl = isDynamic ? item.url : item;
+              const productSlug = isDynamic ? item.productSlug : '#';
+              const isVideo = isDynamic && item.type === 'video';
 
-            return (
-              <ScrollAnimate key={isDynamic ? `media-${index}` : item} animation="scale-in" delay={`${index * 0.1}s`} className="relative aspect-square overflow-hidden bg-white group rounded-xl shadow-sm">
-                <Link href={isDynamic ? `/products/${productSlug}` : '#'}>
-                  {isVideo ? (
-                    <div className="w-full h-full bg-black relative flex items-center justify-center">
-                      {mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be') ? (
-                        <Image 
-                          src={`https://img.youtube.com/vi/${mediaUrl.split('/').pop()?.split('=')[1] || mediaUrl.split('/').pop()}/mqdefault.jpg`} 
-                          alt="Video"
-                          fill
-                          className="object-cover opacity-80"
-                        />
-                      ) : (
-                        <video 
-                          src={mediaUrl} 
-                          className="w-full h-full object-cover opacity-80" 
-                          muted 
-                          loop 
-                          autoPlay 
-                          playsInline 
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-purple-600/5 group-hover:bg-purple-600/20 transition-colors" />
+              return (
+                <ScrollAnimate key={`media-${index}`} animation="scale-in" delay={`${index * 0.1}s`} className="relative aspect-square overflow-hidden bg-white group rounded-xl shadow-sm">
+                  <Link href={isDynamic ? `/products/${productSlug}` : '#'}>
+                    {isVideo ? (
+                      <div className="w-full h-full bg-black relative flex items-center justify-center">
+                        {mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be') ? (
+                          <Image 
+                            src={`https://img.youtube.com/vi/${mediaUrl.split('/').pop()?.split('=')[1] || mediaUrl.split('/').pop()}/mqdefault.jpg`} 
+                            alt="Video"
+                            fill
+                            className="object-cover opacity-80"
+                          />
+                        ) : (
+                          <video 
+                            src={mediaUrl} 
+                            className="w-full h-full object-cover opacity-80" 
+                            muted 
+                            loop 
+                            autoPlay 
+                            playsInline 
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-purple-600/5 group-hover:bg-purple-600/20 transition-colors" />
+                      </div>
+                    ) : (
+                      <Image
+                        src={mediaUrl}
+                        alt="Social"
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-purple-600/10 group-hover:bg-purple-600/30 transition-colors flex flex-col items-center justify-center opacity-0 group-hover:opacity-100">
+                      <span className="text-white text-[9px] font-black tracking-widest uppercase border border-white px-4 py-2 bg-purple-600/20 backdrop-blur-sm mb-2">Shop The Look</span>
+                      {isDynamic && <span className="text-white/80 text-[8px] font-bold uppercase tracking-tight">@{item.userName}</span>}
                     </div>
-                  ) : (
-                    <Image
-                      src={mediaUrl}
-                      alt="Social"
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-purple-600/10 group-hover:bg-purple-600/30 transition-colors flex flex-col items-center justify-center opacity-0 group-hover:opacity-100">
-                    <span className="text-white text-[9px] font-black tracking-widest uppercase border border-white px-4 py-2 bg-purple-600/20 backdrop-blur-sm mb-2">Shop The Look</span>
-                    {isDynamic && <span className="text-white/80 text-[8px] font-bold uppercase tracking-tight">@{item.userName}</span>}
-                  </div>
-                </Link>
-              </ScrollAnimate>
-            );
-          })}
-        </div>
-        <ScrollAnimate animation="fade-in" className="text-center mt-12">
-          <Link href="/reviews">
-            <button className="bg-[#E9D5FF] text-[#6B21A8] px-12 py-4 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all shadow-xl">
-              Get Inspired
-            </button>
-          </Link>
-        </ScrollAnimate>
-      </section>
+                  </Link>
+                </ScrollAnimate>
+              );
+            })}
+          </div>
+          <ScrollAnimate animation="fade-in" className="text-center mt-12">
+            <Link href="/reviews">
+              <button className="bg-[#E9D5FF] text-[#6B21A8] px-12 py-4 text-[11px] font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all shadow-xl">
+                Get Inspired
+              </button>
+            </Link>
+          </ScrollAnimate>
+        </section>
+      )}
 
       <ReviewsSlideshow />
 
