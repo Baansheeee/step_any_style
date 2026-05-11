@@ -61,7 +61,7 @@ export default function MobileNav({
       <div
   className={`
     fixed top-0 left-0 
-    h-screen w-80 
+    h-screen w-[85vw] sm:w-80 
     bg-white 
     text-gray-900 
     shadow-2xl 
@@ -76,13 +76,18 @@ export default function MobileNav({
 
           {/* Logo + Close */}
           <div className="flex justify-between items-center mb-12">
-            <Image
-              src="/final_logo.jpeg"
-              alt="Step & Style Logo"
-              width={140}
-              height={45}
-              className="h-10 object-contain rounded-xl shadow-sm"
-            />
+            <div className="flex items-center">
+              <Image
+                src="/main_logo.png"
+                alt="Step & Style Logo"
+                width={140}
+                height={45}
+                className="h-10 object-contain"
+              />
+              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900 -ml-2">
+                Step & Style
+              </span>
+            </div>
             <button
               onClick={() => setIsOpen(false)}
               className="p-2 rounded-full hover:bg-lavender-light transition-all"

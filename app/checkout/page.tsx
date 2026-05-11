@@ -56,7 +56,7 @@ export default function CheckoutPage() {
       {/* Mini Header */}
       <header className="border-b border-gray-100 py-6 px-4 md:px-10 flex justify-between items-center bg-white sticky top-0 z-[100]">
         <Link href="/" className="transition-transform hover:scale-105">
-           <img src="/final_logo.jpeg" alt="Stylo Logo" className="h-10 w-auto" />
+           <img src="/main_logo.png" alt="Stylo Logo" className="h-10 w-auto" />
         </Link>
         <Link href="/products" className="text-gray-400 hover:text-purple-600 transition-colors">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -267,9 +267,9 @@ function CheckoutContent({
   if (items.length === 0) return null;
 
   return (
-    <div className="max-w-[1440px] mx-auto grid lg:grid-cols-[1.2fr_0.8fr] min-h-[calc(100vh-80px)]">
+    <div className="max-w-[1440px] mx-auto flex flex-col lg:grid lg:grid-cols-[1.2fr_0.8fr] min-h-[calc(100vh-80px)]">
       {/* Left Column: Form */}
-      <div className="p-8 lg:p-20 lg:pr-10">
+      <div className="p-4 sm:p-8 lg:p-20 lg:pr-10">
         <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-12">
           
           {/* Contact Section */}
@@ -516,7 +516,7 @@ function CheckoutContent({
       </div>
 
       {/* Right Column: Order Summary */}
-      <aside className="bg-purple-50/30 p-8 lg:p-20 lg:pl-10 border-l border-gray-50 flex flex-col items-center">
+      <aside className="bg-purple-50/30 p-4 sm:p-8 lg:p-20 lg:pl-10 border-t lg:border-t-0 lg:border-l border-gray-100 flex flex-col items-center">
         <div className="w-full max-w-sm space-y-10">
           
           {/* Item List */}

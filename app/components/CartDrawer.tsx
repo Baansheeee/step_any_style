@@ -50,13 +50,13 @@ export default function CartDrawer({ isOpen, onClose, currentUserRole }: CartDra
       />
 
       {/* Drawer */}
-      <div className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.3)] z-[101] flex flex-col transform transition-transform duration-500 ease-out border-l border-gray-100">
+      <div className="fixed top-0 right-0 h-full w-full sm:max-w-md bg-white shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.3)] z-[101] flex flex-col transform transition-transform duration-500 ease-out border-l border-gray-100">
         
         {/* Premium Header */}
-        <div className="flex items-center justify-between px-8 py-8 border-b border-gray-50">
+        <div className="flex items-center justify-between px-5 sm:px-8 py-6 sm:py-8 border-b border-gray-50">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-600 mb-1">Your Shopping Bag</p>
-            <h3 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">Items ({totalCount})</h3>
+            <h3 className="text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-tighter">Items ({totalCount})</h3>
           </div>
           <button
             onClick={onClose}
@@ -68,7 +68,7 @@ export default function CartDrawer({ isOpen, onClose, currentUserRole }: CartDra
         </div>
 
         {/* Scrollable Item List */}
-        <div className="flex-1 overflow-y-auto px-8 py-6 no-scrollbar">
+        <div className="flex-1 overflow-y-auto px-5 sm:px-8 py-6 no-scrollbar">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center py-10">
               <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">

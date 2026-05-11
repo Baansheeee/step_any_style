@@ -82,7 +82,7 @@ export default function Navbar() {
     setAuthUser(user);
     setIsAccountModalOpen(false);
     setIsAccountMenuOpen(false);
-    
+
     // Redirect to respective dashboard based on role
     if (user.role === 'ADMIN') {
       window.location.href = '/admin';
@@ -102,29 +102,39 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm' 
-          : 'bg-white border-b border-transparent'
-      }`}>
-        <div className="max-w-[1600px] mx-auto px-6 md:px-20">
+      <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
+        ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm'
+        : 'bg-white border-b border-transparent'
+        }`}>
+        <div className="max-w-[1600px] mx-auto px-3 sm:px-6 md:px-20">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <div className="flex items-center">
-              <Link href="/" className="group">
+            <div className="flex items-center -ml-3 sm:-ml-6 md:-ml-12">
+              <Link href="/" className="group flex items-center justify-center">
                 <Image
-                  src="/final_logo.jpeg"
+                  src="/main_logo.png"
                   alt="Step & Style"
-                  width={200}
-                  height={64}
-                  className="object-contain h-16 w-auto rounded-xl shadow-sm hover:shadow-md transition-all duration-300 group-hover:scale-105"
+                  width={240}
+                  height={80}
+                  className="object-contain h-16 md:h-24 w-auto transition-all duration-300 group-hover:scale-105"
                   priority
                 />
+                <div className="flex items-center -ml-6 md:-ml-10 mb-1 gap-1">
+                  <span className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] text-gray-900 transition-all group-hover:text-[#6B21A8]">
+                    Step
+                  </span>
+                  <span className="text-[14px] md:text-[18px] font-black uppercase tracking-[0.2em] text-yellow-600 transition-all">
+                    &
+                  </span>
+                  <span className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] text-gray-900 transition-all group-hover:text-[#6B21A8]">
+                    Style
+                  </span>
+                </div>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-12">
+            <div className="hidden md:flex items-center space-x-12 ml-16">
               <Link
                 href="/products?gender=WOMEN"
                 className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1"
@@ -180,13 +190,13 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
-               <Link
+              <Link
                 href="/affiliate"
                 className="text-[13px] font-black uppercase tracking-[0.2em] text-[#6B21A8] hover:text-purple-900 transition-all border-b-2 border-transparent hover:border-[#A855F7] pb-1 bg-purple-50 px-3 py-1 rounded-full"
               >
                 Affiliate
               </Link>
-               
+
 
               <div className="h-4 w-[1px] bg-gray-200 mx-2" />
 

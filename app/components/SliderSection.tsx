@@ -35,21 +35,21 @@ export default function SliderSection({
   if (children.length === 0) return null;
 
   return (
-    <section className="py-24 bg-white overflow-hidden">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-20">
+    <section className="py-12 md:py-24 bg-white overflow-hidden">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-20">
         <ScrollAnimate animation="fade-in" className="flex justify-between items-end mb-12 border-b border-[#F5F3FF] pb-6">
           <div>
             <h2 className="text-xs font-black uppercase tracking-[0.3em] mb-2" style={{ color: accentColor }}>{subtitle}</h2>
-            <h3 className="text-4xl font-bold tracking-tight text-gray-900">{title}</h3>
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900">{title}</h3>
           </div>
           <div className="flex items-center gap-8">
             <Link href={viewAllLink} className="hidden md:block text-[11px] font-black uppercase tracking-widest border-b-2 border-gray-200 pb-1 text-gray-900 hover:border-black transition-all">
               View All
             </Link>
-            <div className="flex gap-4">
+            <div className="flex gap-2 sm:gap-4">
               <button 
                 onClick={() => scroll('left')}
-                className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm"
                 aria-label="Previous"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -58,7 +58,7 @@ export default function SliderSection({
               </button>
               <button 
                 onClick={() => scroll('right')}
-                className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm"
                 aria-label="Next"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -71,7 +71,7 @@ export default function SliderSection({
 
         <div 
           ref={scrollRef}
-          className="flex gap-6 md:gap-10 overflow-x-auto no-scrollbar pb-8 snap-x snap-mandatory"
+          className="flex gap-4 sm:gap-6 md:gap-10 overflow-x-auto no-scrollbar pb-4 sm:pb-8 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0"
         >
           {children.map((child, i) => (
             <div 

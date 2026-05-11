@@ -47,7 +47,7 @@ export default function OrderSuccessPage() {
 
         {/* Brand Decoration */}
         <div className="mt-12 opacity-10 flex gap-8 grayscale select-none">
-           <img src="/final_logo.jpeg" alt="Stylo Logo" className="h-8 w-auto" />
+           <img src="/main_logo.png" alt="Stylo Logo" className="h-8 w-auto" />
         </div>
       </div>
 

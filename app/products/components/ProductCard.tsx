@@ -16,21 +16,21 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       href={`/products/${product.slug}`}
       className="group block"
     >
-      <div className="relative aspect-square bg-gray-50 rounded-xl overflow-hidden mb-5">
+      <div className="relative aspect-square bg-gray-50 rounded-lg sm:rounded-xl overflow-hidden mb-3 sm:mb-5">
         <Image
-          src={product.image || '/final_logo.jpeg'}
+          src={product.image || '/main_logo.png'}
           alt={product.name}
           fill
           className="object-cover transition-transform duration-1000 group-hover:scale-105"
         />
-        <div className="absolute top-4 left-4 flex flex-col gap-2 z-10 items-start">
+        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 flex flex-col gap-1.5 sm:gap-2 z-10 items-start">
           {!product.inStock && (
-            <div className="bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-red-600 shadow-sm border border-gray-100">
+            <div className="bg-white px-2 sm:px-3 py-1 sm:py-1.5 text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-red-600 shadow-sm border border-gray-100">
               Sold Out
             </div>
           )}
           {product.isNew && (
-            <div className="bg-white px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-black shadow-sm border border-gray-100">
+            <div className="bg-white px-2.5 sm:px-4 py-1.5 sm:py-2 text-[9px] sm:text-[11px] font-bold uppercase tracking-widest text-black shadow-sm border border-gray-100">
               New
             </div>
           )}
@@ -41,20 +41,20 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           )}
         </div>
         {product.originalPrice && product.originalPrice > product.price && (
-          <div className="absolute top-4 right-4 bg-black text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest shadow-lg">
+          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-black text-white px-2 sm:px-3 py-1 sm:py-1.5 text-[8px] sm:text-[10px] font-bold uppercase tracking-widest shadow-lg">
             Sale
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 bg-white/10 backdrop-blur-md p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute inset-x-0 bottom-0 bg-white/10 backdrop-blur-md p-2 sm:p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">
           <span className="block text-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 bg-white py-3 shadow-lg">Quick View</span>
         </div>
       </div>
       <div className="space-y-1.5">
-        <h3 className="font-medium text-[14px] text-gray-800 group-hover:text-black transition-colors">{product.name}</h3>
+        <h3 className="font-medium text-[12px] sm:text-[14px] text-gray-800 group-hover:text-black transition-colors line-clamp-1">{product.name}</h3>
         <div className="flex items-center gap-3">
-          <p className="font-bold text-[15px] text-[#6B21A8]">{formatPKR(product.price)}</p>
+          <p className="font-bold text-[13px] sm:text-[15px] text-[#6B21A8]">{formatPKR(product.price)}</p>
           {product.originalPrice && product.originalPrice > product.price && (
-            <p className="text-gray-400 text-[12px] line-through font-medium">{formatPKR(product.originalPrice)}</p>
+            <p className="text-gray-400 text-[10px] sm:text-[12px] line-through font-medium">{formatPKR(product.originalPrice)}</p>
           )}
         </div>
         {/* Color Swatches */}

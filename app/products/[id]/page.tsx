@@ -170,7 +170,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  const fallbackImage = product.image ?? (product.images?.[0]) ?? '/final_logo.jpeg';
+  const fallbackImage = product.image ?? (product.images?.[0]) ?? '/main_logo.png';
   const currentMedia = productMedia[selectedImageIndex] || { type: 'image', url: fallbackImage };
   const mainImage = currentMedia.type === 'image' ? currentMedia.url : fallbackImage;
 
@@ -275,9 +275,9 @@ export default function ProductDetailPage() {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      <div className="max-w-[1400px] mx-auto px-4 md:px-10 py-10">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-10 py-6 md:py-10">
         {/* Breadcrumb */}
-        <nav className="flex text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-10 gap-2 overflow-x-auto whitespace-nowrap pb-2 no-scrollbar">
+        <nav className="flex text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-6 md:mb-10 gap-2 overflow-x-auto whitespace-nowrap pb-2 no-scrollbar">
           <Link href="/" className="hover:text-black">Home</Link>
           <span>/</span>
           <Link href={`/products?collectionId=${product.collectionId}`} className="hover:text-black">{product.collection?.name}</Link>
@@ -285,7 +285,7 @@ export default function ProductDetailPage() {
           <span className="text-black">{product.name}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-12 gap-12 mb-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-12 mb-20 items-start">
           {/* LEFT: Image Gallery (Sticky) */}
           <div className="lg:col-span-7 flex flex-col md:flex-row gap-4 lg:sticky lg:top-24">
             {/* Thumbnails (Desktop side) */}
@@ -428,7 +428,7 @@ export default function ProductDetailPage() {
                 <span className="h-[1px] w-8 bg-purple-600"></span>
                 <p className="text-[10px] font-black uppercase tracking-[0.5em] text-purple-600">{product.collection?.name}</p>
               </div>
-              <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-gray-900 leading-[1.1]">
+              <h1 className="text-2xl sm:text-3xl md:text-5xl font-black uppercase tracking-tight text-gray-900 leading-[1.1]">
                 {product.name}
               </h1>
               <p className="text-sm font-bold text-gray-400 italic tracking-wide">"{product.shortDescription}"</p>
@@ -436,7 +436,7 @@ export default function ProductDetailPage() {
 
             {/* Pricing */}
             <div className="flex items-baseline gap-4 pt-2">
-              <span className="text-4xl font-black text-black tracking-tighter">{formatPKR(product.price)}</span>
+              <span className="text-2xl sm:text-4xl font-black text-black tracking-tighter">{formatPKR(product.price)}</span>
               {product.originalPrice && product.originalPrice > product.price && (
                 <div className="flex items-center gap-2">
                   <span className="text-xl text-gray-300 line-through font-medium">{formatPKR(product.originalPrice)}</span>
@@ -512,7 +512,7 @@ export default function ProductDetailPage() {
                           key={size}
                           onClick={() => !isOutOfStock && setSelectedSize(size)}
                           disabled={isOutOfStock}
-                          className={`relative w-14 h-14 flex items-center justify-center text-[13px] font-black transition-all border-2 overflow-hidden ${
+                          className={`relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center text-[12px] sm:text-[13px] font-black transition-all border-2 overflow-hidden ${
                             selectedSize === size
                             ? 'bg-purple-600 text-white border-purple-600 shadow-xl shadow-purple-200'
                             : isOutOfStock
@@ -553,14 +553,14 @@ export default function ProductDetailPage() {
               <button
                 onClick={handleAddToCart}
                 disabled={!canAddToCart}
-                className="w-full py-5 bg-white border-2 border-purple-600 text-purple-600 font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#5B1A8F] hover:text-white transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]"
+                className="w-full py-4 sm:py-5 bg-white border-2 border-purple-600 text-purple-600 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] hover:bg-[#5B1A8F] hover:text-white transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]"
               >
                 {isAdminUser ? 'Admin Mode' : !product.inStock ? 'Sold Out' : 'Add to Bag'}
               </button>
               <button
                 onClick={handleBuyNow}
                 disabled={!canAddToCart}
-                className="w-full py-5 bg-purple-500 text-white font-black uppercase tracking-[0.3em] text-[10px] hover:bg-[#5B1A8F] transition-all duration-500 shadow-2xl shadow-purple-200 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-full py-4 sm:py-5 bg-purple-500 text-white font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] hover:bg-[#5B1A8F] transition-all duration-500 shadow-2xl shadow-purple-200 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 Buy it Now
               </button>
@@ -683,7 +683,7 @@ export default function ProductDetailPage() {
 
               <Accordion title="Shipping & Returns">
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-5 rounded-xl border border-purple-100 space-y-3">
                       <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-sm">
                         <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" /></svg>

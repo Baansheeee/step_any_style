@@ -149,7 +149,7 @@ export default function Home() {
       <Link href={`/products?collectionId=${collection.id}`} className="relative group block overflow-hidden rounded-3xl">
         <div className="relative aspect-[4/5] overflow-hidden">
           <Image
-            src={collection.image || '/final_logo.jpeg'}
+            src={collection.image || '/main_logo.png'}
             alt={collection.name}
             fill
             className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -175,7 +175,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════════════ */}
 
       {/* Hero Section - Women */}
-      <section className="relative h-[85vh] w-full overflow-hidden bg-[#F5F3FF]">
+      <section className="relative h-[60vh] md:h-[85vh] w-full overflow-hidden bg-[#F5F3FF]">
         <video
           autoPlay
           loop
@@ -189,15 +189,15 @@ export default function Home() {
         <div className="absolute inset-0 bg-[#6B21A8]/10" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <ScrollAnimate animation="fade-in">
-            <h1 className="text-white text-5xl md:text-8xl font-black mb-6 tracking-tighter uppercase drop-shadow-lg">
+            <h1 className="text-white text-3xl sm:text-5xl md:text-8xl font-black mb-4 md:mb-6 tracking-tighter uppercase drop-shadow-lg">
               The Women&apos;s Edit
             </h1>
-            <p className="text-white text-lg md:text-xl mb-10 max-w-xl font-medium tracking-wide drop-shadow-md">
+            <p className="text-white text-sm md:text-xl mb-8 md:mb-10 max-w-xl font-medium tracking-wide drop-shadow-md px-4 md:px-0">
               Elegance in every step. Discover our curated collection of luxury heels and sandals.
             </p>
             <Link
               href="/products?gender=WOMEN"
-              className="bg-[#E9D5FF] text-[#6B21A8] px-12 py-4 text-sm font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all duration-300 shadow-2xl border border-white/20"
+              className="bg-[#E9D5FF] text-[#6B21A8] px-8 md:px-12 py-3 md:py-4 text-xs md:text-sm font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all duration-300 shadow-2xl border border-white/20"
             >
               Shop Women
             </Link>
@@ -238,8 +238,8 @@ export default function Home() {
 
       {/* Hero Section - Men */}
       <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
-        <div className="max-w-[1600px] mx-auto grid md:grid-cols-2 items-stretch">
-          <div className="relative h-[60vh] md:h-auto overflow-hidden">
+        <div className="max-w-[1600px] mx-auto flex flex-col md:grid md:grid-cols-2 items-stretch">
+          <div className="relative h-[40vh] md:h-auto overflow-hidden">
             <Image
               src="https://images.unsplash.com/photo-1531310197839-ccf54634509e?auto=format&fit=crop&q=80&w=1000"
               alt="Men's Collection"
@@ -248,10 +248,10 @@ export default function Home() {
             />
             <div className="absolute inset-0 bg-[#6B21A8]/10" />
           </div>
-          <div className="flex flex-col justify-center p-12 md:p-24 space-y-8">
+          <div className="flex flex-col justify-center p-8 sm:p-12 md:p-24 space-y-6 md:space-y-8">
             <ScrollAnimate animation="slide-in-right">
               <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">New Arrivals</h2>
-              <h3 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
+              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
                 The Men&apos;s <br /> Essentials
               </h3>
               <p className="text-gray-500 text-lg font-light leading-relaxed max-w-md">
@@ -259,7 +259,7 @@ export default function Home() {
               </p>
               <Link
                 href="/products?gender=MEN"
-                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-12 py-5 text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl"
+                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-8 md:px-12 py-4 md:py-5 text-xs md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl"
               >
                 Shop Men
               </Link>
