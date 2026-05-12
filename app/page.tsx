@@ -183,7 +183,7 @@ export default function Home() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-90"
         >
-          <source src="/banner.mp4" type="video/mp4" />
+          <source src="/mp_.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 bg-[#6B21A8]/10" />
