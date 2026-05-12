@@ -134,7 +134,7 @@ export default function Navbar() {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-12 ml-16 h-full">
+            <div className="hidden md:flex items-center space-x-8 ml-16 h-full">
               <Link
                 href="/products?gender=WOMEN"
                 className="group h-full flex items-center"
