@@ -32,7 +32,6 @@ const accountDetails: Record<DirectAccount, { name: string; accountNo: string; a
   easypaisa: { name: 'Easypaisa', accountNo: '03340562205', accountTitle: 'Muhammad Saad Saleem' },
 };
 
-const DIRECT_ADVANCE = 1000;
 
 interface ShippingRegion {
   id: string;
@@ -463,13 +462,7 @@ function CheckoutContent({
 
                   {paymentMethod === 'direct' && (
                     <div className="pt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                       <div className="bg-purple-600 text-white p-5 rounded-xl text-xs leading-relaxed shadow-lg shadow-purple-100">
-                          <p className="font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth={2} /></svg>
-                             Transfer Required
-                          </p>
-                          Transfer <strong>Rs. {DIRECT_ADVANCE.toLocaleString()}</strong> as an advance to unlock your discount.
-                       </div>
+
                        
                        <div className="grid md:grid-cols-2 gap-4">
                           <select 
