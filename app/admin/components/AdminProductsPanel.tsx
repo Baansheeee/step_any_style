@@ -21,6 +21,7 @@ interface ProductFormState {
   specifications: string;
   variants: ProductVariant[];
   inStock: boolean;
+  discount: string;
 }
 
 interface VariantInput {
@@ -45,6 +46,7 @@ const defaultFormState: ProductFormState = {
   specifications: '',
   variants: [],
   inStock: true,
+  discount: '0',
 };
 
 const specsToString = (value?: Record<string, any> | null) => 
@@ -155,6 +157,7 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
       specifications: specsToString(product.specifications),
       variants: product.variants || [],
       inStock: product.inStock,
+      discount: String(product.discount || 0),
     });
     setIsModalOpen(true);
     setStatus({ type: 'idle', message: '' });
@@ -225,6 +228,7 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
         specifications: specsToObject(formValues.specifications),
         variants: formValues.variants,
         inStock: formValues.inStock,
+        discount: Number(formValues.discount) || 0,
       };
 
       const endpoint =
@@ -330,11 +334,7 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
           {products.map((product) => (
             <div key={product.id} className="border border-gray-200 rounded-2xl p-4 shadow-sm flex gap-4 bg-white hover:shadow-md transition-shadow">
               <div className="w-28 h-28 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 relative">
-                {product.image ? (
-                  <Image src={product.image} alt={product.name} fill className="object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs text-center p-2">No Image</div>
-                )}
+                <Image src={product.image || '/main_logo.png'} alt={product.name} fill className="object-cover" />
               </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
@@ -363,7 +363,23 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
                 <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">{product.name}</h3>
                 <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{product.shortDescription}</p>
                 <div className="flex items-center justify-between pt-2">
-                  <p className="text-xl font-bold text-purple-600">{formatPKR(product.price)}</p>
+                  <div className="flex flex-col">
+                    <p className="text-xl font-bold text-purple-600">
+                      {formatPKR(product.discount && product.discount > 0 
+                        ? Math.round(product.price * (1 - product.discount / 100)) 
+                        : product.price)}
+                    </p>
+                    {product.discount ? (
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-[10px] font-black text-red-500 uppercase tracking-tight bg-red-50 px-1.5 py-0.5 rounded">
+                          {product.discount}% OFF
+                        </span>
+                        <span className="text-[11px] font-bold text-gray-400 line-through">
+                          {formatPKR(product.price)}
+                        </span>
+                      </div>
+                    ) : null}
+                  </div>
                   <div className="flex gap-2">
                     <button
                       className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
@@ -481,6 +497,38 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
                     />
                   </div>
                 </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Discount Percentage (%)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">%</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value={formValues.discount}
+                      onChange={(e) => handleInputChange('discount', e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
+                      placeholder="e.g. 20"
+                    />
+                  </div>
+                </div>
+                {Number(formValues.discount) > 0 && Number(formValues.price) > 0 && (
+                  <div className="md:col-span-2 bg-green-50 border border-green-100 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-1">Updated Amount (Final Price)</p>
+                      <p className="text-2xl font-black text-gray-900">
+                        {formatPKR(Math.round(Number(formValues.price) * (1 - Number(formValues.discount) / 100)))}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">You Save</p>
+                      <p className="text-lg font-bold text-green-600">
+                        {formatPKR(Math.round(Number(formValues.price) * (Number(formValues.discount) / 100)))}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">

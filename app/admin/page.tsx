@@ -10,6 +10,7 @@ import AffiliateApplicationsPanel from './components/AffiliateApplicationsPanel'
 import AdminProductsPanel from './components/AdminProductsPanel';
 import AdminCollectionsPanel from './components/AdminCollectionsPanel';
 import AdminShippingPanel from './components/AdminShippingPanel';
+import AdminSalePanel from './components/AdminSalePanel';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -146,6 +147,7 @@ export default function AdminDashboard() {
               { id: 'promo-users', label: 'Promo Users' },
               { id: 'affiliate-applications', label: 'Affiliate Applications' },
               { id: 'analytics', label: 'Analytics' },
+              { id: 'sales', label: 'Sale Events' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -256,11 +258,11 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === 'analytics' && <AdminAnalyticsPanel />}
+          
+          {activeTab === 'sales' && <AdminSalePanel />}
         </div>
 
       </div>
     </div>
   );
 }
-
-

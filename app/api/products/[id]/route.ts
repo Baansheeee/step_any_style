@@ -87,6 +87,7 @@ export async function PUT(
         shortDescription: data.shortDescription ?? undefined,
         price: data.price ?? undefined,
         originalPrice: data.originalPrice ?? undefined,
+        discount: data.discount ?? undefined,
         inStock: data.inStock ?? undefined,
         image: data.image === undefined ? undefined : data.image,
         images: toJsonInput(data.images),

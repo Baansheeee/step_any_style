@@ -1,9 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import MobileNav from "./MobileNav";
 import AccountModal, { AuthMode, AuthUser } from "./AccountModal";
+import TopBanner from "./TopBanner";
 import CartDrawer from "./CartDrawer";
+import { useSaleStatus } from "../hooks/useSaleStatus";
 import { useCart } from "@/app/context/CartContext";
 import type { CollectionDTO } from "@/types/product";
 
@@ -21,6 +25,7 @@ export default function Navbar() {
   const isAdmin = authUser?.role === 'ADMIN';
   const isInfluencer = authUser?.role === 'INFLUENCER';
   const [collections, setCollections] = useState<CollectionDTO[]>([]);
+  const saleInfo = useSaleStatus();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -102,6 +107,7 @@ export default function Navbar() {
 
   return (
     <>
+      <TopBanner />
       <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
         ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm'
         : 'bg-white border-b border-transparent'
@@ -151,6 +157,20 @@ export default function Navbar() {
                   Men
                 </span>
               </Link>
+
+              {/* Dynamic Sale Link */}
+              {saleInfo?.show && (
+                <Link
+                  href="/sales"
+                  className="group h-full flex items-center"
+                >
+                  <span className="text-[13px] font-black uppercase tracking-[0.2em] text-red-600 group-hover:text-red-700 transition-all border-b-2 border-transparent group-hover:border-red-600 py-1 flex items-center gap-2">
+                    Sale
+                    <span className="flex h-1.5 w-1.5 rounded-full bg-red-600 animate-ping" />
+                  </span>
+                </Link>
+              )}
+
               <Link
                 href="/products"
                 className="group h-full flex items-center"
@@ -253,6 +273,7 @@ export default function Navbar() {
               isInfluencer={isInfluencer}
               cartCount={cartCount}
               onLogout={handleLogout}
+              collections={collections}
             />
           </div>
         </div>

@@ -144,6 +144,7 @@ model Product {
   shortDescription String
   price            Float
   originalPrice    Float?
+  discount         Int?     @default(0)
   inStock          Boolean  @default(true)
   image            String?
   images           Json?
@@ -208,3 +209,14 @@ model ShippingCity {
   @@unique([name, regionId])
 }
 
+model SaleEvent {
+  id                String   @id @default(cuid()) @map("_id")
+  name              String   @unique
+  bannerText        String
+  discountPercent   Int      @default(0)
+  targetCollections Json?    // Array of collection IDs
+  targetProducts    Json?    // Array of product IDs
+  isActive          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

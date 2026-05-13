@@ -11,9 +11,9 @@ const Footer = () => {
         {/* Main Grid */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-16 mb-12 md:mb-24">
           {/* Brand Column - Full width on mobile */}
-          <div className="col-span-2 md:col-span-2 lg:col-span-1 flex flex-col gap-6 md:gap-10 items-center md:items-start">
+          <div className="col-span-2 lg:col-span-1 flex flex-col gap-6 md:gap-10 items-center lg:items-start text-center lg:text-left">
             <div>
-              <Link href="/" className="group flex items-center h-4">
+              <Link href="/" className="group flex items-center justify-center lg:justify-start h-4">
                 <Image
                   src="/main_logo.png"
                   alt="Step & Style"
@@ -35,7 +35,7 @@ const Footer = () => {
                 </div>
               </Link>
             </div>
-            <p className="text-gray-400 text-[12px] md:text-[13px] font-medium leading-relaxed tracking-wide max-w-[300px] text-center md:text-left">
+            <p className="text-gray-400 text-[12px] md:text-[13px] font-medium leading-relaxed tracking-wide max-w-[300px] mx-auto lg:mx-0">
               Premium footwear for the modern individual. Designed for absolute comfort, crafted for timeless style.
             </p>
           </div>

@@ -312,9 +312,9 @@ function ProductsContent() {
 
         {/* Bottom Promo Banner - Refined Lifestyle Style */}
         {!loading && products.length > 0 && (
-          <div className="mt-20 rounded-2xl overflow-hidden bg-white flex flex-col md:min-h-[500px] md:flex-row items-stretch border border-gray-100 shadow-sm relative group/banner">
+          <div className="mt-20 rounded-2xl overflow-hidden bg-white flex flex-col md:min-h-[400px] md:flex-row items-stretch border border-gray-100 shadow-sm relative group/banner">
             {/* Left: Image Section */}
-            <div className="relative w-full md:w-1/2 min-h-[400px] md:min-h-full">
+            <div className="relative w-full md:w-1/2 min-h-[300px] md:min-h-full">
               <Image 
                 src="/Banner/summer_essentials.webp" 
                 alt="Summer Essentials" 
@@ -324,11 +324,11 @@ function ProductsContent() {
             </div>
 
             {/* Right: Text Section */}
-            <div className="relative z-10 flex-1 p-10 md:p-20 flex flex-col justify-center items-start text-left bg-white">
+            <div className="relative z-10 flex-1 p-8 md:p-14 flex flex-col justify-center items-start text-left bg-white">
               <div className="relative z-10 space-y-8 max-w-lg">
                 <div className="space-y-4">
                   <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#7C3AED]">New Arrivals</p>
-                  <h2 className="text-4xl md:text-[64px] font-black text-gray-900 uppercase tracking-tighter leading-[0.9]">
+                  <h2 className="text-3xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter leading-[0.9]">
                     Summer<br />Essentials
                   </h2>
                 </div>

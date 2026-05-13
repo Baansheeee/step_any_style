@@ -12,6 +12,7 @@ interface MobileNavProps {
   isAdmin: boolean;
   isInfluencer: boolean;
   cartCount: number;
+  collections: any[];
 }
 
 export default function MobileNav({
@@ -22,6 +23,7 @@ export default function MobileNav({
   isAdmin,
   isInfluencer,
   cartCount,
+  collections,
 }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
@@ -161,26 +163,23 @@ export default function MobileNav({
               </button>
               {isCategoryOpen && (
                 <div className="ml-4 mt-2 space-y-1 border-l-2 border-lavender-light pl-4">
-                  <Link
-                    href="/products?collectionId=bridal"
-                    onClick={() => {
-                      setIsOpen(false);
-                      setIsCategoryOpen(false);
-                    }}
-                    className="block text-xs font-bold uppercase tracking-widest p-3 hover:text-lavender-dark transition-colors"
-                  >
-                    Bridal
-                  </Link>
-                  <Link
-                    href="/products?collectionId=heels"
-                    onClick={() => {
-                      setIsOpen(false);
-                      setIsCategoryOpen(false);
-                    }}
-                    className="block text-xs font-bold uppercase tracking-widest p-3 hover:text-lavender-dark transition-colors"
-                  >
-                    Casual & Heels
-                  </Link>
+                  {collections.length === 0 ? (
+                    <span className="block px-3 py-2 text-gray-400 text-[10px] italic uppercase tracking-widest">No collections</span>
+                  ) : (
+                    collections.map((coll) => (
+                      <Link
+                        key={coll.id}
+                        href={`/products?collectionId=${coll.id}`}
+                        onClick={() => {
+                          setIsOpen(false);
+                          setIsCategoryOpen(false);
+                        }}
+                        className="block text-xs font-bold uppercase tracking-widest p-3 hover:text-lavender-dark transition-colors"
+                      >
+                        {coll.name}
+                      </Link>
+                    ))
+                  )}
                 </div>
               )}
             </div>

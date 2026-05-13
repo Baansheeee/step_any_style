@@ -148,6 +148,7 @@ export async function POST(request: NextRequest) {
         shortDescription: data.shortDescription!,
         price: data.price!,
         originalPrice: data.originalPrice ?? null,
+        discount: data.discount ?? 0,
         inStock: data.inStock ?? true,
         image: data.image ?? null,
         images: toJsonInput(data.images ?? []),

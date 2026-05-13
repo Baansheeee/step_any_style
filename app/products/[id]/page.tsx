@@ -212,11 +212,15 @@ export default function ProductDetailPage() {
     if (availableSizes.length > 0 && !selectedSize) return;
     if (availableColors.length > 0 && !selectedColor) return;
 
+    const finalPrice = product.discount && product.discount > 0 
+      ? Math.round(product.price * (1 - product.discount / 100)) 
+      : product.price;
+
     addItem(
       {
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: finalPrice,
         image: mainImage,
         size: selectedSize || undefined,
         color: selectedColor || undefined,
@@ -229,11 +233,15 @@ export default function ProductDetailPage() {
     if (availableSizes.length > 0 && !selectedSize) return;
     if (availableColors.length > 0 && !selectedColor) return;
 
+    const finalPrice = product.discount && product.discount > 0 
+      ? Math.round(product.price * (1 - product.discount / 100)) 
+      : product.price;
+
     addItem(
       {
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: finalPrice,
         image: mainImage,
         size: selectedSize || undefined,
         color: selectedColor || undefined,
@@ -298,7 +306,7 @@ export default function ProductDetailPage() {
                     }`}
                 >
                   {item.type === 'image' ? (
-                    <Image src={item.url} alt="" width={64} height={64} className="w-full h-full object-cover" />
+                    <Image src={item.url || '/main_logo.png'} alt="" width={64} height={64} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-black relative flex items-center justify-center">
                       {item.url.includes('youtube.com') || item.url.includes('youtu.be') ? (
@@ -390,7 +398,7 @@ export default function ProductDetailPage() {
                     }`}
                 >
                   {item.type === 'image' ? (
-                    <Image src={item.url} alt="" width={56} height={56} className="w-full h-full object-cover" />
+                    <Image src={item.url || '/main_logo.png'} alt="" width={56} height={56} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-black relative flex items-center justify-center">
                       {item.url.includes('youtube.com') || item.url.includes('youtu.be') ? (
@@ -436,8 +444,21 @@ export default function ProductDetailPage() {
 
             {/* Pricing */}
             <div className="flex items-baseline gap-4 pt-2">
-              <span className="text-2xl sm:text-4xl font-black text-black tracking-tighter">{formatPKR(product.price)}</span>
-              {product.originalPrice && product.originalPrice > product.price && (
+              <span className="text-2xl sm:text-4xl font-black text-black tracking-tighter">
+                {formatPKR(product.discount && product.discount > 0 
+                  ? Math.round(product.price * (1 - product.discount / 100)) 
+                  : product.price)}
+              </span>
+              {product.discount && product.discount > 0 ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-xl text-gray-300 line-through font-medium">
+                    {formatPKR(product.price)}
+                  </span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-white bg-red-600 px-2 py-1 rounded shadow-sm">
+                    {product.discount}% OFF
+                  </span>
+                </div>
+              ) : product.originalPrice && product.originalPrice > product.price && (
                 <div className="flex items-center gap-2">
                   <span className="text-xl text-gray-300 line-through font-medium">{formatPKR(product.originalPrice)}</span>
                   <span className="text-[9px] font-black uppercase tracking-widest text-white bg-[#6B21A8] px-2 py-1 rounded">
@@ -566,44 +587,62 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {/* Delivery & Offers Banner */}
+            {/* Trust & Offers Banner */}
             <div className="pt-8 space-y-0 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-              {/* Online Payment Benefit */}
+              {/* Open Parcel Then Pay */}
               <div className="flex items-center gap-4 bg-gradient-to-r from-green-50 to-emerald-50 p-5 border-b border-green-100 group">
                 <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-green-200 transition-transform group-hover:scale-110">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="text-[11px] font-black text-green-700 uppercase tracking-wider">Free Delivery</p>
-                  <p className="text-[10px] text-green-600/70 font-medium">Only on Bank Transfer &amp; Online Payments</p>
+                  <p className="text-[11px] font-black text-green-700 uppercase tracking-wider">Open Parcel then Pay</p>
+                  <p className="text-[10px] text-green-600/70 font-medium">Check your product before payment. 100% Trust!</p>
                 </div>
-                <span className="text-[9px] font-black uppercase tracking-widest text-green-600 bg-green-100 px-3 py-1 rounded-full">Free</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-green-600 bg-green-100 px-3 py-1 rounded-full">Trust</span>
               </div>
 
-              {/* Direct Bank Transfer Discount */}
+              {/* 5% Extra Discount */}
               <div className="flex items-center gap-4 bg-gradient-to-r from-amber-50 to-orange-50 p-5 border-b border-amber-100 group">
                 <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-200 transition-transform group-hover:scale-110">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.407 2.67 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.407-2.67-1M12 16v1m4-12V3c0-1.105-.895-2-2-2H4c-1.105 0-2 .895-2 2v18c0 1.105.895 2 2 2h16c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-2z" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.407 2.67 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.407-2.67-1M12 16v1m4-12V3c0-1.105-.895-2-2-2H4c-1.105 0-2 .895-2 2v18c0 1.105.895 2 2 2h16c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-2z" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
                 <div className="flex-1">
                   <p className="text-[11px] font-black text-amber-700 uppercase tracking-wider">5% Extra Discount</p>
-                  <p className="text-[10px] text-amber-600/70 font-medium">Exclusively on Direct Bank Transfers</p>
+                  <p className="text-[10px] text-amber-600/70 font-medium">On Direct Bank Transfer & Online Payments</p>
                 </div>
                 <span className="text-[9px] font-black uppercase tracking-widest text-amber-600 bg-amber-100 px-3 py-1 rounded-full">Save 5%</span>
               </div>
 
-              {/* Standard Shipping (COD) */}
-              <div className="flex items-center gap-4 bg-white p-5 group">
-                <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center flex-shrink-0 border border-gray-100 transition-transform group-hover:scale-110">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
+              {/* 7 Day Returns */}
+              <div className="flex items-center gap-4 bg-gradient-to-r from-purple-50 to-violet-50 p-5 border-b border-purple-100 group">
+                <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-200 transition-transform group-hover:scale-110">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="text-[11px] font-black text-gray-700 uppercase tracking-wider">Standard Shipping (COD)</p>
-                  <p className="text-[10px] text-gray-400 font-medium">Pay on delivery in 3-5 business days</p>
+                  <p className="text-[11px] font-black text-purple-700 uppercase tracking-wider">7 Day Easy Return</p>
+                  <p className="text-[10px] text-purple-600/70 font-medium">Hassle-free returns & exchanges</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-[10px] font-black text-gray-900 tracking-tighter">Rs. 300 – 350</p>
+                <span className="text-[9px] font-black uppercase tracking-widest text-purple-600 bg-purple-100 px-3 py-1 rounded-full">7 Days</span>
+              </div>
+
+              {/* Safe Payment */}
+              <div className="flex items-center gap-4 bg-white p-5 group">
+                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-200 transition-transform group-hover:scale-110">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </div>
+                <div className="flex-1">
+                  <p className="text-[11px] font-black text-blue-700 uppercase tracking-wider">Safe & Secure Payment</p>
+                  <p className="text-[10px] text-blue-600/70 font-medium">Verified SSL Encryption</p>
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-widest text-blue-600 bg-blue-100 px-3 py-1 rounded-full">Secure</span>
               </div>
             </div>
 
@@ -688,15 +727,15 @@ export default function ProductDetailPage() {
                       <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-sm">
                         <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
                       </div>
-                      <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900">Shipping</h5>
-                      <p className="text-[10px] leading-relaxed text-gray-500 font-medium">Standard: Rs. 300 – 350. Free on instant payments &amp; bank transfers.</p>
+                      <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900">Shipping & Delivery</h5>
+                      <p className="text-[10px] leading-relaxed text-gray-500 font-medium">Enjoy <b>Open Parcel then Pay</b> (COD) across Pakistan. Delivery in 3-5 business days.</p>
                     </div>
                     <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-5 rounded-xl border border-purple-100 space-y-3">
                       <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-sm">
                         <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>
                       </div>
-                      <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900">Returns</h5>
-                      <p className="text-[10px] leading-relaxed text-gray-500 font-medium">Faulty or size issues only. No returns for change of mind.</p>
+                      <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900">Easy Returns</h5>
+                      <p className="text-[10px] leading-relaxed text-gray-500 font-medium">Hassle-free <b>7-day return</b> policy for any size or quality concerns. Your satisfaction is our priority.</p>
                     </div>
                   </div>
                 </div>

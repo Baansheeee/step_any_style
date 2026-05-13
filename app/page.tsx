@@ -9,6 +9,8 @@ import ScrollAnimate from "./components/ScrollAnimate";
 import { products as seedProducts } from "./data/products";
 import GlobalProductCard from "./products/components/ProductCard";
 import SliderSection from "./components/SliderSection";
+import TrustBanner from "./components/TrustBanner";
+import AffiliateBanner from "./components/AffiliateBanner";
 import type { ProductDTO, CollectionDTO } from "@/types/product";
 
 export default function Home() {
@@ -43,6 +45,7 @@ export default function Home() {
     saleCount: 0,
     isNew: false,
     isTrending: false,
+    discount: (product as any).discount ?? null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
@@ -175,7 +178,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════════════ */}
 
       {/* Hero Section - Women */}
-      <section className="relative h-[60vh] md:h-[85vh] w-full overflow-hidden bg-[#F5F3FF]">
+      <section className="relative h-[70vh] md:h-[85vh] w-full overflow-hidden bg-[#F5F3FF]">
         <video
           autoPlay
           loop
@@ -197,7 +200,7 @@ export default function Home() {
             </p>
             <Link
               href="/products?gender=WOMEN"
-              className="bg-[#E9D5FF] text-[#6B21A8] px-8 md:px-12 py-3 md:py-4 text-xs md:text-sm font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all duration-300 shadow-2xl border border-white/20"
+              className="bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-4 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all duration-300 shadow-2xl border border-white/20"
             >
               Shop Women
             </Link>
@@ -259,7 +262,7 @@ export default function Home() {
               </p>
               <Link
                 href="/products?gender=MEN"
-                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-8 md:px-12 py-4 md:py-5 text-xs md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl"
+                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-5 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl"
               >
                 Shop Men
               </Link>
@@ -308,6 +311,12 @@ export default function Home() {
           <GlobalProductCard key={product.id} product={product} index={index} />
         ))}
       </SliderSection>
+
+      {/* Trust Indicators Scroll Banner */}
+      <TrustBanner />
+
+      {/* Affiliate Program Call to Action */}
+      <AffiliateBanner />
 
       {/* ═══════════════════════════════════════════════════════ */}
       {/*              COMMUNITY & REVIEWS                       */}
@@ -379,7 +388,6 @@ export default function Home() {
       )}
 
       <ReviewsSlideshow />
-
     </div>
   );
 }

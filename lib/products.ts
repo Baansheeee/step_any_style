@@ -52,6 +52,7 @@ export function serializeProduct(product: any): ProductDTO {
     } : null,
     rating: Number(product.rating || 0),
     saleCount: Number(product.saleCount || 0),
+    discount: product.discount ?? null,
     isNew: (new Date().getTime() - new Date(product.createdAt).getTime()) < 15 * 24 * 60 * 60 * 1000,
     isTrending: Number(product.rating || 0) > 4.0 && Number(product.saleCount || 0) > 20,
     createdAt: product.createdAt.toISOString(),
@@ -109,6 +110,7 @@ export async function ensureProductsSeeded() {
               specifications: toJsonInput(product.specifications ?? {}),
               features: toJsonInput(product.features ?? []),
               collectionId: collectionMap[(product as any).brand] ?? null,
+              discount: 0,
             },
           });
         } catch (err) {

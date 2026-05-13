@@ -40,22 +40,34 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             </div>
           )}
         </div>
-        {product.originalPrice && product.originalPrice > product.price && (
+        {product.discount && product.discount > 0 ? (
+          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-red-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 text-[8px] sm:text-[10px] font-black uppercase tracking-widest shadow-lg">
+            {product.discount}% OFF
+          </div>
+        ) : product.originalPrice && product.originalPrice > product.price ? (
           <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-black text-white px-2 sm:px-3 py-1 sm:py-1.5 text-[8px] sm:text-[10px] font-bold uppercase tracking-widest shadow-lg">
             Sale
           </div>
-        )}
+        ) : null}
         <div className="absolute inset-x-0 bottom-0 bg-white/10 backdrop-blur-md p-2 sm:p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">
           <span className="block text-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 bg-white py-3 shadow-lg">Quick View</span>
         </div>
       </div>
-      <div className="space-y-1.5">
-        <h3 className="font-medium text-[12px] sm:text-[14px] text-gray-800 group-hover:text-black transition-colors line-clamp-1">{product.name}</h3>
-        <div className="flex items-center gap-3">
-          <p className="font-bold text-[13px] sm:text-[15px] text-[#6B21A8]">{formatPKR(product.price)}</p>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <p className="text-gray-400 text-[10px] sm:text-[12px] line-through font-medium">{formatPKR(product.originalPrice)}</p>
-          )}
+      <div className="space-y-1.5 px-0.5 md:px-0">
+        <h3 className="font-medium text-[11px] sm:text-[14px] text-gray-800 group-hover:text-black transition-colors line-clamp-1">{product.name}</h3>
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2 md:gap-3">
+            <p className="font-bold text-[13px] sm:text-[16px] text-[#6B21A8]">
+              {formatPKR(product.discount && product.discount > 0 
+                ? Math.round(product.price * (1 - product.discount / 100)) 
+                : product.price)}
+            </p>
+            {(product.discount && product.discount > 0) || (product.originalPrice && product.originalPrice > product.price) ? (
+              <p className="text-gray-400 text-[11px] sm:text-[13px] line-through font-medium">
+                {formatPKR(product.originalPrice || product.price)}
+              </p>
+            ) : null}
+          </div>
         </div>
         {/* Color Swatches */}
         {product.variants && product.variants.length > 0 && (

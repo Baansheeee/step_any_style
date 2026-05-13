@@ -40,6 +40,7 @@ export interface ProductDTO {
   saleCount: number;
   isNew: boolean;
   isTrending: boolean;
+  discount: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -51,6 +52,7 @@ export interface ProductPayload {
   shortDescription?: string;
   price?: number;
   originalPrice?: number | null;
+  discount?: number | null;
   inStock?: boolean;
   image?: string | null;
   images?: string[];

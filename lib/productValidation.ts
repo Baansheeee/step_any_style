@@ -111,6 +111,16 @@ export function parseProductPayload(
   } else if (body.originalPrice === null || body.originalPrice === '') {
     data.originalPrice = null;
   }
+  
+  if (body.discount !== undefined && body.discount !== null && body.discount !== '') {
+    const discount = Number(body.discount);
+    if (Number.isNaN(discount) || discount < 0) {
+      return { data: {}, error: 'Discount must be a non-negative number.' };
+    }
+    data.discount = discount;
+  } else {
+    data.discount = 0;
+  }
 
   if (body.inStock !== undefined) {
     data.inStock = Boolean(body.inStock);
