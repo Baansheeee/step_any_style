@@ -180,11 +180,8 @@ function CheckoutContent({
     const afterPromo = subtotal - promoAmount;
     const transferDiscount = paymentMethod === 'direct' ? afterPromo * 0.05 : 0;
     
-    let sCost = 0;
-    if (paymentMethod === 'cod') {
-      const selectedRegion = regions.find(r => r.id === selectedRegionId);
-      sCost = selectedRegion ? selectedRegion.shippingCost : 350; // Fallback to 350 if no region
-    }
+    const selectedRegion = regions.find(r => r.id === selectedRegionId);
+    const sCost = selectedRegion ? selectedRegion.shippingCost : 350; // Fallback to 350 if no region selected yet
     
     return {
       promoDiscount: promoAmount,
@@ -384,8 +381,8 @@ function CheckoutContent({
             <h2 className="text-xl font-medium tracking-tight">Shipping method</h2>
             <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
                {[
-                 { id: 'prepaid', label: 'Online Payment (Free Shipping + Priority)', sub: 'Fastest delivery', price: 'FREE', active: paymentMethod !== 'cod' },
-                 { id: 'cod', label: 'Cash on Delivery', sub: 'Standard delivery fees apply', price: formatPKR(shippingCost), active: paymentMethod === 'cod' }
+                 { id: 'prepaid', label: 'Online Payment (Priority)', sub: 'Fastest delivery', price: formatPKR(shippingCost), active: paymentMethod !== 'cod' },
+                 { id: 'cod', label: 'Cash on Delivery', sub: 'Standard delivery', price: formatPKR(shippingCost), active: paymentMethod === 'cod' }
                ].map((opt) => (
                  <label key={opt.id} className={`flex items-center justify-between p-5 cursor-pointer hover:bg-gray-50/50 transition-colors ${opt.active ? 'bg-purple-50/20' : ''}`}>
                     <div className="flex items-center gap-4">

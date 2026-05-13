@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/app/components/Navbar';
@@ -133,8 +133,6 @@ function ProductsContent() {
   ];
   const activeSort = sortOptions.find(s => s.value === filters.sort);
 
-  // Insert a promo card after every 8 products
-  const PROMO_POSITION = 8;
 
   return (
     <div className="min-h-screen bg-white">
@@ -274,24 +272,7 @@ function ProductsContent() {
         ) : products.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {products.map((product, index) => (
-              <Fragment key={product.id}>
-                {/* Insert Free Shipping promo card */}
-                {index === PROMO_POSITION && (
-                  <div key="promo-shipping" className="aspect-square bg-gray-900 rounded-xl flex flex-col items-center justify-center text-center p-8 relative overflow-hidden group">
-                    {/* Background glow */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-pink-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative z-10">
-                      <div className="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-5">
-                        <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" /></svg>
-                      </div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60 mb-2">Exclusive</p>
-                      <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight mb-3">Free<br />Shipping</h3>
-                      <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest">On Instant Payments<br />&amp; Bank Transfers</p>
-                    </div>
-                  </div>
-                )}
-                <ProductCard product={product} index={index} />
-              </Fragment>
+              <ProductCard key={product.id} product={product} index={index} />
             ))}
           </div>
         ) : (

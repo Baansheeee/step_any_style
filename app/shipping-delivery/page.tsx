@@ -27,11 +27,11 @@ export default function ShippingDeliveryPage() {
                 </li>
                 <li className="flex justify-between border-b border-purple-100 pb-2">
                   <span>Direct Bank Transfer</span>
-                  <span className="font-black text-green-600 tracking-widest">FREE</span>
+                  <span className="font-black text-gray-900 tracking-tight">Rs. 300 - 350</span>
                 </li>
                 <li className="flex justify-between border-b border-purple-100 pb-2">
                   <span>Credit/Debit Card</span>
-                  <span className="font-black text-green-600 tracking-widest">FREE</span>
+                  <span className="font-black text-gray-900 tracking-tight">Rs. 300 - 350</span>
                 </li>
               </ul>
             </ScrollAnimate>
