@@ -95,6 +95,16 @@ export default function Home() {
     const loadReviewMedia = async () => {
       try {
         const response = await fetch('/api/reviews/media', { cache: 'no-store' });
+        if (!response.ok) {
+          console.warn(`Review media fetch failed with status: ${response.status}`);
+          return;
+        }
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.warn('Expected JSON but received:', text.substring(0, 100));
+          return;
+        }
         const payload = await response.json();
         if (payload.success && Array.isArray(payload.media)) {
           if (isMounted) {

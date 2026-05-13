@@ -13,7 +13,7 @@ import {
 import type { Stripe, StripeElements } from '@stripe/stripe-js';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/context/CartContext';
-import type { AuthUser } from '@/app/components/AccountModal';
+import AccountModal, { AuthUser, AuthMode } from '@/app/components/AccountModal';
 import { formatPKR } from '@/lib/currency';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -53,7 +53,7 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
       {/* Mini Header */}
-      <header className="border-b border-gray-100 py-6 px-4 md:px-10 flex justify-between items-center bg-white sticky top-0 z-[100]">
+      <header className="border-b border-gray-100 py-3 md:py-4 px-4 md:px-10 flex justify-between items-center bg-white sticky top-0 z-[100]">
         <Link href="/" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
            <Image 
              src="/main_logo.png" 
@@ -141,6 +141,8 @@ function CheckoutContent({
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userRole, setUserRole] = useState<AuthUser['role'] | null>(null);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [accountModalMode, setAccountModalMode] = useState<AuthMode>('login');
   const [regions, setRegions] = useState<ShippingRegion[]>([]);
   const [selectedRegionId, setSelectedRegionId] = useState<string>('');
   const [selectedCityId, setSelectedCityId] = useState<string>('');
@@ -290,7 +292,16 @@ function CheckoutContent({
             <div className="flex justify-between items-end">
               <h2 className="text-xl font-medium tracking-tight">Contact</h2>
               {!userRole && (
-                <button type="button" className="text-sm text-purple-600 underline" onClick={() => router.push('/login')}>Sign in</button>
+                <button 
+                  type="button" 
+                  className="text-sm text-purple-600 underline font-medium" 
+                  onClick={() => {
+                    setAccountModalMode('login');
+                    setIsAccountModalOpen(true);
+                  }}
+                >
+                  Sign in
+                </button>
               )}
             </div>
             <input 
@@ -552,7 +563,7 @@ function CheckoutContent({
           </div>
 
           {/* Discount Section */}
-          <div className="space-y-2 relative z-[60]">
+          <div className="space-y-2 relative">
             <div className="flex gap-3">
                <input 
                  type="text" value={promoInput}
@@ -622,6 +633,17 @@ function CheckoutContent({
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+
+      <AccountModal
+        isOpen={isAccountModalOpen}
+        mode={accountModalMode}
+        onClose={() => setIsAccountModalOpen(false)}
+        onModeChange={setAccountModalMode}
+        onAuthSuccess={(user) => {
+          setUserRole(user.role);
+          setShippingInfo(p => ({ ...p, email: user.email }));
+        }}
+      />
     </div>
   );
 }

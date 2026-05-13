@@ -2,26 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
+  console.log('GET /api/reviews/media hit');
   try {
     // Fetch reviews that have at least one image or a videoUrl
     // We'll also include the product info so we can link back to it
+    // Fetch recent reviews and filter for those with media in memory
+    // (Prisma Json filtering on MongoDB can sometimes be inconsistent)
     const reviews = await prisma.review.findMany({
-      where: {
-        OR: [
-          {
-            images: {
-              not: {
-                equals: [],
-              },
-            },
-          },
-          {
-            videoUrl: {
-              not: null,
-            },
-          },
-        ],
-      },
       include: {
         product: {
           select: {
@@ -34,11 +21,15 @@ export async function GET(request: NextRequest) {
       orderBy: {
         createdAt: 'desc',
       },
-      take: 12, // Limit to 12 for the homepage section
+      take: 50, // Get a larger set then filter
     });
 
+    const filteredReviews = reviews.filter(r => 
+      (Array.isArray(r.images) && r.images.length > 0) || r.videoUrl
+    );
+
     // Flatten and transform the data for the frontend
-    const mediaItems = reviews.flatMap(review => {
+    const mediaItems = filteredReviews.flatMap(review => {
       const items: any[] = [];
       
       if (Array.isArray(review.images)) {

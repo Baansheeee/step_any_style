@@ -147,7 +147,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 py-4">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 py-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden max-h-[90vh] flex flex-col">
         <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 z-10" onClick={closeModal} aria-label="Close account modal">
           ✕
