@@ -410,7 +410,7 @@ export default function ProductReviews({ productId, productName, productImage }:
                       {review.images?.map((img, idx) => (
                         <div key={idx} className="w-24 h-24 rounded-xl overflow-hidden border-2 border-gray-100 shadow-sm transition-transform hover:scale-105 cursor-zoom-in">
                           <Image
-                            src={img || '/main_logo.png'}
+                            src={img || '/logo_main.png'}
                             alt="User upload"
                             width={100}
                             height={100}

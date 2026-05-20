@@ -56,7 +56,7 @@ export default function CheckoutPage() {
       <header className="border-b border-gray-100 py-3 md:py-4 px-4 md:px-10 flex justify-between items-center bg-white sticky top-0 z-[100]">
         <Link href="/" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
            <Image 
-             src="/main_logo.png" 
+             src="/logo_main.png" 
              alt="Step & Style" 
              width={180}
              height={60}

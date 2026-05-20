@@ -334,7 +334,7 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
           {products.map((product) => (
             <div key={product.id} className="border border-gray-200 rounded-2xl p-4 shadow-sm flex gap-4 bg-white hover:shadow-md transition-shadow">
               <div className="w-28 h-28 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 relative">
-                <Image src={product.image || '/main_logo.png'} alt={product.name} fill className="object-cover" />
+                <Image src={product.image || '/logo_main.png'} alt={product.name} fill className="object-cover" />
               </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">

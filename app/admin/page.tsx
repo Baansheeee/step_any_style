@@ -106,7 +106,7 @@ export default function AdminDashboard() {
             <div className="flex items-center space-x-4">
               <Link href="/admin" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
                 <Image
-                  src="/main_logo.png"
+                  src="/logo_main.png"
                   alt="Step & Style"
                   width={140}
                   height={45}

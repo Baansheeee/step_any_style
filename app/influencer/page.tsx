@@ -101,7 +101,7 @@ export default function InfluencerDashboardPage() {
             <div className="flex items-center space-x-2 md:space-x-4">
               <Link href="/" className="group flex items-center -ml-2 md:-ml-8 transition-transform hover:scale-105 shrink-0">
                 <Image
-                  src="/main_logo.png"
+                  src="/logo_main.png"
                   alt="Step & Style"
                   width={140}
                   height={45}

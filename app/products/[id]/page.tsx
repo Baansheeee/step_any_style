@@ -170,7 +170,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  const fallbackImage = product.image ?? (product.images?.[0]) ?? '/main_logo.png';
+  const fallbackImage = product.image ?? (product.images?.[0]) ?? '/logo_main.png';
   const currentMedia = productMedia[selectedImageIndex] || { type: 'image', url: fallbackImage };
   const mainImage = currentMedia.type === 'image' ? currentMedia.url : fallbackImage;
 
@@ -306,7 +306,7 @@ export default function ProductDetailPage() {
                     }`}
                 >
                   {item.type === 'image' ? (
-                    <Image src={item.url || '/main_logo.png'} alt="" width={64} height={64} className="w-full h-full object-cover" />
+                    <Image src={item.url || '/logo_main.png'} alt="" width={64} height={64} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-black relative flex items-center justify-center">
                       {item.url.includes('youtube.com') || item.url.includes('youtu.be') ? (
@@ -398,7 +398,7 @@ export default function ProductDetailPage() {
                     }`}
                 >
                   {item.type === 'image' ? (
-                    <Image src={item.url || '/main_logo.png'} alt="" width={56} height={56} className="w-full h-full object-cover" />
+                    <Image src={item.url || '/logo_main.png'} alt="" width={56} height={56} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-black relative flex items-center justify-center">
                       {item.url.includes('youtube.com') || item.url.includes('youtu.be') ? (

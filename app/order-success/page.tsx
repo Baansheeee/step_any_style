@@ -48,7 +48,7 @@ export default function OrderSuccessPage() {
         {/* Brand Decoration */}
         <div className="mt-12 opacity-10 flex gap-8 grayscale select-none">
          <div className="flex items-center">
-            <img src="/main_logo.png" alt="Step & Style" className="h-10 w-auto" />
+            <img src="/logo_main.png" alt="Step & Style" className="h-10 w-auto" />
             <div className="flex items-center -ml-4 mb-0.5 gap-1">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-900">
                 Step

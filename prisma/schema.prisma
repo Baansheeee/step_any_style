@@ -114,6 +114,7 @@ enum OrderStatus {
 enum Gender {
   MEN
   WOMEN
+  KIDS
   UNISEX
 }
 

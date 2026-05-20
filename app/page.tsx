@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import Image from "next/image";
@@ -6,6 +7,8 @@ import { useEffect, useMemo, useState } from "react";
 import Navbar from "./components/Navbar";
 import ReviewsSlideshow from "./components/ReviewsSlideshow";
 import ScrollAnimate from "./components/ScrollAnimate";
+import HomeCollectionsCarousel from "./components/HomeCollectionsCarousel";
+import TrendingProductsCarousel from "./components/TrendingProductsCarousel";
 import { products as seedProducts } from "./data/products";
 import GlobalProductCard from "./products/components/ProductCard";
 import SliderSection from "./components/SliderSection";
@@ -156,29 +159,6 @@ export default function Home() {
     </ScrollAnimate>
   );
 
-  // Reusable Collection Card Component
-  const CollectionCard = ({ collection, index }: { collection: CollectionDTO; index: number }) => (
-    <ScrollAnimate key={collection.id} animation="fade-in" delay={`${index * 0.12}s`}>
-      <Link href={`/products?collectionId=${collection.id}`} className="relative group block overflow-hidden rounded-3xl">
-        <div className="relative aspect-[4/5] overflow-hidden">
-          <Image
-            src={collection.image || '/main_logo.png'}
-            alt={collection.name}
-            fill
-            className="object-cover transition-transform duration-1000 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-[#6B21A8]/10 transition-all duration-500" />
-          <div className="absolute inset-0 flex flex-col items-center justify-end pb-8">
-            <h3 className="text-white text-xl md:text-2xl font-black uppercase tracking-[0.15em] drop-shadow-lg mb-2">{collection.name}</h3>
-            <span className="text-white/90 text-[10px] font-black uppercase tracking-[0.2em] border border-white/50 px-5 py-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all">
-              Shop Now
-            </span>
-          </div>
-        </div>
-      </Link>
-    </ScrollAnimate>
-  );
-
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
       <Navbar />
@@ -203,25 +183,77 @@ export default function Home() {
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <ScrollAnimate animation="fade-in" className="flex flex-col items-center">
             <h1 className="text-white text-3xl sm:text-5xl md:text-8xl font-black mb-4 md:mb-6 tracking-tighter uppercase drop-shadow-lg text-center">
-              The Women&apos;s Edit
+              The Shop&apos;s Edit
             </h1>
             <p className="text-white text-sm md:text-xl mb-8 md:mb-10 max-w-xl font-medium tracking-wide drop-shadow-md px-4 md:px-0 text-center mx-auto">
-              Elegance in every step. Discover our curated collection of luxury heels and sandals.
+              Elegance in every step. Discover our curated
+              collection of `must-have` styles at irresistible prices. Your perfect pair awaits.
             </p>
             <Link
               href="/products?gender=WOMEN"
               className="bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-4 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all duration-300 shadow-2xl border border-white/20"
             >
-              Shop Women
+              Shop
             </Link>
           </ScrollAnimate>
         </div>
       </section>
 
+      {/* Trending Products Carousel - Top Section */}
+      {productList.filter(p => p.isTrending).length > 0 && (
+        <TrendingProductsCarousel products={productList.filter(p => p.isTrending)} />
+      )}
+
+      {/* Hero Section - Women */}
+      <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
+        <div className="max-w-[1600px] mx-auto flex flex-col md:grid md:grid-cols-2 items-stretch">
+          <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
+            <Image
+              src="/women.png"
+              alt="Women's Collection"
+              fill
+              className="object-cover transition-all duration-1000"
+            />
+            <div className="absolute inset-0 bg-[#A855F7]/10" />
+          </div>
+          <div className="flex flex-col justify-center p-8 sm:p-12 md:p-24 space-y-6 md:space-y-8">
+            <ScrollAnimate animation="slide-in-right">
+              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">Exclusive Collections</h2>
+              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
+                The Women&apos;s
+              </h3>
+              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#A855F7] to-[#460e7b] bg-clip-text text-transparent">
+                Essentials
+              </h3>
+              <p className="text-gray-500 text-lg font-light leading-relaxed max-w-md">
+                Elegance in every step. Discover our curated collection of luxury heels, elegant sandals, and statement footwear.
+              </p>
+              <Link
+                href="/products?gender=WOMEN"
+                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-5 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl mt-10"
+              >
+                Shop Women
+              </Link>
+            </ScrollAnimate>
+          </div>
+        </div>
+      </section>
+
+      {/* Shop By Collection Slider - Women */}
+      {womenCollections.length > 0 && (
+        <HomeCollectionsCarousel
+          collections={womenCollections}
+          title="Shop By Collection"
+          subtitle="Curated For Her"
+          viewAllLink="/products?gender=WOMEN"
+          accentColor="#A855F7"
+        />
+      )}
+
       {/* Women's Products Slider */}
-      <SliderSection 
-        title="In The Spotlight: Women" 
-        subtitle="Trending Now" 
+      <SliderSection
+        title="In The Spotlight: Women"
+        subtitle="Trending Now"
         viewAllLink="/products?gender=WOMEN"
         accentColor="#A855F7"
       >
@@ -230,21 +262,6 @@ export default function Home() {
         ))}
       </SliderSection>
 
-      {/* Shop By Collection Slider - Women */}
-      {womenCollections.length > 0 && (
-        <SliderSection 
-          title="Shop By Collection" 
-          subtitle="Curated For Her" 
-          viewAllLink="/products?gender=WOMEN"
-          accentColor="#A855F7"
-          itemWidth="min-w-[280px] md:min-w-[380px]"
-        >
-          {womenCollections.map((collection, index) => (
-            <CollectionCard key={collection.id} collection={collection} index={index} />
-          ))}
-        </SliderSection>
-      )}
-
       {/* ═══════════════════════════════════════════════════════ */}
       {/*                   MEN'S SECTION                        */}
       {/* ═══════════════════════════════════════════════════════ */}
@@ -252,9 +269,9 @@ export default function Home() {
       {/* Hero Section - Men */}
       <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
         <div className="max-w-[1600px] mx-auto flex flex-col md:grid md:grid-cols-2 items-stretch">
-          <div className="relative h-[40vh] md:h-auto overflow-hidden">
+          <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
             <Image
-              src="https://images.unsplash.com/photo-1531310197839-ccf54634509e?auto=format&fit=crop&q=80&w=1000"
+              src="/men.png"
               alt="Men's Collection"
               fill
               className="object-cover transition-all duration-1000"
@@ -263,16 +280,19 @@ export default function Home() {
           </div>
           <div className="flex flex-col justify-center p-8 sm:p-12 md:p-24 space-y-6 md:space-y-8">
             <ScrollAnimate animation="slide-in-right">
-              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">New Arrivals</h2>
+              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">Exclusive Collections</h2>
               <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
-                The Men&apos;s <br /> Essentials
+                The Men&apos;s 
+              </h3>
+              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#A855F7] to-[#460e7b] bg-clip-text text-transparent">
+                Essentials
               </h3>
               <p className="text-gray-500 text-lg font-light leading-relaxed max-w-md">
                 Refined style for the modern man. From polished loafers to everyday sneakers, find your signature look.
               </p>
               <Link
                 href="/products?gender=MEN"
-                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-5 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl"
+                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-5 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl mt-10"
               >
                 Shop Men
               </Link>
@@ -281,11 +301,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Shop By Collection Slider - Men */}
+      {menCollections.length > 0 && (
+        <HomeCollectionsCarousel
+          collections={menCollections}
+          title="Shop By Collection"
+          subtitle="Crafted For Him"
+          viewAllLink="/products?gender=MEN"
+          accentColor="#6B21A8"
+        />
+      )}
+
       {/* Men's Products Slider */}
       {menProducts.length > 0 && (
-        <SliderSection 
-          title="In The Spotlight: Men" 
-          subtitle="Modern Classic" 
+        <SliderSection
+          title="In The Spotlight: Men"
+          subtitle="Modern Classic"
           viewAllLink="/products?gender=MEN"
           accentColor="#6B21A8"
         >
@@ -295,32 +326,46 @@ export default function Home() {
         </SliderSection>
       )}
 
-      {/* Shop By Collection Slider - Men */}
-      {menCollections.length > 0 && (
-        <SliderSection 
-          title="Shop By Collection" 
-          subtitle="Crafted For Him" 
-          viewAllLink="/products?gender=MEN"
-          accentColor="#6B21A8"
-          itemWidth="min-w-[280px] md:min-w-[380px]"
-        >
-          {menCollections.map((collection, index) => (
-            <CollectionCard key={collection.id} collection={collection} index={index} />
-          ))}
-        </SliderSection>
-      )}
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*                   KIDS SECTION                         */}
+      {/* ═══════════════════════════════════════════════════════ */}
 
-      {/* Trending Products Slider */}
-      <SliderSection 
-        title="Trending Now" 
-        subtitle="Most Wanted" 
-        viewAllLink="/products"
-        accentColor="#B45309"
-      >
-        {productList.filter(p => p.isTrending).map((product, index) => (
-          <GlobalProductCard key={product.id} product={product} index={index} />
-        ))}
-      </SliderSection>
+      {/* Hero Section - Kids */}
+      <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
+        <div className="max-w-[1600px] mx-auto flex flex-col md:grid md:grid-cols-2 items-stretch">
+          <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
+            <Image
+              src="/kids1.png"
+              alt="Kids Collection"
+              fill
+              className="object-cover transition-all duration-1000"
+            />
+            <div className="absolute inset-0 bg-[#A855F7]/10" />
+          </div>
+          <div className="flex flex-col justify-center p-8 sm:p-12 md:p-24 space-y-6 md:space-y-8">
+            <ScrollAnimate animation="slide-in-right">
+              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">Exclusive Collections</h2>
+              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
+                The Kids&apos; 
+              </h3>
+              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#A855F7] to-[#460e7b] bg-clip-text text-transparent">
+                Collection
+              </h3>
+              <p className="text-gray-500 text-lg font-light leading-relaxed max-w-md">
+                Comfortable and stylish footwear designed for growing feet. From playful sneakers to elegant party shoes, find the perfect fit for your little ones.
+              </p>
+              <Link
+                href="/products?gender=KIDS"
+                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-5 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl mt-10"
+              >
+                Shop Kids
+              </Link>
+            </ScrollAnimate>
+          </div>
+        </div>
+      </section>
+
+
 
       {/* Trust Indicators Scroll Banner */}
       <TrustBanner />
@@ -352,20 +397,20 @@ export default function Home() {
                     {isVideo ? (
                       <div className="w-full h-full bg-black relative flex items-center justify-center">
                         {mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be') ? (
-                          <Image 
-                            src={`https://img.youtube.com/vi/${mediaUrl.split('/').pop()?.split('=')[1] || mediaUrl.split('/').pop()}/mqdefault.jpg`} 
+                          <Image
+                            src={`https://img.youtube.com/vi/${mediaUrl.split('/').pop()?.split('=')[1] || mediaUrl.split('/').pop()}/mqdefault.jpg`}
                             alt="Video"
                             fill
                             className="object-cover opacity-80"
                           />
                         ) : (
-                          <video 
-                            src={mediaUrl} 
-                            className="w-full h-full object-cover opacity-80" 
-                            muted 
-                            loop 
-                            autoPlay 
-                            playsInline 
+                          <video
+                            src={mediaUrl}
+                            className="w-full h-full object-cover opacity-80"
+                            muted
+                            loop
+                            autoPlay
+                            playsInline
                           />
                         )}
                         <div className="absolute inset-0 bg-purple-600/5 group-hover:bg-purple-600/20 transition-colors" />

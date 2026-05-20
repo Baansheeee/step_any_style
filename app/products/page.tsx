@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/app/components/Navbar';
+import CollectionsCarousel from '@/app/components/CollectionsCarousel';
 import ProductCard from './components/ProductCard';
 import type { ProductDTO } from '@/types/product';
 import type { CollectionDTO } from '@/types/product';
@@ -106,6 +107,10 @@ function ProductsContent() {
 
   const handleChange = (key: keyof FilterState, value: any) => {
     const newFilters = { ...filters, [key]: value };
+    // When gender changes, clear the selected collection since it belongs to the previous gender
+    if (key === 'gender') {
+      newFilters.collectionId = '';
+    }
     setFilters(newFilters);
   };
 
@@ -124,7 +129,12 @@ function ProductsContent() {
   };
 
   const activeCollection = collections.find(c => c.id === filters.collectionId);
-  const pageTitle = filters.gender === 'MEN' ? 'Men' : filters.gender === 'WOMEN' ? 'Women' : activeCollection ? activeCollection.name : 'All Products';
+  const pageTitle = filters.gender === 'MEN' ? 'Men' : filters.gender === 'WOMEN' ? 'Women' : filters.gender === 'KIDS' ? 'Kids' : activeCollection ? activeCollection.name : 'All Products';
+
+  // Filter collections by the selected gender
+  const filteredCollections = filters.gender
+    ? collections.filter(c => c.targetGender === filters.gender)
+    : collections;
 
   const sortOptions = [
     { value: 'newest', label: 'Newest' },
@@ -148,6 +158,17 @@ function ProductsContent() {
             {loading ? 'Loading...' : `${products.length} product${products.length !== 1 ? 's' : ''} found`}
           </p>
         </div>
+
+        {/* Collections Carousel */}
+        {filteredCollections.length > 0 && (
+          <CollectionsCarousel
+            collections={filteredCollections}
+            selectedCollectionId={filters.collectionId}
+            onCollectionSelect={(collectionId) =>
+              handleChange('collectionId', filters.collectionId === collectionId ? '' : collectionId)
+            }
+          />
+        )}
 
         {/* Filter Bar */}
         <div className="space-y-6 mb-10 pb-6 border-b border-gray-100">
@@ -208,7 +229,7 @@ function ProductsContent() {
           <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-2 -mx-4 px-4 md:mx-0 md:px-0">
             {/* Gender Chips */}
             <div className="flex items-center gap-2 border-r border-gray-100 pr-3 mr-1">
-              {['', 'WOMEN', 'MEN'].map((g) => (
+              {['', 'WOMEN', 'MEN', 'KIDS'].map((g) => (
                 <button
                   key={g}
                   onClick={() => handleChange('gender', g)}
@@ -218,7 +239,7 @@ function ProductsContent() {
                       : 'text-gray-500 border-gray-100 hover:border-purple-300 hover:text-purple-600 bg-white'
                   }`}
                 >
-                  {g === '' ? 'All' : g === 'WOMEN' ? 'Women' : 'Men'}
+                  {g === '' ? 'All' : g === 'WOMEN' ? 'Women' : g === 'MEN' ? 'Men' : 'Kids'}
                 </button>
               ))}
             </div>
@@ -239,23 +260,6 @@ function ProductsContent() {
                   }`}
                 >
                   {item.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Collection Chips */}
-            <div className="flex items-center gap-2">
-              {collections.map((coll) => (
-                <button
-                  key={coll.id}
-                  onClick={() => handleChange('collectionId', filters.collectionId === coll.id ? '' : coll.id)}
-                  className={`px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] border rounded-full transition-all duration-300 whitespace-nowrap ${
-                    filters.collectionId === coll.id
-                      ? 'bg-purple-600 text-white border-purple-600 shadow-lg shadow-purple-200'
-                      : 'text-gray-500 border-gray-100 hover:border-purple-300 hover:text-purple-600 bg-white'
-                  }`}
-                >
-                  {coll.name}
                 </button>
               ))}
             </div>

@@ -34,7 +34,7 @@ export default function MobileNav({
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden p-2 rounded-lg text-lavender-dark hover:bg-lavender-light transition"
+        className="md:hidden p-2 rounded-lg text-white hover:bg-white/10 transition"
         aria-label="Toggle menu"
       >
         <svg
@@ -83,7 +83,7 @@ export default function MobileNav({
           <div className="flex justify-between items-center mb-12">
             <div className="flex items-center">
               <Image
-                src="/main_logo.png"
+                src="/logo_main.png"
                 alt="Step & Style Logo"
                 width={140}
                 height={45}
@@ -266,7 +266,7 @@ export default function MobileNav({
 
           {/* Cart Button */}
           <button
-            className="w-full bg-lavender-dark text-white font-black uppercase tracking-[0.2em] py-5 mt-8 rounded-2xl shadow-xl hover:bg-[#110C1F] transition-all"
+            className="w-full bg-gradient-to-r from-[#4C1D95] via-[#6B21A8] to-[#581C87] text-white font-black uppercase tracking-[0.2em] py-5 mt-8 rounded-2xl shadow-xl hover:shadow-purple-300/30 transition-all"
             onClick={() => {
               setIsOpen(false);
               onOpenCart();

@@ -109,8 +109,8 @@ export default function Navbar() {
     <>
       <TopBanner />
       <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
-        ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm'
-        : 'bg-white border-b border-transparent'
+        ? 'bg-gradient-to-r from-[#4C1D95]/95 via-[#6B21A8]/95 to-[#581C87]/95 backdrop-blur-md shadow-lg shadow-purple-900/20'
+        : 'bg-gradient-to-r from-[#4C1D95] via-[#6B21A8] to-[#581C87]'
         }`}>
         <div className="max-w-[1600px] mx-auto px-3 sm:px-6 md:px-20">
           <div className="flex justify-between items-center h-20">
@@ -118,21 +118,21 @@ export default function Navbar() {
             <div className="flex items-center -ml-3 sm:-ml-6 md:-ml-12">
               <Link href="/" className="group flex items-center justify-center">
                 <Image
-                  src="/main_logo.png"
+                  src="/logo_main.png"
                   alt="Step & Style"
                   width={240}
                   height={80}
-                  className="object-contain h-16 md:h-24 w-auto transition-all duration-300 group-hover:scale-105"
+                  className="object-contain h-16 md:h-24 w-auto transition-all duration-300 group-hover:scale-105 brightness-0 invert"
                   priority
                 />
                 <div className="flex items-center -ml-6 md:-ml-10 gap-1">
-                  <span className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] text-gray-900 transition-all group-hover:text-[#6B21A8]">
+                  <span className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] text-white/90 transition-all group-hover:text-white">
                     Step
                   </span>
-                  <span className="text-[14px] md:text-[18px] font-black uppercase tracking-[0.2em] text-yellow-600 transition-all">
+                  <span className="text-[14px] md:text-[18px] font-black uppercase tracking-[0.2em] text-yellow-300 transition-all">
                     &
                   </span>
-                  <span className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] text-gray-900 transition-all group-hover:text-[#6B21A8]">
+                  <span className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] text-white/90 transition-all group-hover:text-white">
                     Style
                   </span>
                 </div>
@@ -145,7 +145,7 @@ export default function Navbar() {
                 href="/products?gender=WOMEN"
                 className="group h-full flex items-center"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 group-hover:text-[#6B21A8] transition-all border-b-2 border-transparent group-hover:border-[#A855F7] py-1">
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
                   Women
                 </span>
               </Link>
@@ -153,7 +153,7 @@ export default function Navbar() {
                 href="/products?gender=MEN"
                 className="group h-full flex items-center"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 group-hover:text-[#6B21A8] transition-all border-b-2 border-transparent group-hover:border-[#A855F7] py-1">
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
                   Men
                 </span>
               </Link>
@@ -164,9 +164,9 @@ export default function Navbar() {
                   href="/sales"
                   className="group h-full flex items-center"
                 >
-                  <span className="text-[13px] font-black uppercase tracking-[0.2em] text-red-600 group-hover:text-red-700 transition-all border-b-2 border-transparent group-hover:border-red-600 py-1 flex items-center gap-2">
+                  <span className="text-[13px] font-black uppercase tracking-[0.2em] text-yellow-300 group-hover:text-yellow-200 transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1 flex items-center gap-2">
                     Sale
-                    <span className="flex h-1.5 w-1.5 rounded-full bg-red-600 animate-ping" />
+                    <span className="flex h-1.5 w-1.5 rounded-full bg-yellow-300 animate-ping" />
                   </span>
                 </Link>
               )}
@@ -175,8 +175,8 @@ export default function Navbar() {
                 href="/products"
                 className="group h-full flex items-center"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 group-hover:text-[#6B21A8] transition-all border-b-2 border-transparent group-hover:border-[#A855F7] py-1">
-                  Products
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
+                  Shop
                 </span>
               </Link>
 
@@ -184,7 +184,7 @@ export default function Navbar() {
               <div className="relative h-full flex items-center" ref={categoryMenuRef}>
                 <button
                   onClick={() => setIsCategoryMenuOpen((prev) => !prev)}
-                  className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all flex items-center h-full"
+                  className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all flex items-center h-full"
                 >
                   Category
                   <svg
@@ -218,18 +218,18 @@ export default function Navbar() {
               </div>
               <Link
                 href="/affiliate"
-                className="text-[13px] font-black uppercase tracking-[0.2em] text-[#6B21A8] hover:text-purple-900 transition-all bg-purple-50 px-4 py-2 rounded-full flex items-center"
+                className="text-[13px] font-black uppercase tracking-[0.2em] text-yellow-300 hover:text-yellow-200 transition-all bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full flex items-center border border-white/10"
               >
                 Affiliate
               </Link>
 
 
-              <div className="h-4 w-[1px] bg-gray-200 mx-2" />
+              <div className="h-4 w-[1px] bg-white/20 mx-2" />
 
               <div className="relative h-full flex items-center" ref={accountMenuRef}>
                 <button
                   onClick={authUser ? () => setIsAccountMenuOpen((prev) => !prev) : () => openAccountModal('login')}
-                  className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 hover:text-[#6B21A8] transition-all h-full flex items-center"
+                  className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all h-full flex items-center"
                 >
                   {authUser ? 'Account' : 'Login'}
                 </button>
@@ -257,8 +257,8 @@ export default function Navbar() {
                 className="relative flex items-center group h-full"
                 onClick={() => setIsCartDrawerOpen(true)}
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-gray-900 group-hover:text-[#6B21A8] transition-all">Cart</span>
-                <div className="ml-2 w-6 h-6 bg-[#E9D5FF] text-[#6B21A8] text-[10px] flex items-center justify-center rounded-full font-black group-hover:bg-[#6B21A8] group-hover:text-white transition-colors">
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all">Cart</span>
+                <div className="ml-2 w-6 h-6 bg-yellow-300 text-[#4C1D95] text-[10px] flex items-center justify-center rounded-full font-black group-hover:bg-white group-hover:text-[#6B21A8] transition-colors">
                   {cartCount}
                 </div>
               </button>

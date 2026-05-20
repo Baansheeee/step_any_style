@@ -9,7 +9,7 @@ interface CollectionFormState {
   slug: string;
   description: string;
   image: string;
-  targetGender: 'MEN' | 'WOMEN' | 'UNISEX';
+  targetGender: 'MEN' | 'WOMEN' | 'KIDS' | 'UNISEX';
 }
 
 const defaultFormState: CollectionFormState = {
@@ -215,6 +215,7 @@ export default function AdminCollectionsPanel() {
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest ${
                     collection.targetGender === 'MEN' ? 'bg-blue-100 text-blue-700' :
                     collection.targetGender === 'WOMEN' ? 'bg-pink-100 text-pink-700' :
+                    collection.targetGender === 'KIDS' ? 'bg-yellow-100 text-yellow-700' :
                     'bg-gray-100 text-gray-700'
                   }`}>
                     {collection.targetGender}
@@ -319,6 +320,7 @@ export default function AdminCollectionsPanel() {
                 >
                   <option value="MEN">Men</option>
                   <option value="WOMEN">Women</option>
+                  <option value="KIDS">Kids</option>
                   <option value="UNISEX">Unisex</option>
                 </select>
               </div>
