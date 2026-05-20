@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
 
+export interface SaleStatusInfo {
+  show: boolean;
+  bannerText: string;
+  eventName?: string;
+  count?: number;
+}
+
 export function useSaleStatus() {
-  const [saleInfo, setSaleInfo] = useState<{ show: boolean; bannerText: string } | null>(null);
+  const [saleInfo, setSaleInfo] = useState<SaleStatusInfo | null>(null);
 
   useEffect(() => {
     const checkSale = async () => {
@@ -18,3 +25,4 @@ export function useSaleStatus() {
 
   return saleInfo;
 }
+

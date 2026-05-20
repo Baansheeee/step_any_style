@@ -20,6 +20,7 @@ interface FilterState {
   gender: string;
   isNew: boolean | null;
   isTrending: boolean | null;
+  onSale: boolean | null;
 }
 
 function ProductsContent() {
@@ -38,6 +39,7 @@ function ProductsContent() {
     gender: searchParams.get('gender') || '',
     isNew: searchParams.get('isNew') === 'true' ? true : null,
     isTrending: searchParams.get('isTrending') === 'true' ? true : null,
+    onSale: searchParams.get('onSale') === 'true' ? true : null,
   });
 
   useEffect(() => {
@@ -51,6 +53,7 @@ function ProductsContent() {
       gender: searchParams.get('gender') || '',
       isNew: searchParams.get('isNew') === 'true' ? true : null,
       isTrending: searchParams.get('isTrending') === 'true' ? true : null,
+      onSale: searchParams.get('onSale') === 'true' ? true : null,
     });
   }, [searchParams]);
 
@@ -82,6 +85,7 @@ function ProductsContent() {
       if (currentFilters.gender) params.append('gender', currentFilters.gender);
       if (currentFilters.isNew) params.append('isNew', 'true');
       if (currentFilters.isTrending) params.append('isTrending', 'true');
+      if (currentFilters.onSale) params.append('onSale', 'true');
 
       const newUrl = `/products?${params.toString()}`;
       window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
@@ -125,11 +129,12 @@ function ProductsContent() {
       gender: '',
       isNew: null,
       isTrending: null,
+      onSale: null,
     });
   };
 
   const activeCollection = collections.find(c => c.id === filters.collectionId);
-  const pageTitle = filters.gender === 'MEN' ? 'Men' : filters.gender === 'WOMEN' ? 'Women' : filters.gender === 'KIDS' ? 'Kids' : activeCollection ? activeCollection.name : 'All Products';
+  const pageTitle = filters.onSale ? 'Sale Products' : filters.gender === 'MEN' ? 'Men' : filters.gender === 'WOMEN' ? 'Women' : filters.gender === 'KIDS' ? 'Kids' : activeCollection ? activeCollection.name : 'All Products';
 
   // Filter collections by the selected gender
   const filteredCollections = filters.gender
@@ -160,7 +165,7 @@ function ProductsContent() {
         </div>
 
         {/* Collections Carousel */}
-        {filteredCollections.length > 0 && (
+        {filteredCollections.length > 0 && !filters.onSale && (
           <CollectionsCarousel
             collections={filteredCollections}
             selectedCollectionId={filters.collectionId}
@@ -213,7 +218,7 @@ function ProductsContent() {
               </div>
 
               {/* Reset Button */}
-              {(filters.search || filters.collectionId || filters.gender || filters.isNew || filters.isTrending) && (
+              {(filters.search || filters.collectionId || filters.gender || filters.isNew || filters.isTrending || filters.onSale) && (
                 <button
                   onClick={handleReset}
                   className="p-3 text-red-500 border border-red-100 rounded-xl hover:bg-red-50 transition-all bg-white shadow-sm"
@@ -248,7 +253,8 @@ function ProductsContent() {
             <div className="flex items-center gap-2 border-r border-gray-100 pr-3 mr-1">
               {[
                 { id: 'isNew', label: 'New', isActive: filters.isNew, action: () => handleChange('isNew', !filters.isNew) },
-                { id: 'isTrending', label: 'Trending', isActive: filters.isTrending, action: () => handleChange('isTrending', !filters.isTrending) }
+                { id: 'isTrending', label: 'Trending', isActive: filters.isTrending, action: () => handleChange('isTrending', !filters.isTrending) },
+                { id: 'onSale', label: 'Sale', isActive: filters.onSale, action: () => handleChange('onSale', !filters.onSale) }
               ].map((item) => (
                 <button
                   key={item.id}
@@ -296,7 +302,7 @@ function ProductsContent() {
         )}
 
         {/* Bottom Promo Banner - Refined Lifestyle Style */}
-        {!loading && products.length > 0 && (
+        {!loading && products.length > 0 && !filters.onSale && (
           <div className="mt-20 rounded-2xl overflow-hidden bg-white flex flex-col md:min-h-[400px] md:flex-row items-stretch border border-gray-100 shadow-sm relative group/banner">
             {/* Left: Image Section */}
             <div className="relative w-full md:w-1/2 min-h-[300px] md:min-h-full">

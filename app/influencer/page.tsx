@@ -95,7 +95,7 @@ export default function InfluencerDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Influencer Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-[#4C1D95] via-[#6B21A8] to-[#581C87] shadow-lg shadow-purple-900/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-20">
             <div className="flex items-center space-x-2 md:space-x-4">
@@ -105,17 +105,17 @@ export default function InfluencerDashboardPage() {
                   alt="Step & Style"
                   width={140}
                   height={45}
-                  className="h-8 md:h-16 w-auto object-contain"
+                  className="h-8 md:h-16 w-auto object-contain brightness-0 invert"
                 />
               </Link>
-              <h1 className="text-sm md:text-2xl font-black uppercase tracking-tight md:tracking-tighter bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent max-w-[150px] md:max-w-none">
+              <h1 className="text-sm md:text-2xl font-black uppercase tracking-tight md:tracking-tighter text-white/90 max-w-[150px] md:max-w-none">
                 Influencer Dashboard
               </h1>
             </div>
             <div className="flex items-center shrink-0">
               <Link
                 href="/"
-                className="text-[10px] md:text-sm font-black uppercase tracking-widest text-gray-500 hover:text-purple-600 transition-colors bg-gray-50 px-3 py-2 rounded-lg md:bg-transparent md:px-0 md:py-0"
+                className="text-[10px] md:text-sm font-black uppercase tracking-widest text-white/80 hover:text-white transition-colors bg-transparent px-3 py-2 rounded-lg md:bg-transparent md:px-0 md:py-0"
               >
                 <span className="hidden md:inline">← Back to Store</span>
                 <span className="md:hidden">Store</span>

@@ -1,4 +1,4 @@
-export type Gender = 'MEN' | 'WOMEN' | 'UNISEX';
+export type Gender = 'MEN' | 'WOMEN' | 'KIDS' | 'UNISEX';
 
 export interface CollectionDTO {
   id: string;

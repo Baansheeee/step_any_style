@@ -63,11 +63,16 @@ export async function GET(request: NextRequest) {
 
     const isNew = searchParams.get('isNew') === 'true';
     const isTrending = searchParams.get('isTrending') === 'true';
+    const onSale = searchParams.get('onSale') === 'true';
 
     if (isNew) {
       const fifteenDaysAgo = new Date();
       fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
       where.createdAt = { gte: fifteenDaysAgo };
+    }
+
+    if (onSale) {
+      where.discount = { gt: 0 };
     }
 
     if (isTrending) {

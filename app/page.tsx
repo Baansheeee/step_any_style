@@ -9,6 +9,7 @@ import ReviewsSlideshow from "./components/ReviewsSlideshow";
 import ScrollAnimate from "./components/ScrollAnimate";
 import HomeCollectionsCarousel from "./components/HomeCollectionsCarousel";
 import TrendingProductsCarousel from "./components/TrendingProductsCarousel";
+import SaleBanner from "./components/SaleBanner";
 import { products as seedProducts } from "./data/products";
 import GlobalProductCard from "./products/components/ProductCard";
 import SliderSection from "./components/SliderSection";
@@ -203,6 +204,9 @@ export default function Home() {
       {productList.filter(p => p.isTrending).length > 0 && (
         <TrendingProductsCarousel products={productList.filter(p => p.isTrending)} />
       )}
+
+      {/* Sale Banner - Dynamically displayed when there's an active sale event */}
+      <SaleBanner />
 
       {/* Hero Section - Women */}
       <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">

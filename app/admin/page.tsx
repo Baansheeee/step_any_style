@@ -100,7 +100,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-gradient-to-r from-[#4C1D95] via-[#6B21A8] to-[#581C87] shadow-lg shadow-purple-900/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -110,24 +110,24 @@ export default function AdminDashboard() {
                   alt="Step & Style"
                   width={140}
                   height={45}
-                  className="h-10 md:h-18 w-auto object-contain"
+                  className="h-10 md:h-18 w-auto object-contain brightness-0 invert"
                 />
               </Link>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent -ml-10">
+              <h1 className="text-2xl font-black uppercase tracking-wide text-white/90 -ml-10">
                 Admin Dashboard
               </h1>
             </div>
             <div className="flex items-center gap-3">
               <Link
                 href="/?preview=true"
-                className="text-gray-600 hover:text-purple-600 font-medium transition-colors"
+                className="text-white/80 hover:text-white font-medium transition-colors"
               >
                 ← Back to Store
               </Link>
               <button
                 onClick={handleLogout}
                 disabled={isLoggingOut}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-60"
+                className="px-4 py-2 rounded-lg border border-white/20 text-sm font-semibold text-white hover:bg-white/10 transition disabled:opacity-60"
               >
                 {isLoggingOut ? 'Logging out...' : 'Logout'}
               </button>
