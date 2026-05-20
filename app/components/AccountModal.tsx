@@ -157,7 +157,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
           <div className="flex justify-center mb-4 space-x-3">
             <button
               className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all ${
-                mode === 'login' ? 'bg-purple-600 text-white shadow-lg' : 'bg-gray-100 text-gray-600'
+                mode === 'login' ? 'bg-[#A855F7] text-white shadow-lg' : 'bg-gray-100 text-gray-600'
               }`}
               onClick={() => onModeChange('login')}
             >
@@ -165,7 +165,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
             </button>
             <button
               className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all ${
-                mode === 'register' ? 'bg-purple-600 text-white shadow-lg' : 'bg-gray-100 text-gray-600'
+                mode === 'register' ? 'bg-[#A855F7] text-white shadow-lg' : 'bg-gray-100 text-gray-600'
               }`}
               onClick={() => onModeChange('register')}
             >
@@ -182,7 +182,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
                   required
                   value={formValues.name}
                   onChange={(e) => handleChange('name', e.target.value)}
-                  className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all hover:border-gray-300"
+                  className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#A855F7] focus:border-[#A855F7] focus:outline-none transition-all hover:border-gray-300"
                   placeholder="Jane Doe"
                 />
               </div>
@@ -195,7 +195,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
                 required
                 value={formValues.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all hover:border-gray-300"
+                className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#A855F7] focus:border-[#A855F7] focus:outline-none transition-all hover:border-gray-300"
                 placeholder="you@example.com"
               />
             </div>
@@ -207,7 +207,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
                 required
                 value={formValues.password}
                 onChange={(e) => handleChange('password', e.target.value)}
-                className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all hover:border-gray-300"
+                className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#A855F7] focus:border-[#A855F7] focus:outline-none transition-all hover:border-gray-300"
                 placeholder="••••••••"
                 minLength={8}
               />
@@ -222,14 +222,14 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
                   required
                   value={formValues.confirmPassword}
                   onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                  className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all hover:border-gray-300"
+                  className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#A855F7] focus:border-[#A855F7] focus:outline-none transition-all hover:border-gray-300"
                   placeholder="••••••••"
                 />
               </div>
             )}
 
             {mode === 'register' && preSelectInfluencer && (
-              <div className="space-y-2 rounded-lg border border-purple-100 p-2.5 bg-purple-50/50">
+              <div className="space-y-2 rounded-lg border border-[#A855F7]/20 p-2.5 bg-[#A855F7]/5">
                 <label className="flex items-center space-x-2 text-xs text-gray-700">
                   <input
                     type="checkbox"
@@ -240,7 +240,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
                         handleChange('wantsAdmin', false);
                       }
                     }}
-                    className="w-3.5 h-3.5 text-purple-600 rounded border-gray-300 focus:ring-purple-500"
+                    className="w-3.5 h-3.5 text-[#A855F7] rounded border-gray-300 focus:ring-[#A855F7]"
                   />
                   <span>Register as Influencer</span>
                 </label>
@@ -253,7 +253,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
                       required
                       value={formValues.defaultPrefix}
                       onChange={(e) => handleChange('defaultPrefix', e.target.value.toUpperCase())}
-                      className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all hover:border-gray-300 uppercase"
+                      className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#A855F7] focus:border-[#A855F7] focus:outline-none transition-all hover:border-gray-300 uppercase"
                       placeholder="STYLE_A"
                       pattern="[A-Z0-9_]+"
                     />
@@ -264,7 +264,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
             )}
 
             {mode === 'register' && (
-              <div className="space-y-2 rounded-lg border border-purple-100 p-2.5 bg-purple-50/50">
+              <div className="space-y-2 rounded-lg border border-[#A855F7]/20 p-2.5 bg-[#A855F7]/5">
                 <label className="flex items-center space-x-2 text-xs text-gray-700">
                   <input
                     type="checkbox"
@@ -275,7 +275,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
                         handleChange('wantsInfluencer', false);
                       }
                     }}
-                    className="w-3.5 h-3.5 text-purple-600 rounded border-gray-300 focus:ring-purple-500"
+                    className="w-3.5 h-3.5 text-[#A855F7] rounded border-gray-300 focus:ring-[#A855F7]"
                   />
                   <span>I have an administrative key</span>
                 </label>
@@ -288,7 +288,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
                       required
                       value={formValues.adminKey}
                       onChange={(e) => handleChange('adminKey', e.target.value)}
-                      className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all hover:border-gray-300"
+                      className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#A855F7] focus:border-[#A855F7] focus:outline-none transition-all hover:border-gray-300"
                       placeholder="Enter administrative key"
                     />
                   </div>
@@ -302,7 +302,7 @@ export default function AccountModal({ isOpen, mode, onClose, onModeChange, onAu
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2.5 rounded-xl font-semibold text-sm shadow-lg hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-60 mt-2"
+              className="w-full bg-gradient-to-r from-[#A855F7] to-pink-600 text-white py-2.5 rounded-xl font-semibold text-sm shadow-lg hover:from-[#9333EA] hover:to-pink-700 transition-all disabled:opacity-60 mt-2"
             >
               {isSubmitting ? 'Please wait...' : mode === 'login' ? 'Login' : 'Register'}
             </button>
