@@ -55,7 +55,6 @@ const Footer = () => {
             <h4 className="font-black text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#A855F7] mb-6 md:mb-10">About Us</h4>
             <ul className="space-y-3 md:space-y-4 text-gray-500 text-[10px] md:text-[11px] font-bold uppercase tracking-widest">
               <li><Link href="/our-story" className="hover:text-white transition-colors">Our Story</Link></li>
-              <li><Link href="/sustainability" className="hover:text-white transition-colors">Sustainability</Link></li>
             </ul>
           </div>
 
