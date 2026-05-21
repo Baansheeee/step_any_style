@@ -9,6 +9,7 @@ import ProductCard from './components/ProductCard';
 import type { ProductDTO } from '@/types/product';
 import type { CollectionDTO } from '@/types/product';
 import { formatPKR } from '@/lib/currency';
+import SaleBanner from '@/app/components/SaleBanner';
 
 interface FilterState {
   search: string;
@@ -23,12 +24,15 @@ interface FilterState {
   onSale: boolean | null;
 }
 
+const PRODUCTS_PER_PAGE = 12;
+
 function ProductsContent() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<ProductDTO[]>([]);
   const [collections, setCollections] = useState<CollectionDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortOpen, setSortOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<FilterState>({
     search: searchParams.get('search') || '',
     collectionId: searchParams.get('collectionId') || '',
@@ -116,6 +120,7 @@ function ProductsContent() {
       newFilters.collectionId = '';
     }
     setFilters(newFilters);
+    setCurrentPage(1);
   };
 
   const handleReset = () => {
@@ -131,6 +136,35 @@ function ProductsContent() {
       isTrending: null,
       onSale: null,
     });
+    setCurrentPage(1);
+  };
+
+  // Pagination
+  const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = products.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const getPageNumbers = () => {
+    const pages: (number | 'ellipsis')[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push('ellipsis');
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (currentPage < totalPages - 2) pages.push('ellipsis');
+      pages.push(totalPages);
+    }
+    return pages;
   };
 
   const activeCollection = collections.find(c => c.id === filters.collectionId);
@@ -280,11 +314,77 @@ function ProductsContent() {
             ))}
           </div>
         ) : products.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.map((product, index) => (
-              <ProductCard key={product.id} product={product} index={index} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {paginatedProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-16 md:mt-20 flex flex-col items-center gap-6">
+                {/* Page Info */}
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">
+                  Showing {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}–{Math.min(currentPage * PRODUCTS_PER_PAGE, products.length)} of {products.length} products
+                </p>
+
+                {/* Pagination Controls */}
+                <div className="flex items-center gap-2">
+                  {/* Previous */}
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl border transition-all duration-300 ${
+                      currentPage === 1
+                        ? 'border-gray-100 text-gray-300 cursor-not-allowed'
+                        : 'border-[#F5F3FF] text-[#A855F7] hover:bg-[#FAF9FF] hover:border-[#E9D5FF] hover:shadow-lg hover:shadow-purple-100/50 active:scale-95'
+                    }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+
+                  {/* Page Numbers */}
+                  {getPageNumbers().map((page, idx) =>
+                    page === 'ellipsis' ? (
+                      <span key={`ellipsis-${idx}`} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-gray-300 text-sm font-bold tracking-widest">
+                        •••
+                      </span>
+                    ) : (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 ${
+                          currentPage === page
+                            ? 'bg-[#A855F7] text-white shadow-lg shadow-purple-200/50 scale-105'
+                            : 'border border-[#F5F3FF] text-gray-500 hover:bg-[#FAF9FF] hover:border-[#E9D5FF] hover:text-[#A855F7] active:scale-95'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    )
+                  )}
+
+                  {/* Next */}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl border transition-all duration-300 ${
+                      currentPage === totalPages
+                        ? 'border-gray-100 text-gray-300 cursor-not-allowed'
+                        : 'border-[#F5F3FF] text-[#A855F7] hover:bg-[#FAF9FF] hover:border-[#E9D5FF] hover:shadow-lg hover:shadow-purple-100/50 active:scale-95'
+                    }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-28">
             <div className="text-7xl mb-6">👟</div>
@@ -301,41 +401,11 @@ function ProductsContent() {
           </div>
         )}
 
-        {/* Bottom Promo Banner - Refined Lifestyle Style */}
-        {!loading && products.length > 0 && !filters.onSale && (
-          <div className="mt-20 rounded-2xl overflow-hidden bg-white flex flex-col md:min-h-[400px] md:flex-row items-stretch border border-gray-100 shadow-sm relative group/banner">
-            {/* Left: Image Section */}
-            <div className="relative w-full md:w-1/2 min-h-[300px] md:min-h-full">
-              <Image 
-                src="/Banner/summer_essentials.webp" 
-                alt="Summer Essentials" 
-                fill 
-                className="object-cover"
-              />
-            </div>
 
-            {/* Right: Text Section */}
-            <div className="relative z-10 flex-1 p-8 md:p-14 flex flex-col justify-center items-start text-left bg-white">
-              <div className="relative z-10 space-y-8 max-w-lg">
-                <div className="space-y-4">
-                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#7C3AED]">New Arrivals</p>
-                  <h2 className="text-3xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter leading-[0.9]">
-                    Summer<br />Essentials
-                  </h2>
-                </div>
-                <p className="text-sm md:text-lg text-gray-500 font-medium leading-relaxed">
-                  Refined style for the modern look. From polished loafers to everyday sneakers, find your signature look for the season.
-                </p>
-                <div className="pt-4">
-                  <button className="px-12 py-4 bg-[#F5F3FF] text-[#6B21A8] text-[11px] font-black uppercase tracking-[0.3em] rounded-sm hover:bg-[#EDE9FE] transition-all shadow-sm active:scale-95">
-                    Shop Collection
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </main>
+
+      {/* Sale Banner - Dynamically displayed when there's an active sale event */}
+      {!loading && products.length > 0 && <SaleBanner />}
 
       <style jsx global>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSaleStatus } from '../hooks/useSaleStatus';
 import ScrollAnimate from './ScrollAnimate';
 
-export default function SaleBanner() {
+export default function SaleBanner({ fullWidth = true }: { fullWidth?: boolean }) {
   const saleInfo = useSaleStatus();
 
   if (!saleInfo || !saleInfo.show) return null;
@@ -15,9 +15,9 @@ export default function SaleBanner() {
 
   return (
     <section className="w-full py-10 bg-gradient-to-b from-white via-[#FAF9FF] to-white overflow-hidden">
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10">
+      <div className={fullWidth ? "w-full" : "max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10"}>
         <ScrollAnimate animation="fade-in">
-          <div className="relative rounded-3xl bg-gradient-to-r from-[#FAF9FF] via-[#F3E8FF] to-[#FAF9FF] border border-[#E9D5FF] shadow-2xl overflow-hidden md:grid md:grid-cols-12 md:items-center">
+          <div className={`relative bg-gradient-to-r from-[#FAF9FF] via-[#F3E8FF] to-[#FAF9FF] border-y border-[#E9D5FF] shadow-2xl overflow-hidden md:grid md:grid-cols-12 md:items-center ${fullWidth ? 'rounded-none border-x-0' : 'rounded-3xl border shadow-2xl'}`}>
             
             {/* Background design elements */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-[#E9D5FF]/30 to-transparent rounded-full filter blur-3xl pointer-events-none" />
@@ -92,7 +92,7 @@ export default function SaleBanner() {
             {/* Right Image Column */}
             <div className="relative h-[320px] sm:h-[400px] md:h-full min-h-[350px] md:col-span-5 w-full overflow-hidden border-t md:border-t-0 md:border-l border-[#E9D5FF]/60 bg-white">
               <Image
-                src="/Banner/sale_banner.png"
+                src="/Banner/sale_banner_clean.png"
                 alt={eventName}
                 fill
                 priority
