@@ -109,8 +109,8 @@ export default function Navbar() {
     <>
       <TopBanner />
       <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
-        ? 'bg-gradient-to-r from-[#4C1D95]/95 via-[#6B21A8]/95 to-[#581C87]/95 backdrop-blur-md shadow-lg shadow-purple-900/20'
-        : 'bg-gradient-to-r from-[#4C1D95] via-[#6B21A8] to-[#581C87]'
+        ? 'bg-[#A855F7]/95 backdrop-blur-md shadow-lg shadow-purple-500/20'
+        : 'bg-[#A855F7]'
         }`}>
         <div className="max-w-[1600px] mx-auto px-3 sm:px-6 md:px-20">
           <div className="flex justify-between items-center h-20">
@@ -258,7 +258,7 @@ export default function Navbar() {
                 onClick={() => setIsCartDrawerOpen(true)}
               >
                 <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all">Cart</span>
-                <div className="ml-2 w-6 h-6 bg-yellow-300 text-[#4C1D95] text-[10px] flex items-center justify-center rounded-full font-black group-hover:bg-white group-hover:text-[#6B21A8] transition-colors">
+                <div className="ml-2 w-6 h-6 bg-yellow-300 text-[#A855F7] text-[10px] flex items-center justify-center rounded-full font-black group-hover:bg-white group-hover:text-[#A855F7] transition-colors">
                   {cartCount}
                 </div>
               </button>

@@ -100,7 +100,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Header */}
-      <header className="bg-gradient-to-r from-[#4C1D95] via-[#6B21A8] to-[#581C87] shadow-lg shadow-purple-900/20 sticky top-0 z-50">
+      <header className="bg-[#A855F7] shadow-lg shadow-purple-500/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">

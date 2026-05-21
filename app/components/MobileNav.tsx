@@ -266,7 +266,7 @@ export default function MobileNav({
 
           {/* Cart Button */}
           <button
-            className="w-full bg-gradient-to-r from-[#4C1D95] via-[#6B21A8] to-[#581C87] text-white font-black uppercase tracking-[0.2em] py-5 mt-8 rounded-2xl shadow-xl hover:shadow-purple-300/30 transition-all"
+            className="w-full bg-[#A855F7] text-white font-black uppercase tracking-[0.2em] py-5 mt-8 rounded-2xl shadow-xl hover:bg-[#9333EA] hover:shadow-purple-500/30 transition-all"
             onClick={() => {
               setIsOpen(false);
               onOpenCart();

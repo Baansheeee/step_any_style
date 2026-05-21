@@ -286,7 +286,7 @@ export default function Home() {
             <ScrollAnimate animation="slide-in-right">
               <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">Exclusive Collections</h2>
               <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
-                The Men&apos;s 
+                The Men&apos;s
               </h3>
               <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#A855F7] to-[#460e7b] bg-clip-text text-transparent">
                 Essentials
@@ -350,7 +350,7 @@ export default function Home() {
             <ScrollAnimate animation="slide-in-right">
               <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">Exclusive Collections</h2>
               <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
-                The Kids&apos; 
+                The Kids&apos;
               </h3>
               <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#A855F7] to-[#460e7b] bg-clip-text text-transparent">
                 Collection
