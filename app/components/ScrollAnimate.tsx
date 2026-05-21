@@ -24,6 +24,11 @@ export default function ScrollAnimate({
     const element = ref.current;
     if (!element) return;
 
+    // Responsive IntersectionObserver settings for mobile and desktop
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const rootMargin = isMobile ? '0px 0px -30px 0px' : '0px 0px -50px 0px';
+    const effectiveThreshold = isMobile ? 0.05 : threshold;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -33,8 +38,8 @@ export default function ScrollAnimate({
         }
       },
       {
-        threshold,
-        rootMargin: '0px 0px -50px 0px',
+        threshold: effectiveThreshold,
+        rootMargin,
       }
     );
 

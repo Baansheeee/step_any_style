@@ -1,0 +1,24 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /auth
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /debug*
+Disallow: /*.json
+
+# GPTBot
+User-agent: GPTBot
+Disallow: /
+
+# ChatGPT-User
+User-agent: ChatGPT-User
+Disallow: /
+
+# Host
+Host: https://step-and-style.com
+
+# Sitemaps
+Sitemap: https://step-and-style.com/sitemap.xml
