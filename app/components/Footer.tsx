@@ -65,29 +65,28 @@ const Footer = () => {
               {[
                 {
                   name: 'Facebook',
+                  url: 'https://www.facebook.com/profile.php?id=615658489042129',
                   path: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z',
                   hoverColor: 'hover:text-[#1877F2] hover:bg-[#1877F2]/10 hover:border-[#1877F2]/30'
                 },
                 {
                   name: 'Instagram',
+                  url: 'https://www.instagram.com/stepandstylzone?igsh=aDltc29xbj3Zm8=',
                   path: 'M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z M17.5 6.5h.01 M2 12c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12z',
                   hoverColor: 'hover:text-[#E4405F] hover:bg-[#E4405F]/10 hover:border-[#E4405F]/30'
                 },
                 {
-                  name: 'Twitter',
-                  path: 'M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z',
-                  hoverColor: 'hover:text-[#1DA1F2] hover:bg-[#1DA1F2]/10 hover:border-[#1DA1F2]/30'
-                },
-                {
-                  name: 'YouTube',
-                  path: 'M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2C5.12 19.5 12 19.5 12 19.5s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z',
-                  extra: <path d="m9.75 15.02 5.75-3.27-5.75-3.27v6.54z" fill="currentColor" stroke="none" />,
-                  hoverColor: 'hover:text-[#FF0000] hover:bg-[#FF0000]/10 hover:border-[#FF0000]/30'
+                  name: 'Email',
+                  url: 'mailto:stepandstyle007@gmail.com',
+                  path: 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6',
+                  hoverColor: 'hover:text-[#EA4335] hover:bg-[#EA4335]/10 hover:border-[#EA4335]/30'
                 }
               ].map((social, idx) => (
                 <Link
                   key={idx}
-                  href="#"
+                  href={social.url}
+                  target={social.name !== 'Email' ? '_blank' : undefined}
+                  rel={social.name !== 'Email' ? 'noopener noreferrer' : undefined}
                   className={`w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full bg-white/5 text-gray-400 border border-white/10 transition-all duration-300 ${social.hoverColor} group`}
                   aria-label={social.name}
                 >
@@ -103,7 +102,6 @@ const Footer = () => {
                     className="md:w-5 md:h-5 transition-transform duration-300 group-hover:scale-110"
                   >
                     <path d={social.path} />
-                    {social.extra}
                   </svg>
                 </Link>
               ))}
