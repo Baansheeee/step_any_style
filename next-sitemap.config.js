@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://step-and-style.com',
+  siteUrl: 'https://www.stepandstyle.com',
   generateRobotsTxt: true,
   changefreq: 'weekly',
   priority: 0.7,
@@ -79,7 +79,7 @@ module.exports = {
         disallow: '/',
       },
     ],
-    host: 'https://step-and-style.com',
-    sitemap: 'https://step-and-style.com/sitemap.xml',
+    host: 'https://www.stepandstyl.com',
+    sitemap: 'https://www.stepandstyl.com/sitemap.xml',
   },
 }
