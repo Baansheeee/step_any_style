@@ -65,7 +65,7 @@ const Footer = () => {
               {[
                 {
                   name: 'Facebook',
-                  url: 'https://www.facebook.com/profile.php?id=615658489042129',
+                  url: 'https://www.facebook.com/people/Step-and-style/61565848942129/?checkpoint_src=any',
                   path: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z',
                   hoverColor: 'hover:text-[#1877F2] hover:bg-[#1877F2]/10 hover:border-[#1877F2]/30'
                 },
