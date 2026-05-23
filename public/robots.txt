@@ -18,7 +18,7 @@ User-agent: ChatGPT-User
 Disallow: /
 
 # Host
-Host: https://step-and-style.com
+Host: https://www.stepandstyl.com
 
 # Sitemaps
-Sitemap: https://step-and-style.com/sitemap.xml
+Sitemap: https://www.stepandstyl.com/sitemap.xml
