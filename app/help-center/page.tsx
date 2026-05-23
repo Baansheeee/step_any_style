@@ -12,7 +12,7 @@ export default function HelpCenterPage() {
     },
     {
       q: "What payment methods do you accept?",
-      a: "We accept Cash on Delivery (COD), Direct Bank Transfers, and all major Credit/Debit Cards. Please note that Bank Transfers and Online Payments qualify for free delivery!"
+      a: "We accept Cash on Delivery (COD) across Pakistan. Simply pay when you receive your order. Delivery takes 3-5 business days for major cities and 4-6 business days for other regions."
     },
     {
       q: "Can I change or cancel my order?",

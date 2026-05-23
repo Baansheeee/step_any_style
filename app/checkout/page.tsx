@@ -1,16 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import {
-  Elements,
-  CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement,
-  useElements,
-  useStripe,
-} from '@stripe/react-stripe-js';
-import type { Stripe, StripeElements } from '@stripe/stripe-js';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/app/context/CartContext';
 import AccountModal, { AuthUser, AuthMode } from '@/app/components/AccountModal';
@@ -18,19 +8,13 @@ import { formatPKR } from '@/lib/currency';
 import Link from 'next/link';
 import Image from 'next/image';
 
-type PaymentMethod = 'card' | 'direct' | 'cod';
-type DirectAccount = 'meezan' | 'easypaisa';
+type PaymentMethod = 'cod';
 
 interface PromoCodeData {
   id: string;
   code: string;
   discountPercent: number;
 }
-
-const accountDetails: Record<DirectAccount, { name: string; accountNo: string; accountTitle: string }> = {
-  meezan: { name: 'Meezan Bank', accountNo: '08120108038833', accountTitle: 'Muhammad Saad Saleem' },
-  easypaisa: { name: 'Easypaisa', accountNo: '03340562205', accountTitle: 'Muhammad Saad Saleem' },
-};
 
 
 interface ShippingRegion {
@@ -44,10 +28,6 @@ interface ShippingCity {
   id: string;
   name: string;
 }
-
-const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-const stripePromise = stripePublishableKey ? loadStripe(stripePublishableKey) : null;
-const stripeAvailable = Boolean(stripePublishableKey);
 
 export default function CheckoutPage() {
   return (
@@ -81,36 +61,12 @@ export default function CheckoutPage() {
         </Link>
       </header>
 
-      {stripePromise ? (
-        <Elements stripe={stripePromise}>
-          <CheckoutWithStripe />
-        </Elements>
-      ) : (
-        <CheckoutWithoutStripe />
-      )}
+      <CheckoutContent />
     </div>
   );
 }
 
-function CheckoutWithStripe() {
-  const stripe = useStripe();
-  const elements = useElements();
-  return <CheckoutContent stripe={stripe} elements={elements} stripeAvailable />;
-}
-
-function CheckoutWithoutStripe() {
-  return <CheckoutContent stripe={null} elements={null} stripeAvailable={false} />;
-}
-
-function CheckoutContent({
-  stripe,
-  elements,
-  stripeAvailable = true,
-}: {
-  stripe: Stripe | null;
-  elements: StripeElements | null;
-  stripeAvailable?: boolean;
-}) {
+function CheckoutContent() {
   const router = useRouter();
   const { items, subtotal, promoCode, clearCart } = useCart();
 
@@ -128,16 +84,10 @@ function CheckoutContent({
     newsletters: true
   });
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(stripeAvailable ? 'card' : 'direct');
-  const [directAccount, setDirectAccount] = useState<DirectAccount>('meezan');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod');
   const [promoInput, setPromoInput] = useState(promoCode);
   const [validatedPromo, setValidatedPromo] = useState<PromoCodeData | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
-  const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
-  const [receiptStatus, setReceiptStatus] = useState<'idle' | 'uploading' | 'done' | 'error'>('idle');
-  const [receiptError, setReceiptError] = useState<string | null>(null);
-  const receiptInputRef = useRef<HTMLInputElement | null>(null);
-  const [cardError, setCardError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userRole, setUserRole] = useState<AuthUser['role'] | null>(null);
@@ -176,21 +126,19 @@ function CheckoutContent({
     fetchRegions();
   }, []);
 
-  const { promoDiscount, directTransferDiscount, shippingCost, finalTotal } = useMemo(() => {
+  const { promoDiscount, shippingCost, finalTotal } = useMemo(() => {
     const promoAmount = validatedPromo ? (subtotal * validatedPromo.discountPercent) / 100 : 0;
     const afterPromo = subtotal - promoAmount;
-    const transferDiscount = paymentMethod === 'direct' ? afterPromo * 0.05 : 0;
     
     const selectedRegion = regions.find(r => r.id === selectedRegionId);
-    const sCost = selectedRegion ? selectedRegion.shippingCost : 350; // Fallback to 350 if no region selected yet
+    const sCost = selectedRegion ? selectedRegion.shippingCost : 350;
     
     return {
       promoDiscount: promoAmount,
-      directTransferDiscount: transferDiscount,
       shippingCost: sCost,
-      finalTotal: Math.max(0, afterPromo - transferDiscount + sCost),
+      finalTotal: Math.max(0, afterPromo + sCost),
     };
-  }, [subtotal, validatedPromo, paymentMethod, regions, selectedRegionId]);
+  }, [subtotal, validatedPromo, regions, selectedRegionId]);
 
   const handleValidatePromo = async () => {
     if (!promoInput.trim()) return;
@@ -210,24 +158,6 @@ function CheckoutContent({
     }
   };
 
-  const handleReceiptChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setReceiptStatus('uploading');
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/uploads/receipt', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setReceiptUrl(data.url);
-      setReceiptStatus('done');
-    } catch (e) {
-      setReceiptStatus('error');
-      setReceiptError('Upload failed');
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (items.length === 0 || isSubmitting) return;
@@ -235,22 +165,6 @@ function CheckoutContent({
     setIsSubmitting(true);
     setStatusMessage(null);
     try {
-      let paymentIntentId: string | null = null;
-      if (paymentMethod === 'card') {
-        if (!stripe || !elements) throw new Error('Stripe not ready');
-        const intentRes = await fetch('/api/payments/create-intent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: finalTotal }),
-        });
-        const intentData = await intentRes.json();
-        const confirmation = await stripe.confirmCardPayment(intentData.clientSecret, {
-          payment_method: { card: elements.getElement(CardNumberElement)!, billing_details: { name: `${shippingInfo.firstName} ${shippingInfo.lastName}`, email: shippingInfo.email } }
-        });
-        if (confirmation.error) throw new Error(confirmation.error.message);
-        paymentIntentId = confirmation.paymentIntent?.id ?? null;
-      }
-
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -259,16 +173,12 @@ function CheckoutContent({
           shippingAddress: { ...shippingInfo, fullName: `${shippingInfo.firstName} ${shippingInfo.lastName}`.trim() },
           shippingRegion: regions.find(r => r.id === selectedRegionId)?.name,
           shippingCity: regions.find(r => r.id === selectedRegionId)?.cities.find(c => c.id === selectedCityId)?.name,
-          paymentMethod,
-          directAccount: paymentMethod === 'direct' ? directAccount : null,
+          paymentMethod: 'cod',
           promoCodeId: validatedPromo?.id ?? null,
           subtotal,
           promoDiscount,
-          directTransferDiscount,
           shippingCost,
           total: finalTotal,
-          receiptUrl,
-          paymentIntentId,
         }),
       });
       if (!response.ok) throw new Error('Failed to place order');
@@ -389,144 +299,33 @@ function CheckoutContent({
           {/* Shipping Method Section */}
           <section className="space-y-4">
             <h2 className="text-xl font-medium tracking-tight">Shipping method</h2>
-            <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
-               {[
-                 { id: 'prepaid', label: 'Online Payment (Priority)', sub: 'Fastest delivery', price: formatPKR(shippingCost), active: paymentMethod !== 'cod' },
-                 { id: 'cod', label: 'Cash on Delivery', sub: 'Standard delivery', price: formatPKR(shippingCost), active: paymentMethod === 'cod' }
-               ].map((opt) => (
-                 <label key={opt.id} className={`flex items-center justify-between p-5 cursor-pointer hover:bg-gray-50/50 transition-colors ${opt.active ? 'bg-purple-50/20' : ''}`}>
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="radio" name="shipMethod" 
-                        checked={opt.active}
-                        onChange={() => setPaymentMethod(opt.id === 'prepaid' ? 'card' : 'cod')}
-                        className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500" 
-                      />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{opt.label}</p>
-                        <p className="text-xs text-gray-400">{opt.sub}</p>
-                      </div>
-                    </div>
-                    <span className="text-xs font-bold text-gray-900">{opt.price}</span>
-                 </label>
-               ))}
+            <div className="border border-gray-200 rounded-xl p-5 bg-purple-50/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-4 h-4 rounded-full bg-purple-600"></div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Cash on Delivery</p>
+                    <p className="text-xs text-gray-400">Standard delivery</p>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-gray-900">{formatPKR(shippingCost)}</span>
+              </div>
             </div>
           </section>
 
-          {/* Payment Section */}
-          <section className="space-y-6">
-            <div>
-              <h2 className="text-xl font-medium tracking-tight">Payment</h2>
-              <p className="text-xs text-gray-400 mt-1">All transactions are secure and encrypted.</p>
-            </div>
-
-            <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
-               {/* Card / Stripe */}
-               <div className={`p-5 space-y-4 transition-colors ${paymentMethod === 'card' ? 'bg-purple-50/20' : ''}`}>
-                  <label className="flex items-center justify-between cursor-pointer">
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="radio" name="payment" 
-                        checked={paymentMethod === 'card'}
-                        onChange={() => setPaymentMethod('card')}
-                        className="w-4 h-4 text-purple-600" 
-                      />
-                      <span className="text-sm font-medium">Credit / Debit Card</span>
-                    </div>
-                    <div className="flex gap-1">
-                      <div className="w-8 h-5 bg-gray-100 rounded border border-gray-200" />
-                      <div className="w-8 h-5 bg-gray-100 rounded border border-gray-200" />
-                    </div>
-                  </label>
-                  
-                  {paymentMethod === 'card' && stripeAvailable && (
-                    <div className="pt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                      <div className="border border-gray-200 rounded-lg p-3 bg-white">
-                        <CardNumberElement options={{ style: { base: { fontSize: '14px' } } }} />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="border border-gray-200 rounded-lg p-3 bg-white">
-                          <CardExpiryElement options={{ style: { base: { fontSize: '14px' } } }} />
-                        </div>
-                        <div className="border border-gray-200 rounded-lg p-3 bg-white">
-                          <CardCvcElement options={{ style: { base: { fontSize: '14px' } } }} />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-               </div>
-
-               {/* Bank Transfer */}
-               <div className={`p-5 space-y-4 transition-colors ${paymentMethod === 'direct' ? 'bg-purple-50/20' : ''}`}>
-                  <label className="flex items-center justify-between cursor-pointer">
-                    <div className="flex items-center gap-4">
-                      <input 
-                        type="radio" name="payment" 
-                        checked={paymentMethod === 'direct'}
-                        onChange={() => setPaymentMethod('direct')}
-                        className="w-4 h-4 text-purple-600" 
-                      />
-                      <span className="text-sm font-medium">Direct Bank Transfer</span>
-                    </div>
-                    <span className="text-[10px] font-black bg-purple-600 text-white px-2 py-0.5 rounded uppercase">Save 5%</span>
-                  </label>
-
-                  {paymentMethod === 'direct' && (
-                    <div className="pt-4 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-
-                       
-                       <div className="grid md:grid-cols-2 gap-4">
-                          <select 
-                            value={directAccount}
-                            onChange={(e) => setDirectAccount(e.target.value as DirectAccount)}
-                            className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm font-medium"
-                          >
-                            <option value="meezan">Meezan Bank</option>
-                            <option value="easypaisa">Easypaisa</option>
-                          </select>
-                          
-                          <div 
-                            onClick={() => receiptInputRef.current?.click()}
-                            className="border-2 border-dashed border-gray-200 rounded-xl p-3 text-center cursor-pointer hover:border-purple-400 transition-colors"
-                          >
-                             <input ref={receiptInputRef} type="file" className="hidden" onChange={handleReceiptChange} />
-                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                               {receiptStatus === 'done' ? 'Receipt Uploaded ✓' : 'Upload Receipt'}
-                             </p>
-                          </div>
-                       </div>
-                       
-                       <div className="bg-white border border-gray-100 rounded-xl p-5 space-y-2">
-                          <p className="text-[10px] font-black text-purple-600 uppercase tracking-widest">{accountDetails[directAccount].name}</p>
-                          <p className="text-base font-black text-gray-900">{accountDetails[directAccount].accountNo}</p>
-                          <p className="text-[10px] text-gray-400 font-medium uppercase tracking-[0.2em]">{accountDetails[directAccount].accountTitle}</p>
-                       </div>
-                    </div>
-                  )}
-               </div>
-
-               {/* Cash on Delivery */}
-               <div className={`p-5 space-y-4 transition-colors ${paymentMethod === 'cod' ? 'bg-purple-50/20' : ''}`}>
-                  <label className="flex items-center gap-4 cursor-pointer">
-                    <input 
-                      type="radio" name="payment" 
-                      checked={paymentMethod === 'cod'}
-                      onChange={() => setPaymentMethod('cod')}
-                      className="w-4 h-4 text-purple-600" 
-                    />
-                    <span className="text-sm font-medium">Cash on Delivery</span>
-                  </label>
-               </div>
-            </div>
+          {/* Payment Info Section */}
+          <section className="space-y-4 bg-blue-50 border border-blue-200 rounded-xl p-5">
+            <p className="text-sm font-medium text-blue-900">Payment Method: Cash on Delivery</p>
+            <p className="text-xs text-blue-700">Please have the exact amount ready when the package is delivered.</p>
           </section>
 
           {/* Action Button */}
           <div className="pt-6">
             <button 
-              type="submit" disabled={isSubmitting || (paymentMethod === 'direct' && !receiptUrl)}
+              type="submit" disabled={isSubmitting}
               className="w-full bg-[#E91E63] text-white py-5 rounded-lg text-sm font-black uppercase tracking-[0.3em] shadow-xl shadow-pink-100 hover:bg-[#D81B60] hover:scale-[1.01] active:scale-95 transition-all disabled:opacity-50"
             >
-              {isSubmitting ? 'Processing...' : paymentMethod === 'cod' ? 'Complete order' : 'Pay now'}
+              {isSubmitting ? 'Processing...' : 'Complete Order'}
             </button>
             {statusMessage && <p className="text-xs text-red-500 font-bold text-center mt-4">{statusMessage}</p>}
           </div>
@@ -603,13 +402,6 @@ function CheckoutContent({
                <div className="flex justify-between items-center text-sm font-bold text-green-600">
                   <span>Discount</span>
                   <span>-{formatPKR(promoDiscount)}</span>
-               </div>
-             )}
-
-             {paymentMethod === 'direct' && (
-               <div className="flex justify-between items-center text-sm font-bold text-purple-600">
-                  <span>Bank Discount (5%)</span>
-                  <span>-{formatPKR(directTransferDiscount)}</span>
                </div>
              )}
 

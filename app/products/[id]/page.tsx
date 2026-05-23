@@ -603,20 +603,6 @@ export default function ProductDetailPage() {
                 <span className="text-[9px] font-black uppercase tracking-widest text-green-600 bg-green-100 px-3 py-1 rounded-full">Trust</span>
               </div>
 
-              {/* 5% Extra Discount */}
-              <div className="flex items-center gap-4 bg-gradient-to-r from-amber-50 to-orange-50 p-5 border-b border-amber-100 group">
-                <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-200 transition-transform group-hover:scale-110">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.407 2.67 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.407-2.67-1M12 16v1m4-12V3c0-1.105-.895-2-2-2H4c-1.105 0-2 .895-2 2v18c0 1.105.895 2 2 2h16c1.105 0 2-.895 2-2V7c0-1.105-.895-2-2-2h-2z" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-[11px] font-black text-amber-700 uppercase tracking-wider">5% Extra Discount</p>
-                  <p className="text-[10px] text-amber-600/70 font-medium">On Direct Bank Transfer & Online Payments</p>
-                </div>
-                <span className="text-[9px] font-black uppercase tracking-widest text-amber-600 bg-amber-100 px-3 py-1 rounded-full">Save 5%</span>
-              </div>
-
               {/* 7 Day Returns */}
               <div className="flex items-center gap-4 bg-gradient-to-r from-purple-50 to-violet-50 p-5 border-b border-purple-100 group">
                 <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-200 transition-transform group-hover:scale-110">

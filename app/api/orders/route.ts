@@ -134,8 +134,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Shipping region and city are required.' }, { status: 400 });
     }
 
-    if (!paymentMethod || !['card', 'direct', 'cod'].includes(paymentMethod)) {
-      return NextResponse.json({ success: false, error: 'Invalid payment method.' }, { status: 400 });
+    if (!paymentMethod || !['cod'].includes(paymentMethod)) {
+      return NextResponse.json({ success: false, error: 'Only Cash on Delivery is accepted.' }, { status: 400 });
     }
 
     // Get shipping cost from database
@@ -158,28 +158,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const normalizedMethod = paymentMethodMap[paymentMethod as keyof typeof paymentMethodMap];
-
-    if (paymentMethod === 'direct' && !receiptUrl) {
-      return NextResponse.json(
-        { success: false, error: 'Payment receipt is required for Direct Transfer.' },
-        { status: 400 },
-      );
-    }
-
-    if (paymentMethod === 'direct' && !directAccount) {
-      return NextResponse.json(
-        { success: false, error: 'Please select the bank / wallet used for transfer.' },
-        { status: 400 },
-      );
-    }
-
-    if (paymentMethod === 'card' && !paymentIntentId) {
-      return NextResponse.json(
-        { success: false, error: 'Card payment requires a valid Stripe payment intent.' },
-        { status: 400 },
-      );
-    }
+    const normalizedMethod = 'COD';
 
     let promoCode = null;
     if (promoCodeId) {
@@ -253,12 +232,7 @@ export async function POST(request: NextRequest) {
       html: buildOrderSummaryEmail({
         title: 'Order received!',
         order,
-        message:
-          normalizedMethod === 'CARD'
-            ? 'Your payment is processing. Our team will review and update you shortly.'
-            : normalizedMethod === 'DIRECT'
-              ? 'We have received your payment receipt. Our team will verify it and confirm via email.'
-              : 'Your Cash on Delivery order has been received. Our team will prepare it for delivery.',
+        message: 'Your Cash on Delivery order has been received. Our team will prepare it for delivery shortly.',
       }),
     });
 

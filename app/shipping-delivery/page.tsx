@@ -25,14 +25,7 @@ export default function ShippingDeliveryPage() {
                   <span>Cash on Delivery</span>
                   <span className="font-black text-gray-900">Rs. 300 - 350</span>
                 </li>
-                <li className="flex justify-between border-b border-purple-100 pb-2">
-                  <span>Direct Bank Transfer</span>
-                  <span className="font-black text-gray-900 tracking-tight">Rs. 300 - 350</span>
-                </li>
-                <li className="flex justify-between border-b border-purple-100 pb-2">
-                  <span>Credit/Debit Card</span>
-                  <span className="font-black text-gray-900 tracking-tight">Rs. 300 - 350</span>
-                </li>
+
               </ul>
             </ScrollAnimate>
 
