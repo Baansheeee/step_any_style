@@ -77,7 +77,7 @@ const Footer = () => {
                 },
                 {
                   name: 'Email',
-                  url: 'mailto:stepandstyle007@gmail.com',
+                  url: 'mailto:stepandstyl007@gmail.com',
                   path: 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6',
                   hoverColor: 'hover:text-[#EA4335] hover:bg-[#EA4335]/10 hover:border-[#EA4335]/30'
                 }
