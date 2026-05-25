@@ -246,23 +246,17 @@ export default function Home() {
         {/* Mobile View */}
         <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
           <Image
-            src="/women.png"
+            src="/women_mobile.png"
             alt="Women's Collection"
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-purple-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-purple-950/15" />
           <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
             <ScrollAnimate animation="fade-in">
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-300 block mb-1">
-                Exclusive Collections
-              </span>
-              <h3 className="text-2xl font-black uppercase tracking-tighter text-white leading-none">
-                The Women&apos;s Essentials
+              <h3 className="text-3xl font-black uppercase tracking-tighter text-white leading-none">
+                Women&apos;s Collection
               </h3>
-              <p className="text-gray-300 text-xs font-light max-w-xs mx-auto mt-2 leading-relaxed">
-                Elegance in every step. Discover our curated collection of luxury heels, elegant sandals, and statement footwear.
-              </p>
               <div className="pt-4">
                 <Link
                   href="/products?gender=WOMEN"
@@ -341,23 +335,17 @@ export default function Home() {
         {/* Mobile View */}
         <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
           <Image
-            src="/men.png"
+            src="/men_mobile.png"
             alt="Men's Collection"
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-purple-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-purple-950/15" />
           <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
             <ScrollAnimate animation="fade-in">
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-300 block mb-1">
-                Exclusive Collections
-              </span>
-              <h3 className="text-2xl font-black uppercase tracking-tighter text-white leading-none">
-                The Men&apos;s Essentials
+              <h3 className="text-3xl font-black uppercase tracking-tighter text-white leading-none">
+                Men&apos;s Essentials
               </h3>
-              <p className="text-gray-300 text-xs font-light max-w-xs mx-auto mt-2 leading-relaxed">
-                Refined style for the modern man. From polished loafers to everyday sneakers, find your signature look.
-              </p>
               <div className="pt-4">
                 <Link
                   href="/products?gender=MEN"
@@ -438,23 +426,17 @@ export default function Home() {
         {/* Mobile View */}
         <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
           <Image
-            src="/kids1.png"
+            src="/kids_mobile.png"
             alt="Kids Collection"
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-purple-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-purple-950/15" />
           <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
             <ScrollAnimate animation="fade-in">
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-300 block mb-1">
-                Exclusive Collections
-              </span>
-              <h3 className="text-2xl font-black uppercase tracking-tighter text-white leading-none">
-                The Kids&apos; Collection
+              <h3 className="text-3xl font-black uppercase tracking-tighter text-white leading-none">
+                Kids&apos; Collection
               </h3>
-              <p className="text-gray-300 text-xs font-light max-w-xs mx-auto mt-2 leading-relaxed">
-                Comfortable and stylish footwear designed for growing feet. From playful sneakers to elegant party shoes, find the perfect fit.
-              </p>
               <div className="pt-4">
                 <Link
                   href="/products?gender=KIDS"
