@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import type { CollectionDTO } from '@/types/product';
+import FileUpload from './FileUpload';
 
 interface CollectionFormState {
   name: string;
@@ -245,103 +246,108 @@ export default function AdminCollectionsPanel() {
       )}
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold text-gray-900">
-                {modalMode === 'create' ? 'Add Collection' : 'Edit Collection'}
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[calc(100vh-2rem)] flex flex-col border border-gray-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Sticky Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/80 backdrop-blur-sm">
+              <h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {modalMode === 'create' ? 'Create New Collection' : 'Edit Collection Details'}
               </h3>
               <button
                 onClick={closeModal}
-                className="w-8 h-8 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-gray-200/60 text-gray-600 hover:bg-gray-200 hover:text-gray-900 flex items-center justify-center transition-all text-xs"
+                aria-label="Close modal"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Collection Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={formValues.name}
-                  onChange={(e) => {
-                    handleInputChange('name', e.target.value);
-                    if (modalMode === 'create') {
-                      handleInputChange('slug', e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''));
-                    }
-                  }}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
-                  placeholder="e.g. Bridal Heels"
-                />
-              </div>
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+              <form id="collectionForm" onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Collection Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formValues.name}
+                    onChange={(e) => {
+                      handleInputChange('name', e.target.value);
+                      if (modalMode === 'create') {
+                        handleInputChange('slug', e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''));
+                      }
+                    }}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-gray-400 hover:border-gray-300"
+                    placeholder="e.g. Bridal Heels"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Slug *</label>
-                <input
-                  type="text"
-                  required
-                  value={formValues.slug}
-                  onChange={(e) => handleInputChange('slug', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
-                  placeholder="bridal-heels"
-                />
-              </div>
+                <div>
+                  <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Slug *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formValues.slug}
+                    onChange={(e) => handleInputChange('slug', e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-gray-400 hover:border-gray-300"
+                    placeholder="bridal-heels"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Image URL</label>
-                <input
-                  type="text"
+                <FileUpload
+                  label="Collection Image"
+                  accept="image"
                   value={formValues.image}
-                  onChange={(e) => handleInputChange('image', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
-                  placeholder="/collections/heels.jpg"
+                  onChange={(url) => handleInputChange('image', url)}
+                  placeholder="JPG, PNG, WebP — drag & drop or browse"
                 />
-              </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                <textarea
-                  value={formValues.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400 resize-none"
-                  rows={3}
-                  placeholder="Describe this footwear collection..."
-                />
-              </div>
+                <div>
+                  <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Description</label>
+                  <textarea
+                    value={formValues.description}
+                    onChange={(e) => handleInputChange('description', e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-gray-400 hover:border-gray-300 resize-none"
+                    rows={3}
+                    placeholder="Describe this footwear collection..."
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Target Gender</label>
-                <select
-                  value={formValues.targetGender}
-                  onChange={(e) => handleInputChange('targetGender', e.target.value as any)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all hover:border-slate-400"
-                >
-                  <option value="MEN">Men</option>
-                  <option value="WOMEN">Women</option>
-                  <option value="KIDS">Kids</option>
-                  <option value="UNISEX">Unisex</option>
-                </select>
-              </div>
+                <div>
+                  <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Target Gender</label>
+                  <select
+                    value={formValues.targetGender}
+                    onChange={(e) => handleInputChange('targetGender', e.target.value as any)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all hover:border-gray-300 appearance-none bg-no-repeat bg-right pr-10"
+                    style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23a855f7\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundSize: '1.5em' }}
+                  >
+                    <option value="MEN">Men</option>
+                    <option value="WOMEN">Women</option>
+                    <option value="KIDS">Kids</option>
+                    <option value="UNISEX">Unisex</option>
+                  </select>
+                </div>
+              </form>
+            </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition disabled:opacity-60"
-                >
-                  {isSubmitting ? 'Saving...' : modalMode === 'create' ? 'Create Collection' : 'Save Changes'}
-                </button>
-              </div>
-            </form>
+            {/* Sticky Footer */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50/80 backdrop-blur-sm">
+              <button
+                type="button"
+                onClick={closeModal}
+                className="px-4 py-2 border border-gray-200 rounded-xl text-gray-700 font-semibold hover:bg-gray-100 active:bg-gray-200 transition-all text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="collectionForm"
+                disabled={isSubmitting}
+                className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60"
+              >
+                {isSubmitting ? 'Saving...' : modalMode === 'create' ? 'Create Collection' : 'Save Changes'}
+              </button>
+            </div>
           </div>
         </div>
       )}

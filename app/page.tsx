@@ -210,7 +210,8 @@ export default function Home() {
 
       {/* Hero Section - Women */}
       <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
-        <div className="max-w-[1600px] mx-auto flex flex-col md:grid md:grid-cols-2 items-stretch">
+        {/* Desktop View */}
+        <div className="hidden md:grid max-w-[1600px] mx-auto md:grid-cols-2 items-stretch">
           <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
             <Image
               src="/women.png"
@@ -238,6 +239,38 @@ export default function Home() {
               >
                 Shop Women
               </Link>
+            </ScrollAnimate>
+          </div>
+        </div>
+
+        {/* Mobile View */}
+        <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
+          <Image
+            src="/women.png"
+            alt="Women's Collection"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-purple-950/20" />
+          <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
+            <ScrollAnimate animation="fade-in">
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-300 block mb-1">
+                Exclusive Collections
+              </span>
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-white leading-none">
+                The Women&apos;s Essentials
+              </h3>
+              <p className="text-gray-300 text-xs font-light max-w-xs mx-auto mt-2 leading-relaxed">
+                Elegance in every step. Discover our curated collection of luxury heels, elegant sandals, and statement footwear.
+              </p>
+              <div className="pt-4">
+                <Link
+                  href="/products?gender=WOMEN"
+                  className="inline-block bg-white text-black hover:bg-[#E9D5FF] hover:text-[#6B21A8] px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-xl"
+                >
+                  Shop Women
+                </Link>
+              </div>
             </ScrollAnimate>
           </div>
         </div>
@@ -272,7 +305,8 @@ export default function Home() {
 
       {/* Hero Section - Men */}
       <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
-        <div className="max-w-[1600px] mx-auto flex flex-col md:grid md:grid-cols-2 items-stretch">
+        {/* Desktop View */}
+        <div className="hidden md:grid max-w-[1600px] mx-auto md:grid-cols-2 items-stretch">
           <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
             <Image
               src="/men.png"
@@ -300,6 +334,38 @@ export default function Home() {
               >
                 Shop Men
               </Link>
+            </ScrollAnimate>
+          </div>
+        </div>
+
+        {/* Mobile View */}
+        <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
+          <Image
+            src="/men.png"
+            alt="Men's Collection"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-purple-950/20" />
+          <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
+            <ScrollAnimate animation="fade-in">
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-300 block mb-1">
+                Exclusive Collections
+              </span>
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-white leading-none">
+                The Men&apos;s Essentials
+              </h3>
+              <p className="text-gray-300 text-xs font-light max-w-xs mx-auto mt-2 leading-relaxed">
+                Refined style for the modern man. From polished loafers to everyday sneakers, find your signature look.
+              </p>
+              <div className="pt-4">
+                <Link
+                  href="/products?gender=MEN"
+                  className="inline-block bg-white text-black hover:bg-[#E9D5FF] hover:text-[#6B21A8] px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-xl"
+                >
+                  Shop Men
+                </Link>
+              </div>
             </ScrollAnimate>
           </div>
         </div>
@@ -336,7 +402,8 @@ export default function Home() {
 
       {/* Hero Section - Kids */}
       <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
-        <div className="max-w-[1600px] mx-auto flex flex-col md:grid md:grid-cols-2 items-stretch">
+        {/* Desktop View */}
+        <div className="hidden md:grid max-w-[1600px] mx-auto md:grid-cols-2 items-stretch">
           <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
             <Image
               src="/kids1.png"
@@ -364,6 +431,38 @@ export default function Home() {
               >
                 Shop Kids
               </Link>
+            </ScrollAnimate>
+          </div>
+        </div>
+
+        {/* Mobile View */}
+        <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
+          <Image
+            src="/kids1.png"
+            alt="Kids Collection"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-purple-950/20" />
+          <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
+            <ScrollAnimate animation="fade-in">
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-300 block mb-1">
+                Exclusive Collections
+              </span>
+              <h3 className="text-2xl font-black uppercase tracking-tighter text-white leading-none">
+                The Kids&apos; Collection
+              </h3>
+              <p className="text-gray-300 text-xs font-light max-w-xs mx-auto mt-2 leading-relaxed">
+                Comfortable and stylish footwear designed for growing feet. From playful sneakers to elegant party shoes, find the perfect fit.
+              </p>
+              <div className="pt-4">
+                <Link
+                  href="/products?gender=KIDS"
+                  className="inline-block bg-white text-black hover:bg-[#E9D5FF] hover:text-[#6B21A8] px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-xl"
+                >
+                  Shop Kids
+                </Link>
+              </div>
             </ScrollAnimate>
           </div>
         </div>

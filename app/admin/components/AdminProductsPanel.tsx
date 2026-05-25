@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { formatPKR } from '@/lib/currency';
 import type { ProductDTO, CollectionDTO, ProductVariant } from '@/types/product';
+import FileUpload from './FileUpload';
+import MultiFileUpload from './MultiFileUpload';
 
 interface ProductFormState {
   slug: string;
@@ -409,317 +411,318 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
       )}
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 scrollbar-hide">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[calc(100vh-2rem)] flex flex-col border border-gray-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Sticky Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/80 backdrop-blur-sm">
+              <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 {modalMode === 'create' ? 'Add New Product' : 'Edit Product Details'}
               </h3>
               <button
                 onClick={closeModal}
-                className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-full bg-gray-200/60 text-gray-600 hover:bg-gray-200 hover:text-gray-900 flex items-center justify-center transition-colors text-xs"
                 aria-label="Close modal"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Product Slug *</label>
-                  <input
-                    type="text"
-                    required={modalMode === 'create'}
-                    value={formValues.slug}
-                    onChange={(e) => handleInputChange('slug', e.target.value)}
-                    placeholder="e.g. bridal-heels-01"
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all lowercase placeholder:text-slate-500 hover:border-slate-400"
-                    disabled={modalMode === 'edit'}
-                  />
-                  <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">Permanent unique identifier</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Collection *</label>
-                  <select
-                    value={formValues.collectionId}
-                    onChange={(e) => handleInputChange('collectionId', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all appearance-none bg-no-repeat bg-right pr-10 hover:border-slate-400"
-                    style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23475569\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundSize: '1.5em' }}
-                  >
-                    <option value="">No Collection</option>
-                    {collections.map(c => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Display Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={formValues.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
-                  placeholder="e.g. Luxury Velvet Bridal Heels"
-                />
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Sale Price (PKR) *</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">Rs.</span>
-                    <input
-                      type="number"
-                      min="0"
-                      step="1"
-                      required
-                      value={formValues.price}
-                      onChange={(e) => handleInputChange('price', e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-12 pr-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Original Price (optional)</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">Rs.</span>
-                    <input
-                      type="number"
-                      min="0"
-                      step="1"
-                      value={formValues.originalPrice}
-                      onChange={(e) => handleInputChange('originalPrice', e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-12 pr-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Discount Percentage (%)</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">%</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="1"
-                      value={formValues.discount}
-                      onChange={(e) => handleInputChange('discount', e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
-                      placeholder="e.g. 20"
-                    />
-                  </div>
-                </div>
-                {Number(formValues.discount) > 0 && Number(formValues.price) > 0 && (
-                  <div className="md:col-span-2 bg-green-50 border border-green-100 rounded-xl p-4 flex items-center justify-between">
-                    <div>
-                      <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-1">Updated Amount (Final Price)</p>
-                      <p className="text-2xl font-black text-gray-900">
-                        {formatPKR(Math.round(Number(formValues.price) * (1 - Number(formValues.discount) / 100)))}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">You Save</p>
-                      <p className="text-lg font-bold text-green-600">
-                        {formatPKR(Math.round(Number(formValues.price) * (Number(formValues.discount) / 100)))}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Cover Image URL</label>
-                  <input
-                    type="text"
-                    value={formValues.image}
-                    onChange={(e) => handleInputChange('image', e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
-                    placeholder="/products/heels.jpg"
-                  />
-                </div>
-                <div className="flex items-center gap-3 md:mt-8 bg-purple-50/50 p-2.5 rounded-xl border border-purple-200">
-                  <input
-                    type="checkbox"
-                    id="inStockCheck"
-                    checked={formValues.inStock}
-                    onChange={(e) => handleInputChange('inStock', e.target.checked)}
-                    className="w-5 h-5 text-purple-600 border-gray-300 rounded-lg focus:ring-purple-500"
-                  />
-                  <label htmlFor="inStockCheck" className="text-sm font-bold text-gray-700 cursor-pointer uppercase tracking-tight">Available for Purchase</label>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Tagline / Short Description *</label>
-                <textarea
-                  required
-                  value={formValues.shortDescription}
-                  onChange={(e) => handleInputChange('shortDescription', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400 resize-none"
-                  rows={2}
-                  placeholder="Summarize the footwear in one or two sentences (e.g. Elegant ivory heels with pearl embellishments)..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Complete Product Story *</label>
-                <textarea
-                  required
-                  value={formValues.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400 resize-none"
-                  rows={5}
-                  placeholder="Detail material, heel height, occasion suitability, and comfort features..."
-                />
-              </div>
-
-              <div className="space-y-4 bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-2xl border border-blue-200">
-                <h4 className="text-xs uppercase font-black text-blue-600 tracking-widest">Color & Size Variants</h4>
-                
-                <div className="grid md:grid-cols-3 gap-3">
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+              <form id="productForm" onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-[10px] font-black text-blue-600 uppercase mb-1">Color</label>
+                    <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Product Slug *</label>
                     <input
                       type="text"
-                      value={variantInput.color}
-                      onChange={(e) => setVariantInput({ ...variantInput, color: e.target.value })}
-                      className="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 outline-none transition-all placeholder:text-blue-300 hover:border-blue-300"
-                      placeholder="e.g. Red, Blue"
+                      required={modalMode === 'create'}
+                      value={formValues.slug}
+                      onChange={(e) => handleInputChange('slug', e.target.value)}
+                      placeholder="e.g. bridal-heels-01"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all lowercase placeholder:text-slate-500 hover:border-slate-400"
+                      disabled={modalMode === 'edit'}
                     />
+                    <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">Permanent unique identifier</p>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-blue-600 uppercase mb-1">Size</label>
-                    <input
-                      type="text"
-                      value={variantInput.size}
-                      onChange={(e) => setVariantInput({ ...variantInput, size: e.target.value })}
-                      className="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 outline-none transition-all placeholder:text-blue-300 hover:border-blue-300"
-                      placeholder="e.g. M, L, XL"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-black text-blue-600 uppercase mb-1">Stock</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={variantInput.stock}
-                      onChange={(e) => setVariantInput({ ...variantInput, stock: e.target.value })}
-                      className="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 outline-none transition-all placeholder:text-blue-300 hover:border-blue-300"
-                      placeholder="Quantity"
-                    />
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddVariant}
-                  className="w-full px-4 py-2 text-sm font-semibold text-blue-600 bg-white border border-blue-300 rounded-lg hover:bg-blue-50 transition-colors"
-                >
-                  + Add Variant
-                </button>
-
-                {formValues.variants.length > 0 && (
-                  <div className="mt-4">
-                    <label className="block text-[10px] font-black text-blue-600 uppercase mb-2">Added Variants ({formValues.variants.length})</label>
-                    <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {formValues.variants.map((variant) => (
-                        <div key={variant.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-blue-100">
-                          <div className="flex gap-4 flex-1">
-                            <span className="text-sm font-medium text-gray-700"><span className="font-black text-blue-600">Color:</span> {variant.color}</span>
-                            <span className="text-sm font-medium text-gray-700"><span className="font-black text-blue-600">Size:</span> {variant.size}</span>
-                            <span className="text-sm font-medium text-gray-700"><span className="font-black text-blue-600">Stock:</span> {variant.stock}</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveVariant(variant.id)}
-                            className="ml-2 px-2 py-1 text-xs font-bold text-red-600 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
-                          >
-                            ✕ Remove
-                          </button>
-                        </div>
+                    <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Collection *</label>
+                    <select
+                      value={formValues.collectionId}
+                      onChange={(e) => handleInputChange('collectionId', e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all appearance-none bg-no-repeat bg-right pr-10 hover:border-slate-400"
+                      style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23475569\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundSize: '1.5em' }}
+                    >
+                      <option value="">No Collection</option>
+                      {collections.map(c => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
                       ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Display Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formValues.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
+                    placeholder="e.g. Luxury Velvet Bridal Heels"
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Sale Price (PKR) *</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">Rs.</span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        required
+                        value={formValues.price}
+                        onChange={(e) => handleInputChange('price', e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-12 pr-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
+                      />
                     </div>
                   </div>
-                )}
-              </div>
+                  <div>
+                    <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Original Price (optional)</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">Rs.</span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={formValues.originalPrice}
+                        onChange={(e) => handleInputChange('originalPrice', e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-12 pr-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Discount Percentage (%)</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">%</span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="1"
+                        value={formValues.discount}
+                        onChange={(e) => handleInputChange('discount', e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400"
+                        placeholder="e.g. 20"
+                      />
+                    </div>
+                  </div>
+                  {Number(formValues.discount) > 0 && Number(formValues.price) > 0 && (
+                    <div className="md:col-span-2 bg-green-50 border border-green-100 rounded-xl p-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-1">Updated Amount (Final Price)</p>
+                        <p className="text-2xl font-black text-gray-900">
+                          {formatPKR(Math.round(Number(formValues.price) * (1 - Number(formValues.discount) / 100)))}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">You Save</p>
+                        <p className="text-lg font-bold text-green-600">
+                          {formatPKR(Math.round(Number(formValues.price) * (Number(formValues.discount) / 100)))}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-              <div className="space-y-4 bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-2xl border border-purple-200">
-                <h4 className="text-xs uppercase font-black text-purple-400 tracking-widest">Additional Assets & Metadata</h4>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Gallery Images (Comma separated)</label>
-                    <textarea
-                      value={formValues.images}
-                      onChange={(e) => handleInputChange('images', e.target.value)}
-                      className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
-                      rows={2}
-                      placeholder="url1.jpg, url2.jpg, url3.jpg"
+                <div className="grid md:grid-cols-2 gap-6">
+                  <FileUpload
+                    label="Cover Image"
+                    accept="image"
+                    value={formValues.image}
+                    onChange={(url) => handleInputChange('image', url)}
+                    placeholder="JPG, PNG, WebP — drag & drop or browse"
+                  />
+                  <div className="flex items-center gap-3 md:mt-8 bg-purple-50/50 p-2.5 rounded-xl border border-purple-200">
+                    <input
+                      type="checkbox"
+                      id="inStockCheck"
+                      checked={formValues.inStock}
+                      onChange={(e) => handleInputChange('inStock', e.target.checked)}
+                      className="w-5 h-5 text-purple-600 border-gray-300 rounded-lg focus:ring-purple-500"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Product Video URL (MP4/YouTube/etc.)</label>
-                    <textarea
-                      value={formValues.videoUrl}
-                      onChange={(e) => handleInputChange('videoUrl', e.target.value)}
-                      className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
-                      rows={2}
-                      placeholder="e.g. /videos/product.mp4"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Selling Points (Comma separated)</label>
-                    <textarea
-                      value={formValues.features}
-                      onChange={(e) => handleInputChange('features', e.target.value)}
-                      className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
-                      rows={2}
-                      placeholder="Feature 1, Feature 2, Feature 3"
-                    />
+                    <label htmlFor="inStockCheck" className="text-sm font-bold text-gray-700 cursor-pointer uppercase tracking-tight">Available for Purchase</label>
                   </div>
                 </div>
+
                 <div>
-                  <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Key Advantages (Comma separated)</label>
+                  <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Tagline / Short Description *</label>
                   <textarea
-                    value={formValues.advantages}
-                    onChange={(e) => handleInputChange('advantages', e.target.value)}
-                    className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
+                    required
+                    value={formValues.shortDescription}
+                    onChange={(e) => handleInputChange('shortDescription', e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400 resize-none"
                     rows={2}
-                    placeholder="Advantage 1, Advantage 2, Advantage 3"
+                    placeholder="Summarize the footwear in one or two sentences (e.g. Elegant ivory heels with pearl embellishments)..."
                   />
                 </div>
-                <div>
-                  <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Detailed Specifications (Key: Value per line)</label>
-                  <textarea
-                    value={formValues.specifications}
-                    onChange={(e) => handleInputChange('specifications', e.target.value)}
-                    className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
-                    rows={3}
-                    placeholder="Material: Leather&#10;Heel: 3 inch&#10;Sole: Rubber"
-                  />
-                </div>
-              </div>
 
-              <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
-                >
-                  Discard
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-sm shadow-lg hover:shadow-purple-200 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60"
-                >
-                  {isSubmitting ? 'Syncing...' : modalMode === 'create' ? 'Deploy Product' : 'Update Record'}
-                </button>
-              </div>
-            </form>
+                <div>
+                  <label className="block text-xs font-black text-purple-600 uppercase tracking-widest mb-1.5">Complete Product Story *</label>
+                  <textarea
+                    required
+                    value={formValues.description}
+                    onChange={(e) => handleInputChange('description', e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 focus:bg-white outline-none transition-all placeholder:text-slate-500 hover:border-slate-400 resize-none"
+                    rows={5}
+                    placeholder="Detail material, heel height, occasion suitability, and comfort features..."
+                  />
+                </div>
+
+                <div className="space-y-4 bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-2xl border border-blue-200">
+                  <h4 className="text-xs uppercase font-black text-blue-600 tracking-widest">Color & Size Variants</h4>
+                  
+                  <div className="grid md:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-black text-blue-600 uppercase mb-1">Color</label>
+                      <input
+                        type="text"
+                        value={variantInput.color}
+                        onChange={(e) => setVariantInput({ ...variantInput, color: e.target.value })}
+                        className="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 outline-none transition-all placeholder:text-blue-300 hover:border-blue-300"
+                        placeholder="e.g. Red, Blue"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-blue-600 uppercase mb-1">Size</label>
+                      <input
+                        type="text"
+                        value={variantInput.size}
+                        onChange={(e) => setVariantInput({ ...variantInput, size: e.target.value })}
+                        className="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 outline-none transition-all placeholder:text-blue-300 hover:border-blue-300"
+                        placeholder="e.g. M, L, XL"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-blue-600 uppercase mb-1">Stock</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={variantInput.stock}
+                        onChange={(e) => setVariantInput({ ...variantInput, stock: e.target.value })}
+                        className="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 outline-none transition-all placeholder:text-blue-300 hover:border-blue-300"
+                        placeholder="Quantity"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleAddVariant}
+                    className="w-full px-4 py-2 text-sm font-semibold text-blue-600 bg-white border border-blue-300 rounded-lg hover:bg-blue-50 transition-colors"
+                  >
+                    + Add Variant
+                  </button>
+
+                  {formValues.variants.length > 0 && (
+                    <div className="mt-4">
+                      <label className="block text-[10px] font-black text-blue-600 uppercase mb-2">Added Variants ({formValues.variants.length})</label>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {formValues.variants.map((variant) => (
+                          <div key={variant.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-blue-100">
+                            <div className="flex gap-4 flex-1">
+                              <span className="text-sm font-medium text-gray-700"><span className="font-black text-blue-600">Color:</span> {variant.color}</span>
+                              <span className="text-sm font-medium text-gray-700"><span className="font-black text-blue-600">Size:</span> {variant.size}</span>
+                              <span className="text-sm font-medium text-gray-700"><span className="font-black text-blue-600">Stock:</span> {variant.stock}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveVariant(variant.id)}
+                              className="ml-2 px-2 py-1 text-xs font-bold text-red-600 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                            >
+                              ✕ Remove
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4 bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-2xl border border-purple-200">
+                  <h4 className="text-xs uppercase font-black text-purple-400 tracking-widest">Additional Assets & Metadata</h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <MultiFileUpload
+                        label="Gallery Images"
+                        value={formValues.images}
+                        onChange={(urls) => handleInputChange('images', urls)}
+                        placeholder="Select multiple images at once"
+                      />
+                    </div>
+                    <div>
+                      <FileUpload
+                        label="Product Video"
+                        accept="video"
+                        value={formValues.videoUrl}
+                        onChange={(url) => handleInputChange('videoUrl', url)}
+                        placeholder="MP4, WebM, OGG, MOV — drag & drop or browse"
+                        labelClassName="block text-[10px] font-black text-purple-600 uppercase mb-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Selling Points (Comma separated)</label>
+                      <textarea
+                        value={formValues.features}
+                        onChange={(e) => handleInputChange('features', e.target.value)}
+                        className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
+                        rows={2}
+                        placeholder="Feature 1, Feature 2, Feature 3"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Key Advantages (Comma separated)</label>
+                    <textarea
+                      value={formValues.advantages}
+                      onChange={(e) => handleInputChange('advantages', e.target.value)}
+                      className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
+                      rows={2}
+                      placeholder="Advantage 1, Advantage 2, Advantage 3"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Detailed Specifications (Key: Value per line)</label>
+                    <textarea
+                      value={formValues.specifications}
+                      onChange={(e) => handleInputChange('specifications', e.target.value)}
+                      className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-purple-400 outline-none transition-all placeholder:text-purple-300 hover:border-purple-300 resize-none"
+                      rows={3}
+                      placeholder="Material: Leather&#10;Heel: 3 inch&#10;Sole: Rubber"
+                    />
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            {/* Sticky Footer */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50/80 backdrop-blur-sm">
+              <button
+                type="button"
+                onClick={closeModal}
+                className="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 active:bg-gray-200 rounded-xl transition-all"
+              >
+                Discard
+              </button>
+              <button
+                type="submit"
+                form="productForm"
+                disabled={isSubmitting}
+                className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60"
+              >
+                {isSubmitting ? 'Syncing...' : modalMode === 'create' ? 'Deploy Product' : 'Update Record'}
+              </button>
+            </div>
           </div>
         </div>
       )}
