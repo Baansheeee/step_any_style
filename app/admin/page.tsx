@@ -15,6 +15,7 @@ import AdminSalePanel from './components/AdminSalePanel';
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
   const [productsCount, setProductsCount] = useState(0);
   const [overviewStats, setOverviewStats] = useState({
     totalOrders: 0,
@@ -118,6 +119,12 @@ export default function AdminDashboard() {
               </h1>
             </div>
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsTutorialOpen(true)}
+                className="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-sm font-semibold text-white hover:bg-white hover:text-[#A855F7] transition"
+              >
+                Tutorial
+              </button>
               <Link
                 href="/?preview=true"
                 className="text-white/80 hover:text-white font-medium transition-colors"
@@ -269,6 +276,31 @@ export default function AdminDashboard() {
         </div>
 
       </div>
+
+      {/* Tutorial Video Modal */}
+      {isTutorialOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl overflow-hidden max-w-5xl w-full shadow-2xl relative">
+            <div className="p-4 bg-gray-50 border-b flex justify-between items-center">
+              <h3 className="text-xl font-bold text-gray-900">Admin Dashboard Tutorial</h3>
+              <button onClick={() => setIsTutorialOpen(false)} className="text-gray-500 hover:text-gray-900">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="aspect-video bg-black w-full relative">
+              <video 
+                src="/Tutorial/video1994377097.mp4" 
+                controls 
+                muted 
+                autoPlay 
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
