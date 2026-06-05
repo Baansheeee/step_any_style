@@ -127,7 +127,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8 ml-16 h-full">
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-6 xl:space-x-8 ml-6 xl:ml-16 h-full">
               <Link
                 href="/products?gender=WOMEN"
                 className="group h-full flex items-center"
@@ -156,7 +156,7 @@ export default function Navbar() {
                 href="/new-arrivals"
                 className="group h-full flex items-center"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1 whitespace-nowrap">
                   New Arrivals
                 </span>
               </Link>
@@ -187,7 +187,7 @@ export default function Navbar() {
               <div className="relative h-full flex items-center" ref={categoryMenuRef}>
                 <button
                   onClick={() => setIsCategoryMenuOpen((prev) => !prev)}
-                  className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all flex items-center h-full"
+                  className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all flex items-center h-full whitespace-nowrap"
                 >
                   Category
                   <svg
@@ -232,7 +232,7 @@ export default function Navbar() {
               <div className="relative h-full flex items-center" ref={accountMenuRef}>
                 <button
                   onClick={authUser ? () => setIsAccountMenuOpen((prev) => !prev) : () => openAccountModal('login')}
-                  className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all h-full flex items-center"
+                  className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all h-full flex items-center whitespace-nowrap"
                 >
                   {authUser ? 'Account' : 'Login'}
                 </button>
