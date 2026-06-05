@@ -22,20 +22,23 @@ export default async function SalesPage() {
     const targetCollections = (activeEvent.targetCollections as string[]) || [];
     const targetProducts = (activeEvent.targetProducts as string[]) || [];
 
-    productsRaw = await prisma.product.findMany({
-      where: {
-        OR: [
-          { collectionId: { in: targetCollections } },
-          { id: { in: targetProducts } }
-        ]
-      },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      include: {
-        collection: true
-      }
-    });
+    const orConditions: any[] = [];
+    if (targetCollections.length > 0) {
+      orConditions.push({ collectionId: { in: targetCollections } });
+    }
+    if (targetProducts.length > 0) {
+      orConditions.push({ id: { in: targetProducts } });
+    }
+
+    if (orConditions.length > 0) {
+      productsRaw = await prisma.product.findMany({
+        where: { OR: orConditions },
+        orderBy: { createdAt: 'desc' },
+        include: { collection: true }
+      });
+    } else {
+      productsRaw = [];
+    }
   } else {
     // Fallback if no active event is present, though the page shouldn't normally be linked
     productsRaw = await prisma.product.findMany({

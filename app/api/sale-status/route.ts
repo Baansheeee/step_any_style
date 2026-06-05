@@ -19,14 +19,21 @@ export async function GET() {
       const targetCollections = (activeEvent.targetCollections as string[]) || [];
       const targetProducts = (activeEvent.targetProducts as string[]) || [];
       
-      discountedCount = await prisma.product.count({
-        where: {
-          OR: [
-            { collectionId: { in: targetCollections } },
-            { id: { in: targetProducts } }
-          ]
-        }
-      });
+      const orConditions: any[] = [];
+      if (targetCollections.length > 0) {
+        orConditions.push({ collectionId: { in: targetCollections } });
+      }
+      if (targetProducts.length > 0) {
+        orConditions.push({ id: { in: targetProducts } });
+      }
+
+      if (orConditions.length > 0) {
+        discountedCount = await prisma.product.count({
+          where: { OR: orConditions }
+        });
+      } else {
+        discountedCount = 0;
+      }
     } else {
       discountedCount = await prisma.product.count({
         where: {

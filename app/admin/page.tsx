@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import PromoUsersManagement from './components/PromoUsersManagement';
@@ -16,6 +16,35 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleVideoPlay = () => {
+    if (audioRef.current && videoRef.current) {
+      audioRef.current.currentTime = videoRef.current.currentTime;
+      audioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
+    }
+  };
+
+  const handleVideoPause = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+  };
+
+  const handleVideoSeeked = () => {
+    if (audioRef.current && videoRef.current) {
+      audioRef.current.currentTime = videoRef.current.currentTime;
+    }
+  };
+
+  const handleVideoVolumeChange = () => {
+    if (audioRef.current && videoRef.current) {
+      audioRef.current.volume = videoRef.current.volume;
+      audioRef.current.muted = videoRef.current.muted;
+    }
+  };
   const [productsCount, setProductsCount] = useState(0);
   const [overviewStats, setOverviewStats] = useState({
     totalOrders: 0,
@@ -291,11 +320,22 @@ export default function AdminDashboard() {
             </div>
             <div className="aspect-video bg-black w-full relative">
               <video 
-                src="/Tutorial/video1994377097.mp4" 
+                ref={videoRef}
+                src="/Tutorial/video1699022999.mp4" 
                 controls 
                 muted 
                 autoPlay 
+                onPlay={handleVideoPlay}
+                onPause={handleVideoPause}
+                onSeeked={handleVideoSeeked}
+                onVolumeChange={handleVideoVolumeChange}
                 className="w-full h-full object-contain"
+              />
+              <audio 
+                ref={audioRef}
+                src="/Tutorial/audio1699022999.m4a"
+                muted
+                autoPlay
               />
             </div>
           </div>

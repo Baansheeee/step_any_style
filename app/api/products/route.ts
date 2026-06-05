@@ -80,15 +80,23 @@ export async function GET(request: NextRequest) {
         const targetCollections = (activeEvent.targetCollections as string[]) || [];
         const targetProducts = (activeEvent.targetProducts as string[]) || [];
         
-        where.AND = [
-          ...(where.AND || []),
-          {
-            OR: [
-              { collectionId: { in: targetCollections } },
-              { id: { in: targetProducts } }
-            ]
-          }
-        ];
+        const orConditions: any[] = [];
+        if (targetCollections.length > 0) {
+          orConditions.push({ collectionId: { in: targetCollections } });
+        }
+        if (targetProducts.length > 0) {
+          orConditions.push({ id: { in: targetProducts } });
+        }
+
+        if (orConditions.length > 0) {
+          where.AND = [
+            ...(where.AND || []),
+            { OR: orConditions }
+          ];
+        } else {
+          // If a sale is active but has no targets, no products are on sale
+          where.id = 'non-existent-id-to-return-none';
+        }
       } else {
         where.discount = { gt: 0 };
       }
