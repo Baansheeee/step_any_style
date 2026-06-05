@@ -170,7 +170,7 @@ model Review {
   userName  String
   userEmail String?
   productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   isFeatured Boolean @default(false)
   images     Json?
   videoUrl   String?
