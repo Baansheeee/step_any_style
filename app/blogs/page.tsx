@@ -69,12 +69,7 @@ export default function BlogsPage() {
       <section className="pt-28 pb-14 px-6 bg-[#FAF9FF] border-b border-[#F5F3FF]">
         <div className="max-w-3xl mx-auto text-center">
           <ScrollAnimate animation="fade-in">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <span className="h-[1px] w-10 bg-purple-300"></span>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-500">Step & Style</p>
-              <span className="h-[1px] w-10 bg-purple-300"></span>
-            </div>
-            <h1 className="text-3xl md:text-5xl font-black mb-4 tracking-tight uppercase text-gray-900">
+            <h1 className="-mt-14 text-3xl md:text-5xl font-black mb-4 tracking-tight uppercase text-gray-900">
               Our <span className="text-[#A855F7]">Blog</span>
             </h1>
             <p className="text-gray-400 text-sm md:text-base font-medium tracking-wide max-w-xl mx-auto leading-relaxed">
