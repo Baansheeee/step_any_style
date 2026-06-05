@@ -3,16 +3,17 @@ import prisma from '@/lib/prisma';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const blog = await prisma.blog.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!blog) {
@@ -34,9 +35,10 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -46,7 +48,7 @@ export async function PUT(
     const { title, description, content, image, images, videoUrl, author, category, tags, isPublished } = body;
 
     const blog = await prisma.blog.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!blog) {
@@ -73,7 +75,7 @@ export async function PUT(
     if (isPublished !== undefined) updateData.isPublished = isPublished;
 
     const updatedBlog = await prisma.blog.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
     });
 
@@ -92,16 +94,17 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const blog = await prisma.blog.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!blog) {
@@ -109,7 +112,7 @@ export async function DELETE(
     }
 
     await prisma.blog.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({
