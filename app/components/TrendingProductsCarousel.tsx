@@ -50,7 +50,7 @@ export default function TrendingProductsCarousel({ products }: TrendingProductsC
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 md:mb-16">
           <div>
-            <h2 className="text-xs font-black uppercase tracking-[0.4em] mb-3 text-[#B45309]">
+            <h2 className="text-xs font-black uppercase tracking-[0.4em] mb-3 text-amber-600">
               Most Wanted
             </h2>
             <h3 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900">

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
@@ -26,7 +27,7 @@ const COLOR_MAP: Record<string, string> = {
   'rose gold': '#E1B3A8',
   rosegold: '#E1B3A8',
   black: '#111111',
-  white: '#FFFFFF',
+  white: '#F5F5F5',
   red: '#DC2626',
   blue: '#2563EB',
   pink: '#DB2777',
@@ -58,6 +59,7 @@ export default function ProductDetailPage() {
   const [isCheckingUser, setIsCheckingUser] = useState(true);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
+
 
   useEffect(() => {
     let isMounted = true;
@@ -129,6 +131,8 @@ export default function ProductDetailPage() {
 
     fetchUser();
   }, []);
+
+
 
   const productMedia = useMemo(() => {
     if (!product) return [];
@@ -208,9 +212,11 @@ export default function ProductDetailPage() {
     );
   }
 
+
   const handleAddToCart = () => {
-    if (availableSizes.length > 0 && !selectedSize) return;
-    if (availableColors.length > 0 && !selectedColor) return;
+    if (needsSelection) {
+      return;
+    }
 
     const finalPrice = product.discount && product.discount > 0 
       ? Math.round(product.price * (1 - product.discount / 100)) 
@@ -227,11 +233,13 @@ export default function ProductDetailPage() {
       },
       quantity,
     );
+
   };
   
   const handleBuyNow = () => {
-    if (availableSizes.length > 0 && !selectedSize) return;
-    if (availableColors.length > 0 && !selectedColor) return;
+    if (needsSelection) {
+      return;
+    }
 
     const finalPrice = product.discount && product.discount > 0 
       ? Math.round(product.price * (1 - product.discount / 100)) 
@@ -248,6 +256,7 @@ export default function ProductDetailPage() {
       },
       quantity,
     );
+
     router.push('/checkout');
   };
 
@@ -277,6 +286,10 @@ export default function ProductDetailPage() {
     (availableSizes.length === 0 || selectedSize) &&
     (availableColors.length === 0 || selectedColor) &&
     (selectedVariant ? selectedVariant.stock > 0 : true);
+
+  const needsSelection = 
+    (availableSizes.length > 0 && !selectedSize) || 
+    (availableColors.length > 0 && !selectedColor);
 
 
   return (
@@ -485,7 +498,9 @@ export default function ProductDetailPage() {
                       return (
                         <button
                           key={color}
-                          onClick={() => setSelectedColor(color)}
+                          onClick={() => {
+                            setSelectedColor(color);
+                          }}
                           className={`group relative flex items-center justify-center p-1 ${isOutOfStock ? 'opacity-30' : ''}`}
                           title={isOutOfStock ? `${color} (Out of Stock)` : color}
                         >
@@ -496,9 +511,9 @@ export default function ProductDetailPage() {
                           
                           {/* Color Circle */}
                           <div 
-                            className={`w-7 h-7 rounded-full border border-gray-100 shadow-sm transition-all duration-300 ${
+                            className={`w-7 h-7 rounded-full shadow-sm transition-all duration-300 ${
                               isSelected ? 'scale-[0.6]' : 'group-hover:scale-110'
-                            }`}
+                            } ${color.toLowerCase() === 'white' ? 'border-2 border-gray-300' : 'border border-gray-100'}`}
                             style={{ backgroundColor: colorHex }}
                           />
 
@@ -531,7 +546,9 @@ export default function ProductDetailPage() {
                       return (
                         <button
                           key={size}
-                          onClick={() => !isOutOfStock && setSelectedSize(size)}
+                          onClick={() => {
+                            !isOutOfStock && setSelectedSize(size);
+                          }}
                           disabled={isOutOfStock}
                           className={`relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center text-[12px] sm:text-[13px] font-black transition-all border-2 overflow-hidden ${
                             selectedSize === size
@@ -571,17 +588,33 @@ export default function ProductDetailPage() {
 
             {/* Action Buttons */}
             <div className="space-y-4 pt-6">
+              {needsSelection && (
+                <div className="bg-amber-50 border-2 border-amber-200 rounded-lg p-4 flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
+                  <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4v2m0 4v2M7.08 6.47a7 7 0 1114.84 0M3.101 11a8.001 8.001 0 0116.798 0" />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-900">Please select color and size before add to bag</p>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={handleAddToCart}
-                disabled={!canAddToCart}
-                className="w-full py-4 sm:py-5 bg-white border-2 border-purple-600 text-purple-600 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] hover:bg-[#5B1A8F] hover:text-white transition-all duration-500 disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]"
+                className={`w-full py-4 sm:py-5 border-2 border-purple-600 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] transition-all duration-500 active:scale-[0.98] ${
+                  !canAddToCart
+                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                    : 'bg-white text-purple-600 hover:bg-purple-600 hover:text-white'
+                }`}
               >
                 {isAdminUser ? 'Admin Mode' : !product.inStock ? 'Sold Out' : 'Add to Bag'}
               </button>
               <button
                 onClick={handleBuyNow}
-                disabled={!canAddToCart}
-                className="w-full py-4 sm:py-5 bg-purple-500 text-white font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] hover:bg-[#5B1A8F] transition-all duration-500 shadow-2xl shadow-purple-200 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed"
+                className={`w-full py-4 sm:py-5 font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[10px] transition-all duration-500 shadow-2xl active:scale-[0.98] ${
+                  !canAddToCart
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
+                    : 'bg-purple-500 text-white hover:bg-purple-600 shadow-purple-200'
+                }`}
               >
                 Buy it Now
               </button>
@@ -597,7 +630,7 @@ export default function ProductDetailPage() {
                   </svg>
                 </div>
                 <div className="flex-1">
-                  <p className="text-[11px] font-black text-green-700 uppercase tracking-wider">Open Parcel then Pay</p>
+                  <p className="text-[11px] font-black text-green-700 uppercase tracking-wider">First Check then Pay</p>
                   <p className="text-[10px] text-green-600/70 font-medium">Check your product before payment. 100% Trust!</p>
                 </div>
                 <span className="text-[9px] font-black uppercase tracking-widest text-green-600 bg-green-100 px-3 py-1 rounded-full">Trust</span>

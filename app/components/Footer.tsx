@@ -44,7 +44,7 @@ const Footer = () => {
           <div>
             <h4 className="font-black text-[10px] md:text-[11px] uppercase tracking-[0.3em] text-[#A855F7] mb-6 md:mb-10">Customer Service</h4>
             <ul className="space-y-3 md:space-y-4 text-gray-500 text-[10px] md:text-[11px] font-bold uppercase tracking-widest">
-              <li><Link href="/help-center" className="hover:text-white transition-colors">Help Center</Link></li>
+              <li><Link href="/help-center" className="hover:text-white transition-colors">Contact Us</Link></li>
               <li><Link href="/shipping-delivery" className="hover:text-white transition-colors">Shipping & Delivery</Link></li>
               <li><Link href="/returns-exchanges" className="hover:text-white transition-colors">Returns & Exchanges</Link></li>
             </ul>
@@ -77,7 +77,7 @@ const Footer = () => {
                 },
                 {
                   name: 'Email',
-                  url: 'mailto:stepandstyl007@gmail.com',
+                  url: 'mailto:hello@stepandstyl.com',
                   path: 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z M22 6l-10 7L2 6',
                   hoverColor: 'hover:text-[#EA4335] hover:bg-[#EA4335]/10 hover:border-[#EA4335]/30'
                 }

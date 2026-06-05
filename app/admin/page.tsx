@@ -211,7 +211,7 @@ export default function AdminDashboard() {
               </div>
               <div className="mt-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <button 
                     onClick={() => setActiveTab('products')}
                     className="bg-white border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-all"
@@ -226,10 +226,16 @@ export default function AdminDashboard() {
                   </button>
                   <button 
                     onClick={() => setActiveTab('promo-users')}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all"
+                    className="bg-white border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-all"
                   >
                     Manage Promo Users
                   </button>
+                  <Link 
+                    href="/admin/blogs"
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all flex items-center justify-center"
+                  >
+                    Manage Blogs
+                  </Link>
                 </div>
               </div>
             </div>

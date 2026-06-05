@@ -81,26 +81,19 @@ export default function MobileNav({
 
           {/* Logo + Close */}
           <div className="flex justify-between items-center mb-12">
-            <div className="flex items-center">
-              <Image
-                src="/logo_main.png"
-                alt="Step & Style Logo"
-                width={140}
-                height={45}
-                className="h-10 object-contain"
-              />
-              <div className="flex items-center -ml-5 mb-0.5 gap-1">
-                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900">
+            <Link href="/" onClick={() => setIsOpen(false)} className="group">
+              <div className="flex items-center gap-1">
+                <span className="text-lg font-black uppercase tracking-[0.2em] text-gray-900">
                   Step
                 </span>
-                <span className="text-[14px] font-black uppercase tracking-[0.2em] text-yellow-600">
+                <span className="text-xl font-black uppercase tracking-[0.2em] text-yellow-600">
                   &
                 </span>
-                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-900">
+                <span className="text-lg font-black uppercase tracking-[0.2em] text-gray-900">
                   Style
                 </span>
               </div>
-            </div>
+            </Link>
             <button
               onClick={() => setIsOpen(false)}
               className="p-2 rounded-full hover:bg-lavender-light transition-all"
@@ -143,6 +136,22 @@ export default function MobileNav({
               className="text-sm font-black uppercase tracking-[0.2em] p-4 hover:bg-lavender-light hover:text-lavender-dark rounded-xl transition-all"
             >
               Men
+            </Link>
+
+            <Link
+              href="/kids"
+              onClick={() => setIsOpen(false)}
+              className="text-sm font-black uppercase tracking-[0.2em] p-4 hover:bg-lavender-light hover:text-lavender-dark rounded-xl transition-all"
+            >
+              Kids
+            </Link>
+
+            <Link
+              href="/new-arrivals"
+              onClick={() => setIsOpen(false)}
+              className="text-sm font-black uppercase tracking-[0.2em] p-4 hover:bg-lavender-light hover:text-lavender-dark rounded-xl transition-all"
+            >
+              New Arrivals
             </Link>
 
             {/* Category Dropdown */}

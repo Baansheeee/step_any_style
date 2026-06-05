@@ -115,29 +115,16 @@ export default function Navbar() {
         <div className="max-w-[1600px] mx-auto px-3 sm:px-6 md:px-20">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <div className="flex items-center -ml-3 sm:-ml-6 md:-ml-12">
-              <Link href="/" className="group flex items-center justify-center">
-                <Image
-                  src="/logo_main.png"
-                  alt="Step & Style"
-                  width={240}
-                  height={80}
-                  className="object-contain h-16 md:h-24 w-auto transition-all duration-300 group-hover:scale-105 brightness-0 invert"
-                  priority
-                />
-                <div className="flex items-center -ml-6 md:-ml-10 gap-1">
-                  <span className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] text-white/90 transition-all group-hover:text-white">
-                    Step
-                  </span>
-                  <span className="text-[14px] md:text-[18px] font-black uppercase tracking-[0.2em] text-yellow-300 transition-all">
-                    &
-                  </span>
-                  <span className="text-[11px] md:text-[15px] font-black uppercase tracking-[0.2em] text-white/90 transition-all group-hover:text-white">
-                    Style
-                  </span>
-                </div>
-              </Link>
-            </div>
+            <Link href="/" className="group flex items-center -ml-3 sm:-ml-6 md:-ml-20">
+              <Image
+                src="/logo_main.png"
+                alt="Step & Style"
+                width={300}
+                height={100}
+                className="object-contain h-24 md:h-32 w-auto transition-all duration-300 group-hover:scale-110 brightness-0 invert"
+                priority
+              />
+            </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8 ml-16 h-full">
@@ -155,6 +142,22 @@ export default function Navbar() {
               >
                 <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
                   Men
+                </span>
+              </Link>
+              <Link
+                href="/kids"
+                className="group h-full flex items-center"
+              >
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
+                  Kids
+                </span>
+              </Link>
+              <Link
+                href="/new-arrivals"
+                className="group h-full flex items-center"
+              >
+                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
+                  New Arrivals
                 </span>
               </Link>
 
