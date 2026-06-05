@@ -11,17 +11,45 @@ export const metadata: Metadata = {
 };
 
 export default async function SalesPage() {
-  const productsRaw = await prisma.product.findMany({
-    where: {
-      discount: { gt: 0 }
-    },
-    orderBy: {
-      createdAt: 'desc'
-    },
-    include: {
-      collection: true
-    }
+  // Fetch active sale event to filter only targeted products
+  const activeEvent = await prisma.saleEvent.findFirst({
+    where: { isActive: true }
   });
+
+  let productsRaw = [];
+
+  if (activeEvent) {
+    const targetCollections = (activeEvent.targetCollections as string[]) || [];
+    const targetProducts = (activeEvent.targetProducts as string[]) || [];
+
+    productsRaw = await prisma.product.findMany({
+      where: {
+        OR: [
+          { collectionId: { in: targetCollections } },
+          { id: { in: targetProducts } }
+        ]
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        collection: true
+      }
+    });
+  } else {
+    // Fallback if no active event is present, though the page shouldn't normally be linked
+    productsRaw = await prisma.product.findMany({
+      where: {
+        discount: { gt: 0 }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        collection: true
+      }
+    });
+  }
 
   const saleProducts = productsRaw.map(serializeProduct);
 

@@ -72,7 +72,26 @@ export async function GET(request: NextRequest) {
     }
 
     if (onSale) {
-      where.discount = { gt: 0 };
+      const activeEvent = await prisma.saleEvent.findFirst({
+        where: { isActive: true }
+      });
+      
+      if (activeEvent) {
+        const targetCollections = (activeEvent.targetCollections as string[]) || [];
+        const targetProducts = (activeEvent.targetProducts as string[]) || [];
+        
+        where.AND = [
+          ...(where.AND || []),
+          {
+            OR: [
+              { collectionId: { in: targetCollections } },
+              { id: { in: targetProducts } }
+            ]
+          }
+        ];
+      } else {
+        where.discount = { gt: 0 };
+      }
     }
 
     if (isTrending) {

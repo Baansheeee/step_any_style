@@ -13,11 +13,27 @@ export async function GET() {
     }
 
     // 2. Count products with discounts
-    const discountedCount = await prisma.product.count({
-      where: {
-        discount: { gt: 0 }
-      }
-    });
+    let discountedCount = 0;
+    
+    if (activeEvent) {
+      const targetCollections = (activeEvent.targetCollections as string[]) || [];
+      const targetProducts = (activeEvent.targetProducts as string[]) || [];
+      
+      discountedCount = await prisma.product.count({
+        where: {
+          OR: [
+            { collectionId: { in: targetCollections } },
+            { id: { in: targetProducts } }
+          ]
+        }
+      });
+    } else {
+      discountedCount = await prisma.product.count({
+        where: {
+          discount: { gt: 0 }
+        }
+      });
+    }
 
     // Logic: Show if more than 10 products have discounts, 
     // or if a specific event is active and at least one product is on sale.
