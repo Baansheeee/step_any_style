@@ -16,7 +16,7 @@ export default async function SalesPage() {
     where: { isActive: true }
   });
 
-  let productsRaw = [];
+  let productsRaw: any[] = [];
 
   if (activeEvent) {
     const targetCollections = (activeEvent.targetCollections as string[]) || [];
