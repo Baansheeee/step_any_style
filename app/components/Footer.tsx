@@ -30,7 +30,7 @@ const Footer = () => {
                     &
                   </span>
                   <span className="text-[13px] md:text-[15px] font-black uppercase tracking-[0.2em] text-[#A855F7] transition-all">
-                    Style
+                    Styl
                   </span>
                 </div>
               </Link>

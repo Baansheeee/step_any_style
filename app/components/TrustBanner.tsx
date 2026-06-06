@@ -61,7 +61,7 @@ export default function TrustBanner() {
             Our Commitment
           </h2>
           <h3 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900">
-            Why Trust Step &amp; Style?
+            Why Trust Step &amp; Styl?
           </h3>
         </div>
 

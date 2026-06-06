@@ -221,8 +221,8 @@ export default function InfluencerDashboardPage() {
                     <div className="mt-4 flex items-center justify-between">
                       <span
                         className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.15em] ${order.status === 'COMPLETED'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-yellow-100 text-yellow-700'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-yellow-100 text-yellow-700'
                           }`}
                       >
                         {order.status}
@@ -252,8 +252,8 @@ function MetricCard({
   return (
     <div
       className={`rounded-2xl md:rounded-3xl border p-4 md:p-8 transition-all hover:scale-[1.02] ${accent
-          ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white border-transparent shadow-lg shadow-purple-100'
-          : 'bg-white border-gray-100 shadow-sm'
+        ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white border-transparent shadow-lg shadow-purple-100'
+        : 'bg-white border-gray-100 shadow-sm'
         }`}
     >
       <p className={`text-[9px] md:text-xs font-black uppercase tracking-[0.2em] ${accent ? 'text-white/80' : 'text-gray-400'}`}>{label}</p>
