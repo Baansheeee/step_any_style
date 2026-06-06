@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
               <h1>🎉 Application Received!</h1>
             </div>
             <div class="content">
-              <p>Thank you for applying to the Step & Style Affiliate Program!</p>
+              <p>Thank you for applying to the Step & Styl Affiliate Program!</p>
               <p>We have received your application and it is currently under review. In the meantime, we've created your account so you can access your dashboard.</p>
               
               <div class="credentials">
@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
 
               <div class="footer">
                 <p>If you have any questions, please contact our affiliate support team.</p>
-                <p>Thank you for joining Step & Style! 🚀</p>
+                <p>Thank you for joining Step & Styl! 🚀</p>
               </div>
             </div>
           </div>
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
     try {
       await sendEmail({
         to: email,
-        subject: 'Step & Style Affiliate Application Received - Your Account is Ready!',
+        subject: 'Step & Styl Affiliate Application Received - Your Account is Ready!',
         html: emailHtml,
       });
     } catch (emailError) {

@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Step & Style - Premium Footwear & Slippers",
-  description: "Discover premium bridal heels, slippers, and footwear collections at Step & Style. Luxury comfort and elegant designs for every occasion.",
+  title: "Step & Styl - Premium Footwear & Slippers",
+  description: "Discover premium bridal heels, slippers, and footwear collections at Step & Styl. Luxury comfort and elegant designs for every occasion.",
   icons: {
     icon: [
       {

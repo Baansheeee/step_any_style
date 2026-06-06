@@ -118,7 +118,7 @@ export default function Navbar() {
             <Link href="/" className="group flex items-center -ml-3 sm:-ml-6 md:-ml-20">
               <Image
                 src="/logo_main.png"
-                alt="Step & Style"
+                alt="Step & Styl"
                 width={300}
                 height={100}
                 className="object-contain h-24 md:h-32 w-auto transition-all duration-300 group-hover:scale-110 brightness-0 invert"

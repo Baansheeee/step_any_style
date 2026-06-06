@@ -16,7 +16,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
               <Link href="/admin" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
                 <Image
                   src="/logo_main.png"
-                  alt="Step & Style"
+                  alt="Step & Styl"
                   width={140}
                   height={45}
                   className="h-10 md:h-18 w-auto object-contain brightness-0 invert"
@@ -179,7 +179,7 @@ export default function AdminDashboard() {
             {[
               { id: 'overview', label: 'Overview' },
               { id: 'products', label: 'Products' },
-              { id: 'collections', label: 'Collections' },              { id: 'shipping', label: 'Shipping' },              { id: 'orders', label: 'Orders' },
+              { id: 'collections', label: 'Collections' }, { id: 'shipping', label: 'Shipping' }, { id: 'orders', label: 'Orders' },
               { id: 'promo-users', label: 'Promo Users' },
               { id: 'affiliate-applications', label: 'Affiliate Applications' },
               { id: 'analytics', label: 'Analytics' },
@@ -188,11 +188,10 @@ export default function AdminDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
-                  activeTab === tab.id
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${activeTab === tab.id
                     ? 'border-purple-600 text-purple-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>
@@ -248,25 +247,25 @@ export default function AdminDashboard() {
               <div className="mt-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <button 
+                  <button
                     onClick={() => setActiveTab('products')}
                     className="bg-white border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-all"
                   >
                     View Products
                   </button>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('orders')}
                     className="bg-white border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-all"
                   >
                     View Orders
                   </button>
-                  <button 
+                  <button
                     onClick={() => setActiveTab('promo-users')}
                     className="bg-white border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-all"
                   >
                     Manage Promo Users
                   </button>
-                  <Link 
+                  <Link
                     href="/admin/blogs"
                     className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all flex items-center justify-center"
                   >
@@ -300,7 +299,7 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === 'analytics' && <AdminAnalyticsPanel />}
-          
+
           {activeTab === 'sales' && <AdminSalePanel />}
         </div>
 
@@ -319,19 +318,19 @@ export default function AdminDashboard() {
               </button>
             </div>
             <div className="aspect-video bg-black w-full relative">
-              <video 
+              <video
                 ref={videoRef}
-                src="/Tutorial/video1699022999.mp4" 
-                controls 
-                muted 
-                autoPlay 
+                src="/Tutorial/video1699022999.mp4"
+                controls
+                muted
+                autoPlay
                 onPlay={handleVideoPlay}
                 onPause={handleVideoPause}
                 onSeeked={handleVideoSeeked}
                 onVolumeChange={handleVideoVolumeChange}
                 className="w-full h-full object-contain"
               />
-              <audio 
+              <audio
                 ref={audioRef}
                 src="/Tutorial/audio1699022999.m4a"
                 muted

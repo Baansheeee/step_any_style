@@ -23,7 +23,7 @@ export default function ViewPromoUserDashboard() {
               <Link href="/admin" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
                 <Image
                   src="/logo_main.png"
-                  alt="Step & Style"
+                  alt="Step & Styl"
                   width={140}
                   height={45}
                   className="h-10 md:h-12 w-auto object-contain"
@@ -69,11 +69,10 @@ export default function ViewPromoUserDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
-                  activeTab === tab.id
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${activeTab === tab.id
                     ? 'border-purple-600 text-purple-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>

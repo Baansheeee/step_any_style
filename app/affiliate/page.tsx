@@ -68,7 +68,7 @@ export default function AffiliateProgramPage() {
             <h1 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] text-white mb-6">
               Earn With<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#A855F7] to-[#E9D5FF]">
-                Step & Style
+                Step & Styl
               </span>
             </h1>
             <p className="text-gray-400 text-sm md:text-lg font-medium leading-relaxed max-w-xl mb-10">
@@ -99,7 +99,7 @@ export default function AffiliateProgramPage() {
           <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 md:p-10 max-h-[90vh] overflow-y-auto border border-[#F5F3FF]">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#A855F7] mb-1">Step & Style</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#A855F7] mb-1">Step & Styl</p>
                 <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Apply for Affiliate</h2>
               </div>
               <button
@@ -446,7 +446,7 @@ export default function AffiliateProgramPage() {
                 {[
                   'Fake or self-orders',
                   'Misleading claims (e.g. "permanent in 1 use")',
-                  'Running paid Google ads on Step & Style brand keywords',
+                  'Running paid Google ads on Step & Styl brand keywords',
                   'Using copyrighted images not provided by us',
                   'Using abusive, false or medical claims',
                   'Creating multiple accounts',

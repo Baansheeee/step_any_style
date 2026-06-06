@@ -7,7 +7,7 @@ export default function AffiliateBanner() {
   return (
     <section className="relative w-full py-16 overflow-hidden bg-white">
       <div className="max-w-[1600px] mx-auto px-6 md:px-20">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -15,9 +15,9 @@ export default function AffiliateBanner() {
         >
           {/* Background Image Container */}
           <div className="relative min-h-[420px] md:h-[500px] w-full">
-            <img 
-              src="/Banner/affiliate.png" 
-              alt="Join our Affiliate Program" 
+            <img
+              src="/Banner/affiliate.png"
+              alt="Join our Affiliate Program"
               className="absolute inset-0 w-full h-full object-cover"
             />
             {/* Premium Overlays */}
@@ -40,7 +40,7 @@ export default function AffiliateBanner() {
                 </span>
               </motion.div>
 
-              <motion.h2 
+              <motion.h2
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
@@ -51,22 +51,22 @@ export default function AffiliateBanner() {
                 Network
               </motion.h2>
 
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
                 className="text-[13px] md:text-lg text-purple-100 max-w-md font-medium leading-relaxed opacity-90 mx-auto md:mx-0"
               >
-                Partner with Step & Style and earn premium commissions on every sale you refer. High conversion rates & dedicated support.
+                Partner with Step & Styl and earn premium commissions on every sale you refer. High conversion rates & dedicated support.
               </motion.p>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
                 className="flex flex-col md:flex-row items-center gap-6 pt-4 md:pt-6"
               >
-                <Link 
+                <Link
                   href="/affiliate"
                   className="w-full md:w-auto px-10 py-4 md:py-5 bg-amber-400 text-black text-[10px] md:text-xs font-black uppercase tracking-[0.3em] rounded-full hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-2xl text-center"
                 >

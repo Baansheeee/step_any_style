@@ -102,7 +102,7 @@ export default function InfluencerDashboardPage() {
               <Link href="/" className="group flex items-center -ml-2 md:-ml-8 transition-transform hover:scale-105 shrink-0">
                 <Image
                   src="/logo_main.png"
-                  alt="Step & Style"
+                  alt="Step & Styl"
                   width={140}
                   height={45}
                   className="h-8 md:h-16 w-auto object-contain brightness-0 invert"
@@ -128,14 +128,14 @@ export default function InfluencerDashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 space-y-6 md:space-y-12">
         {/* Profile Welcome */}
         <section className="bg-white p-6 md:p-10 rounded-3xl border border-gray-100 shadow-sm">
-           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-600 mb-2">Welcome Back</p>
-           <h2 className="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
-             {profile.user.name || profile.user.email.split('@')[0]}
-           </h2>
-           <div className="flex items-center gap-2 mt-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Account Status: {profile.status}</p>
-           </div>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-600 mb-2">Welcome Back</p>
+          <h2 className="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
+            {profile.user.name || profile.user.email.split('@')[0]}
+          </h2>
+          <div className="flex items-center gap-2 mt-2">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Account Status: {profile.status}</p>
+          </div>
         </section>
 
         {/* Metrics Grid */}
@@ -219,12 +219,11 @@ export default function InfluencerDashboardPage() {
                       </div>
                     </div>
                     <div className="mt-4 flex items-center justify-between">
-                       <span
-                        className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.15em] ${
-                          order.status === 'COMPLETED'
+                      <span
+                        className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.15em] ${order.status === 'COMPLETED'
                             ? 'bg-green-100 text-green-700'
                             : 'bg-yellow-100 text-yellow-700'
-                        }`}
+                          }`}
                       >
                         {order.status}
                       </span>
@@ -252,11 +251,10 @@ function MetricCard({
 }) {
   return (
     <div
-      className={`rounded-2xl md:rounded-3xl border p-4 md:p-8 transition-all hover:scale-[1.02] ${
-        accent 
-          ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white border-transparent shadow-lg shadow-purple-100' 
+      className={`rounded-2xl md:rounded-3xl border p-4 md:p-8 transition-all hover:scale-[1.02] ${accent
+          ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white border-transparent shadow-lg shadow-purple-100'
           : 'bg-white border-gray-100 shadow-sm'
-      }`}
+        }`}
     >
       <p className={`text-[9px] md:text-xs font-black uppercase tracking-[0.2em] ${accent ? 'text-white/80' : 'text-gray-400'}`}>{label}</p>
       <p className="text-lg md:text-3xl font-black mt-2 md:mt-4 truncate tracking-tight">{value}</p>

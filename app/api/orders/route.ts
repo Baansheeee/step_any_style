@@ -31,11 +31,11 @@ function buildOrderSummaryEmail({
       <h3>Items</h3>
       <ul>
         ${order.items
-          .map(
-            (item: any) =>
-              `<li>${item.name}${item.size ? ` (Size: ${item.size})` : ''}${item.color ? ` (Color: ${item.color})` : ''} × ${item.quantity} — Rs. ${(item.price * item.quantity).toFixed(2)}</li>`,
-          )
-          .join('')}
+      .map(
+        (item: any) =>
+          `<li>${item.name}${item.size ? ` (Size: ${item.size})` : ''}${item.color ? ` (Color: ${item.color})` : ''} × ${item.quantity} — Rs. ${(item.price * item.quantity).toFixed(2)}</li>`,
+      )
+      .join('')}
       </ul>
       <p><strong>Shipping Address:</strong><br/>
         ${order.shippingName}<br/>
@@ -228,7 +228,7 @@ export async function POST(request: NextRequest) {
 
     await sendEmail({
       to: order.shippingEmail,
-      subject: 'We received your Step & Style order',
+      subject: 'We received your Step & Styl order',
       html: buildOrderSummaryEmail({
         title: 'Order received!',
         order,

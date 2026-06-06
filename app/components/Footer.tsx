@@ -16,7 +16,7 @@ const Footer = () => {
               <Link href="/" className="group flex items-center justify-center lg:justify-start h-4">
                 <Image
                   src="/logo_main.png"
-                  alt="Step & Style"
+                  alt="Step & Styl"
                   width={180}
                   height={50}
                   className="object-contain h-14 md:h-16 w-auto transition-all duration-300 group-hover:scale-105"
@@ -111,7 +111,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="border-t border-gray-800/50 pt-8 md:pt-12">
-          <p className="text-gray-600 text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-center">&copy; 2026 Step & Style. All rights reserved.</p>
+          <p className="text-gray-600 text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-center">&copy; 2026 Step & Styl. All rights reserved.</p>
         </div>
       </div>
     </footer>

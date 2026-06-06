@@ -244,7 +244,7 @@ export async function POST(request: NextRequest) {
         try {
           await sendEmail({
             to: promoCode.influencer.user.email,
-            subject: `Your New Promo Code: ${promoCode.code} - Step & Style`,
+            subject: `Your New Promo Code: ${promoCode.code} - Step & Styl`,
             html: emailHtml,
           });
         } catch (emailError) {

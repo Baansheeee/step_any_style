@@ -56,7 +56,7 @@ export default function ReviewsPage() {
               Community <br /> <span className="text-[#A855F7]">Voices</span>
             </h1>
             <p className="text-gray-500 text-lg md:text-xl font-medium tracking-wide uppercase max-w-2xl mx-auto">
-              Real experiences from our global community. Discover why Step & Style is the destination for luxury footwear.
+              Real experiences from our global community. Discover why Step & Styl is the destination for luxury footwear.
             </p>
           </ScrollAnimate>
         </div>
@@ -76,17 +76,17 @@ export default function ReviewsPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {reviews.map((review, index) => (
-              <ScrollAnimate 
-                key={review.id} 
-                animation="fade-in" 
+              <ScrollAnimate
+                key={review.id}
+                animation="fade-in"
                 delay={`${index * 0.05}s`}
                 className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col group"
               >
                 {/* Product Reference */}
                 <Link href={`/products/${review.product.slug}`} className="flex items-center gap-4 mb-8 p-3 bg-gray-50 rounded-2xl hover:bg-[#F5F3FF] transition-colors">
                   <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-white border border-gray-200">
-                    <Image 
-                      src={review.product.image || '/logo_main.png'} 
+                    <Image
+                      src={review.product.image || '/logo_main.png'}
                       alt={review.product.name}
                       width={48}
                       height={48}
@@ -134,20 +134,20 @@ export default function ReviewsPage() {
                     {review.videoUrl && (
                       <div className="aspect-square rounded-xl overflow-hidden bg-black relative flex items-center justify-center group/vid cursor-pointer">
                         {review.videoUrl.includes('youtube.com') || review.videoUrl.includes('youtu.be') ? (
-                          <Image 
+                          <Image
                             src={`https://img.youtube.com/vi/${review.videoUrl.split('/').pop()?.split('=')[1] || review.videoUrl.split('/').pop()}/mqdefault.jpg`}
                             alt="Video"
                             fill
                             className="object-cover opacity-60"
                           />
                         ) : (
-                          <video 
-                            src={review.videoUrl} 
-                            className="w-full h-full object-cover opacity-60" 
-                            muted 
-                            loop 
-                            onMouseOver={e => e.currentTarget.play()} 
-                            onMouseOut={e => e.currentTarget.pause()} 
+                          <video
+                            src={review.videoUrl}
+                            className="w-full h-full object-cover opacity-60"
+                            muted
+                            loop
+                            onMouseOver={e => e.currentTarget.play()}
+                            onMouseOut={e => e.currentTarget.pause()}
                           />
                         )}
                         <div className="absolute inset-0 flex items-center justify-center">

@@ -17,11 +17,11 @@ function buildStatusEmail(
 ) {
   const itemsHtml = Array.isArray(order.items)
     ? order.items
-        .map(
-          (item: any) =>
-            `<li>${item.name}${item.size ? ` (Size: ${item.size})` : ''}${item.color ? ` (Color: ${item.color})` : ''} × ${item.quantity} — Rs. ${(Number(item.price) * Number(item.quantity)).toFixed(2)}</li>`,
-        )
-        .join('')
+      .map(
+        (item: any) =>
+          `<li>${item.name}${item.size ? ` (Size: ${item.size})` : ''}${item.color ? ` (Color: ${item.color})` : ''} × ${item.quantity} — Rs. ${(Number(item.price) * Number(item.quantity)).toFixed(2)}</li>`,
+      )
+      .join('')
     : '';
 
   return `
@@ -37,12 +37,11 @@ function buildStatusEmail(
       <ul>${itemsHtml}</ul>
       <p><strong>Shipping To:</strong><br/>
       ${order.shippingCity}, ${order.shippingRegion}</p>
-      ${
-        order.adminNote
-          ? `<p><strong>Latest admin note:</strong> ${order.adminNote}</p>`
-          : ''
-      }
-      <p>Thank you for shopping with Step & Style.</p>
+      ${order.adminNote
+      ? `<p><strong>Latest admin note:</strong> ${order.adminNote}</p>`
+      : ''
+    }
+      <p>Thank you for shopping with Step & Styl.</p>
     </div>
   `;
 }
@@ -190,7 +189,7 @@ export async function PUT(
 
               await prisma.product.update({
                 where: { id: product.id },
-                data: { 
+                data: {
                   variants,
                   saleCount: { increment: quantityToReduce }
                 },

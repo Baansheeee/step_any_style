@@ -97,7 +97,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
 
               <div class="footer">
                 <p>If you have any questions, please contact our affiliate support team.</p>
-                <p>Welcome to the Step & Style family! 🚀</p>
+                <p>Welcome to the Step & Styl family! 🚀</p>
               </div>
             </div>
           </div>
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
     try {
       await sendEmail({
         to: application.email,
-        subject: 'Step & Style Affiliate Application Approved!',
+        subject: 'Step & Styl Affiliate Application Approved!',
         html: emailHtml,
       });
     } catch (emailError) {

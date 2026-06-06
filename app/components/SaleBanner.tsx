@@ -18,17 +18,17 @@ export default function SaleBanner({ fullWidth = true }: { fullWidth?: boolean }
       <div className={fullWidth ? "w-full" : "max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10"}>
         <ScrollAnimate animation="fade-in">
           <div className={`relative bg-gradient-to-r from-[#FAF9FF] via-[#F3E8FF] to-[#FAF9FF] border-y border-[#E9D5FF] shadow-2xl overflow-hidden md:grid md:grid-cols-12 md:items-center ${fullWidth ? 'rounded-none border-x-0' : 'rounded-3xl border shadow-2xl'}`}>
-            
+
             {/* Background design elements */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-[#E9D5FF]/30 to-transparent rounded-full filter blur-3xl pointer-events-none" />
             <div className="absolute -bottom-20 -left-20 w-[300px] h-[300px] bg-[#C084FC]/10 rounded-full filter blur-3xl pointer-events-none" />
-            
+
             {/* Decorative Gold/Purple accents */}
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#A855F7]/30 to-transparent" />
-            
+
             {/* Left Content Column */}
             <div className="relative z-10 p-8 sm:p-12 md:p-16 lg:p-20 md:col-span-7 flex flex-col justify-center space-y-6">
-              
+
               {/* Animated Live Badge */}
               <div className="inline-flex items-center gap-2 self-start bg-white/80 backdrop-blur-md px-4 py-2 rounded-full border border-[#E9D5FF]/60 shadow-sm">
                 <span className="flex h-2.5 w-2.5 relative">
@@ -50,7 +50,7 @@ export default function SaleBanner({ fullWidth = true }: { fullWidth?: boolean }
                     {bannerText.substring(bannerText.indexOf(':') + 1).trim()}
                   </h4>
                 )}
-                
+
                 <p className="text-gray-600 text-sm sm:text-base font-light leading-relaxed max-w-lg">
                   Step into style and unmatched comfort. For a limited time, experience our premium handcrafted collections at exclusive promotional prices. Elevate your footwear wardrobe today.
                 </p>
@@ -101,7 +101,7 @@ export default function SaleBanner({ fullWidth = true }: { fullWidth?: boolean }
               {/* Glassy brand badge overlaid on the image */}
               <div className="absolute bottom-6 right-6 bg-white/35 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20 shadow-lg pointer-events-none">
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white drop-shadow-md">
-                  Step & Style
+                  Step & Styl
                 </span>
               </div>
             </div>

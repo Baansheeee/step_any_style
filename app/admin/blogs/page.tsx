@@ -69,7 +69,7 @@ export default function AdminBlogsPage() {
               <Link href="/admin" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
                 <Image
                   src="/logo_main.png"
-                  alt="Step & Style"
+                  alt="Step & Styl"
                   width={140}
                   height={45}
                   className="h-10 md:h-18 w-auto object-contain brightness-0 invert"

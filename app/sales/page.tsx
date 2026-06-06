@@ -6,7 +6,7 @@ import ProductCard from '../products/components/ProductCard';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Flash Sale - Premium Footwear Deals | Step & Style',
+  title: 'Flash Sale - Premium Footwear Deals | Step & Styl',
   description: 'Limited time offers on premium bridal heels, slippers, and more. Shop our exclusive sale collection now.',
 };
 
@@ -59,7 +59,7 @@ export default async function SalesPage() {
   return (
     <main className="min-h-screen bg-white">
       <Navbar />
-      
+
       {/* Hero Section */}
       <div className="pt-24 pb-12 bg-white border-b border-gray-100">
         <div className="max-w-[1400px] mx-auto px-4">
@@ -90,9 +90,9 @@ export default async function SalesPage() {
         ) : (
           <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
             <div className="text-gray-400 mb-4">
-               <svg className="w-16 h-16 mx-auto opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-               </svg>
+              <svg className="w-16 h-16 mx-auto opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
             </div>
             <h2 className="text-xl font-bold text-gray-900 mb-2 uppercase tracking-widest">No Active Sales</h2>
             <p className="text-gray-500 text-sm font-medium tracking-wide">Stay tuned for our upcoming promotional events.</p>
