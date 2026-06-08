@@ -303,7 +303,7 @@ export default function Home() {
         <div className="hidden md:grid max-w-[1600px] mx-auto md:grid-cols-2 items-stretch">
           <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
             <Image
-              src="/men.png"
+              src="/men's_new.png"
               alt="Men's Collection"
               fill
               className="object-cover transition-all duration-1000"
