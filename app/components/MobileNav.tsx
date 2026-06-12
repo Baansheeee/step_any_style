@@ -90,7 +90,7 @@ export default function MobileNav({
                   &
                 </span>
                 <span className="text-lg font-black uppercase tracking-[0.2em] text-gray-900">
-                  Style
+                  Styl
                 </span>
               </div>
             </Link>
