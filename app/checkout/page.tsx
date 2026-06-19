@@ -8,7 +8,7 @@ import { formatPKR } from '@/lib/currency';
 import Link from 'next/link';
 import Image from 'next/image';
 
-type PaymentMethod = 'cod';
+type PaymentMethod = 'cod' | 'direct';
 
 interface PromoCodeData {
   id: string;
@@ -85,6 +85,7 @@ function CheckoutContent() {
   });
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod');
+  const [receiptImage, setReceiptImage] = useState<File | null>(null);
   const [promoInput, setPromoInput] = useState(promoCode);
   const [validatedPromo, setValidatedPromo] = useState<PromoCodeData | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
@@ -162,9 +163,29 @@ function CheckoutContent() {
     e.preventDefault();
     if (items.length === 0 || isSubmitting) return;
 
+    if (paymentMethod === 'direct' && !receiptImage) {
+      setStatusMessage('Please upload a screenshot of your payment receipt.');
+      return;
+    }
+
     setIsSubmitting(true);
     setStatusMessage(null);
     try {
+      let receiptUrl = null;
+      if (paymentMethod === 'direct' && receiptImage) {
+        const formData = new FormData();
+        formData.append('file', receiptImage);
+        const uploadRes = await fetch('/api/uploads/receipt', {
+          method: 'POST',
+          body: formData,
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok || !uploadData.success) {
+          throw new Error(uploadData.error || 'Failed to upload receipt.');
+        }
+        receiptUrl = uploadData.url;
+      }
+
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -173,7 +194,8 @@ function CheckoutContent() {
           shippingAddress: { ...shippingInfo, fullName: `${shippingInfo.firstName} ${shippingInfo.lastName}`.trim() },
           shippingRegion: regions.find(r => r.id === selectedRegionId)?.name,
           shippingCity: regions.find(r => r.id === selectedRegionId)?.cities.find(c => c.id === selectedCityId)?.name,
-          paymentMethod: 'cod',
+          paymentMethod,
+          receiptUrl,
           promoCodeId: validatedPromo?.id ?? null,
           subtotal,
           promoDiscount,
@@ -296,16 +318,15 @@ function CheckoutContent() {
             </div>
           </section>
 
-          {/* Shipping Method Section */}
+          {/* Delivery Cost Section */}
           <section className="space-y-4">
-            <h2 className="text-xl font-medium tracking-tight">Shipping method</h2>
+            <h2 className="text-xl font-medium tracking-tight">Delivery Cost</h2>
             <div className="border border-gray-200 rounded-xl p-5 bg-purple-50/20">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-4 h-4 rounded-full bg-purple-600"></div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">Cash on Delivery</p>
-                    <p className="text-xs text-gray-400">Standard delivery</p>
+                    <p className="text-sm font-medium text-gray-900">Standard Delivery</p>
+                    <p className="text-xs text-gray-400">Usually 3-5 business days</p>
                   </div>
                 </div>
                 <span className="text-xs font-bold text-gray-900">{formatPKR(shippingCost)}</span>
@@ -313,10 +334,68 @@ function CheckoutContent() {
             </div>
           </section>
 
-          {/* Payment Info Section */}
-          <section className="space-y-4 bg-blue-50 border border-blue-200 rounded-xl p-5">
-            <p className="text-sm font-medium text-blue-900">Payment Method: Cash on Delivery</p>
-            <p className="text-xs text-blue-700">Please have the exact amount ready when the package is delivered.</p>
+          {/* Payment Method Section */}
+          <section className="space-y-4">
+            <h2 className="text-xl font-medium tracking-tight">Payment Method</h2>
+            <div className="border border-gray-200 rounded-xl overflow-hidden">
+              <label className={`flex items-center gap-4 p-5 cursor-pointer transition-colors ${paymentMethod === 'cod' ? 'bg-purple-50/30' : 'hover:bg-gray-50'}`}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cod"
+                  checked={paymentMethod === 'cod'}
+                  onChange={() => setPaymentMethod('cod')}
+                  className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-600"
+                />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Cash on Delivery</p>
+                  <p className="text-xs text-gray-500">Please have the exact amount ready.</p>
+                </div>
+              </label>
+
+              <div className="border-t border-gray-200"></div>
+
+              <label className={`flex flex-col gap-4 p-5 cursor-pointer transition-colors ${paymentMethod === 'direct' ? 'bg-purple-50/30' : 'hover:bg-gray-50'}`}>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="direct"
+                    checked={paymentMethod === 'direct'}
+                    onChange={() => setPaymentMethod('direct')}
+                    className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-600"
+                  />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">Online Payment</p>
+                    <p className="text-xs text-gray-500">Bank Transfer / Easy Paisa / Jazz Cash</p>
+                  </div>
+                </div>
+              </label>
+              
+              {paymentMethod === 'direct' && (
+                <div className="px-5 pb-5 pt-2 ml-8 space-y-4">
+                  <div className="bg-white p-4 rounded-lg border border-gray-100 space-y-3">
+                    <p className="text-sm font-bold text-gray-900">Bank Details for Step & Styl.</p>
+                    <div className="text-xs text-gray-600 space-y-1">
+                      <p><strong>Bank:</strong> Meezan Bank</p>
+                      <p><strong>IBAN:</strong> PK66 MEZN 0098 1401 1279 6881</p>
+                      <p><strong>Account No:</strong> 9814 0112796881</p>
+                      <p><strong>Title:</strong> ANISA SHAHID</p>
+                      <p className="pt-2"><strong>Easy Paisa / Jazz Cash:</strong> +92-332-9822592</p>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Upload Payment Receipt</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setReceiptImage(e.target.files?.[0] || null)}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </section>
 
           {/* Action Button */}

@@ -62,6 +62,7 @@ export default function AdminOrdersPanel() {
   const [paymentFilter, setPaymentFilter] = useState<'ALL' | PaymentStatus>('ALL');
   const [deliveryFilter, setDeliveryFilter] =
     useState<'ALL' | 'PENDING' | 'OUT_FOR_DELIVERY' | 'DELIVERED'>('ALL');
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -180,21 +181,7 @@ export default function AdminOrdersPanel() {
     const subtotal = Number(order.subtotal);
     const discount = Number(order.discountAmount);
     
-    // If it's a direct transfer, there might be an additional 5% discount not stored in discountAmount
-    let transferDiscount = 0;
-    if (order.paymentMethod === 'DIRECT') {
-      transferDiscount = (subtotal - discount) * 0.05;
-    }
-    
-    return Math.max(0, total - (subtotal - discount - transferDiscount));
-  };
-
-  const transferDiscountValue = (order: AdminOrder) => {
-    if (order.paymentMethod !== 'DIRECT') return 0;
-    // Since we don't store transfer discount separately, we calculate it as 5% of (subtotal - promoDiscount)
-    const subtotal = Number(order.subtotal);
-    const promoDiscount = Number(order.discountAmount);
-    return (subtotal - promoDiscount) * 0.05;
+    return Math.max(0, total - (subtotal - discount));
   };
 
   const renderActionControls = () => {
@@ -531,27 +518,6 @@ export default function AdminOrdersPanel() {
               </div>
             </section>
 
-            {selectedOrder.receiptUrl && (
-              <section>
-                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">Payment Receipt</h4>
-                <div className="rounded-xl border border-gray-200 overflow-hidden">
-                  <img
-                    src={selectedOrder.receiptUrl}
-                    alt="Payment receipt"
-                    className="w-full object-cover max-h-64"
-                  />
-                </div>
-                <a
-                  href={selectedOrder.receiptUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-purple-600 hover:text-purple-700 font-semibold mt-2 inline-block"
-                >
-                  View full receipt
-                </a>
-              </section>
-            )}
-
             <section className="bg-gray-50 rounded-xl p-4 border border-gray-100 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Subtotal</span>
@@ -563,12 +529,7 @@ export default function AdminOrdersPanel() {
                   <span>-{formatCurrency(promoDiscountValue(selectedOrder))}</span>
                 </div>
               )}
-              {transferDiscountValue(selectedOrder) > 0 && (
-                <div className="flex justify-between text-sm text-green-700">
-                  <span>Direct Transfer Discount</span>
-                  <span>-{formatCurrency(transferDiscountValue(selectedOrder))}</span>
-                </div>
-              )}
+
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Shipping</span>
                 <span className="font-semibold text-gray-900">{formatCurrency(shippingCostValue(selectedOrder))}</span>
@@ -601,6 +562,26 @@ export default function AdminOrdersPanel() {
               </div>
             </section>
 
+            {selectedOrder.receiptUrl && (
+              <section>
+                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">Payment Receipt</h4>
+                <div className="rounded-xl border border-gray-200 overflow-hidden cursor-pointer" onClick={() => setFullscreenImage(selectedOrder.receiptUrl || null)}>
+                  <img
+                    src={selectedOrder.receiptUrl}
+                    alt="Payment receipt"
+                    className="w-full object-cover max-h-64 hover:opacity-90 transition-opacity"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setFullscreenImage(selectedOrder.receiptUrl || null)}
+                  className="text-sm text-purple-600 hover:text-purple-700 font-semibold mt-2 inline-block cursor-pointer"
+                >
+                  View full receipt
+                </button>
+              </section>
+            )}
+
             <section>
               <label className="block text-sm font-medium text-gray-700 mb-2">Admin Note</label>
               <textarea
@@ -629,6 +610,28 @@ export default function AdminOrdersPanel() {
           )}
 
           {renderActionControls()}
+        </div>
+      )}
+
+      {fullscreenImage && (
+        <div 
+          className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <div className="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center">
+            <button
+              className="absolute -top-10 right-0 text-white hover:text-gray-300 font-bold text-xl"
+              onClick={() => setFullscreenImage(null)}
+            >
+              Close
+            </button>
+            <img 
+              src={fullscreenImage} 
+              alt="Full Payment Receipt" 
+              className="object-contain max-h-[85vh] w-auto rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
         </div>
       )}
     </div>
