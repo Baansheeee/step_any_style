@@ -91,7 +91,7 @@ export default function AdminCollectionsPanel() {
     setStatus({ type: 'idle', message: '' });
   };
 
-  const handleInputChange = (key: keyof CollectionFormState, value: string) => {
+  const handleInputChange = (key: keyof CollectionFormState, value: any) => {
     setFormValues((prev) => ({
       ...prev,
       [key]: value,
