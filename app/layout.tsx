@@ -5,6 +5,7 @@ import { CartProvider } from "./context/CartContext";
 import ConditionalFooter from "./components/ConditionalFooter";
 import WhatsAppButton from "./components/WhatsAppButton";
 import BlogsButton from "./components/BlogsButton";
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,7 @@ export default function RootLayout({
           <ConditionalFooter />
         </CartProvider>
       </body>
+      {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
     </html>
   );
 }
