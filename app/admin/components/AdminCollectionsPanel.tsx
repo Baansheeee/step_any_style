@@ -11,6 +11,7 @@ interface CollectionFormState {
   description: string;
   image: string;
   targetGender: 'MEN' | 'WOMEN' | 'KIDS' | 'UNISEX';
+  sendPromoEmail: boolean;
 }
 
 const defaultFormState: CollectionFormState = {
@@ -19,6 +20,7 @@ const defaultFormState: CollectionFormState = {
   description: '',
   image: '',
   targetGender: 'UNISEX',
+  sendPromoEmail: false,
 };
 
 export default function AdminCollectionsPanel() {
@@ -75,7 +77,8 @@ export default function AdminCollectionsPanel() {
       slug: collection.slug,
       description: collection.description || '',
       image: collection.image || '',
-      targetGender: collection.targetGender,
+      targetGender: (collection.targetGender as any) || 'UNISEX',
+      sendPromoEmail: false,
     });
     setIsModalOpen(true);
     setStatus({ type: 'idle', message: '' });
@@ -327,6 +330,22 @@ export default function AdminCollectionsPanel() {
                     <option value="UNISEX">Unisex</option>
                   </select>
                 </div>
+
+                {modalMode === 'create' && (
+                  <div>
+                    <label className="flex items-center gap-3 cursor-pointer group p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                      <div className="relative flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={formValues.sendPromoEmail}
+                          onChange={(e) => handleInputChange('sendPromoEmail', e.target.checked)}
+                          className="w-5 h-5 border-2 border-slate-300 rounded text-pink-600 focus:ring-pink-500 transition-colors"
+                        />
+                      </div>
+                      <span className="text-sm font-bold text-gray-700 group-hover:text-pink-600 transition-colors">Send Promo Email to all users</span>
+                    </label>
+                  </div>
+                )}
               </form>
             </div>
 

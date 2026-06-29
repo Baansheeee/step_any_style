@@ -98,6 +98,7 @@ function CheckoutContent() {
   const [selectedRegionId, setSelectedRegionId] = useState<string>('');
   const [selectedCityId, setSelectedCityId] = useState<string>('');
   const [isRegionsLoading, setIsRegionsLoading] = useState(true);
+  const [showBankPopup, setShowBankPopup] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -127,19 +128,29 @@ function CheckoutContent() {
     fetchRegions();
   }, []);
 
-  const { promoDiscount, shippingCost, finalTotal } = useMemo(() => {
+  const { promoDiscount, bankDiscount, shippingCost, finalTotal } = useMemo(() => {
     const promoAmount = validatedPromo ? (subtotal * validatedPromo.discountPercent) / 100 : 0;
     const afterPromo = subtotal - promoAmount;
 
-    const selectedRegion = regions.find(r => r.id === selectedRegionId);
-    const sCost = selectedRegion ? selectedRegion.shippingCost : 350;
+    let sCost = 350;
+    if (selectedRegionId) {
+      const selectedRegion = regions.find(r => r.id === selectedRegionId);
+      if (selectedRegion) sCost = selectedRegion.shippingCost;
+    }
+
+    let bDiscount = 0;
+    if (paymentMethod === 'direct') {
+      bDiscount = afterPromo * 0.05;
+      sCost = 0; // Free delivery
+    }
 
     return {
       promoDiscount: promoAmount,
+      bankDiscount: bDiscount,
       shippingCost: sCost,
-      finalTotal: Math.max(0, afterPromo + sCost),
+      finalTotal: Math.max(0, afterPromo - bDiscount + sCost),
     };
-  }, [subtotal, validatedPromo, regions, selectedRegionId]);
+  }, [subtotal, validatedPromo, regions, selectedRegionId, paymentMethod]);
 
   const handleValidatePromo = async () => {
     if (!promoInput.trim()) return;
@@ -198,7 +209,7 @@ function CheckoutContent() {
           receiptUrl,
           promoCodeId: validatedPromo?.id ?? null,
           subtotal,
-          promoDiscount,
+          promoDiscount: promoDiscount + bankDiscount,
           shippingCost,
           total: finalTotal,
         }),
@@ -479,8 +490,14 @@ function CheckoutContent() {
 
             {validatedPromo && (
               <div className="flex justify-between items-center text-sm font-bold text-green-600">
-                <span>Discount</span>
+                <span>Promo Discount</span>
                 <span>-{formatPKR(promoDiscount)}</span>
+              </div>
+            )}
+            {bankDiscount > 0 && (
+              <div className="flex justify-between items-center text-sm font-bold text-green-600">
+                <span>Bank Transfer (5%)</span>
+                <span>-{formatPKR(bankDiscount)}</span>
               </div>
             )}
 
@@ -515,6 +532,38 @@ function CheckoutContent() {
           setShippingInfo(p => ({ ...p, email: user.email }));
         }}
       />
+
+      {/* Encourage Bank Transfer Popup */}
+      {showBankPopup && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 transition-opacity duration-300">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full animate-in fade-in zoom-in-95 duration-300 text-center">
+            <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-black uppercase tracking-tight text-gray-900 mb-2">Save 5% with Bank Transfer</h3>
+            <p className="text-sm text-gray-500 mb-8 font-medium">Enjoy extra 5% discount and FREE Delivery with direct bank transfer.</p>
+            <div className="space-y-3">
+              <button
+                onClick={() => {
+                  setPaymentMethod('direct');
+                  setShowBankPopup(false);
+                }}
+                className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-purple-200 hover:scale-[1.02] active:scale-95 transition-all"
+              >
+                Continue with Bank Transfer
+              </button>
+              <button
+                onClick={() => setShowBankPopup(false)}
+                className="w-full py-3.5 bg-gray-50 text-gray-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all"
+              >
+                Continue Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

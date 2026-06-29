@@ -43,6 +43,7 @@ export default function AdminSalePanel() {
     targetCollections: [] as string[],
     targetProducts: [] as string[],
     isActive: false,
+    sendPromoEmail: false,
   });
 
   const fetchData = async () => {
@@ -107,7 +108,7 @@ export default function AdminSalePanel() {
 
       if (res.ok) {
         setStatus({ type: 'success', message: 'Sale event created and applied!' });
-        setForm({ name: '', bannerText: '', discountPercent: 0, targetCollections: [], targetProducts: [], isActive: false });
+        setForm({ name: '', bannerText: '', discountPercent: 0, targetCollections: [], targetProducts: [], isActive: false, sendPromoEmail: false });
         fetchData();
       } else {
         const data = await res.json();
@@ -266,15 +267,28 @@ export default function AdminSalePanel() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 pt-2">
-            <input
-              type="checkbox"
-              id="isActive"
-              checked={form.isActive}
-              onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-              className="w-5 h-5 text-purple-600 rounded"
-            />
-            <label htmlFor="isActive" className="text-sm font-bold text-gray-700">Activate & Apply Discounts Immediately</label>
+          <div className="flex flex-col sm:flex-row gap-6 pt-2">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="isActive"
+                checked={form.isActive}
+                onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
+                className="w-5 h-5 text-purple-600 rounded border-2 border-slate-300"
+              />
+              <label htmlFor="isActive" className="text-sm font-bold text-gray-700">Activate & Apply Immediately</label>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="sendPromoEmail"
+                checked={form.sendPromoEmail}
+                onChange={(e) => setForm({ ...form, sendPromoEmail: e.target.checked })}
+                className="w-5 h-5 text-pink-600 rounded border-2 border-slate-300"
+              />
+              <label htmlFor="sendPromoEmail" className="text-sm font-bold text-gray-700">Send Promo Email</label>
+            </div>
           </div>
           <button
             type="submit"

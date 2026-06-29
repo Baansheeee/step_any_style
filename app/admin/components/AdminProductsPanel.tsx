@@ -24,13 +24,10 @@ interface ProductFormState {
   variants: ProductVariant[];
   inStock: boolean;
   discount: string;
+  sendPromoEmail: boolean;
 }
 
-interface VariantInput {
-  color: string;
-  size: string;
-  stock: string;
-}
+
 
 const defaultFormState: ProductFormState = {
   slug: '',
@@ -49,6 +46,7 @@ const defaultFormState: ProductFormState = {
   variants: [],
   inStock: true,
   discount: '0',
+  sendPromoEmail: false,
 };
 
 const specsToString = (value?: Record<string, any> | null) => 
@@ -91,7 +89,12 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
   const [selectedProduct, setSelectedProduct] = useState<ProductDTO | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
-  const [variantInput, setVariantInput] = useState<VariantInput>({ color: '', size: '', stock: '' });
+
+  // Variant Matrix State
+  const [matrixColors, setMatrixColors] = useState<{ name: string; imageUrl?: string; images?: string; videoUrl?: string }[]>([]);
+  const [matrixSizes, setMatrixSizes] = useState<string>('');
+  const [matrixStock, setMatrixStock] = useState<Record<string, number>>({});
+  const [newColorName, setNewColorName] = useState('');
 
   const fetchProducts = async () => {
     try {
@@ -136,6 +139,10 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
     setModalMode('create');
     setSelectedProduct(null);
     setFormValues(defaultFormState);
+    setMatrixColors([]);
+    setMatrixSizes('');
+    setMatrixStock({});
+    setNewColorName('');
     setIsModalOpen(true);
     setStatus({ type: 'idle', message: '' });
   };
@@ -160,7 +167,30 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
       variants: product.variants || [],
       inStock: product.inStock,
       discount: String(product.discount || 0),
+      sendPromoEmail: false,
     });
+
+    const uniqueColors = Array.from(new Set((product.variants || []).map(v => v.color)));
+    const colorsWithImages = uniqueColors.map(c => {
+      const variant = (product.variants || []).find(v => v.color === c);
+      return { 
+        name: c, 
+        imageUrl: variant?.imageUrl,
+        images: csvFromArray(variant?.images),
+        videoUrl: variant?.videoUrl
+      };
+    });
+    const uniqueSizes = Array.from(new Set((product.variants || []).map(v => v.size)));
+    const stockMap: Record<string, number> = {};
+    (product.variants || []).forEach(v => {
+      stockMap[`${v.color}-${v.size}`] = v.stock;
+    });
+
+    setMatrixColors(colorsWithImages);
+    setMatrixSizes(uniqueSizes.join(', '));
+    setMatrixStock(stockMap);
+    setNewColorName('');
+
     setIsModalOpen(true);
     setStatus({ type: 'idle', message: '' });
   };
@@ -169,37 +199,10 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
     setIsModalOpen(false);
     setFormValues(defaultFormState);
     setSelectedProduct(null);
-    setVariantInput({ color: '', size: '', stock: '' });
     setStatus({ type: 'idle', message: '' });
   };
 
-  const handleAddVariant = () => {
-    if (!variantInput.color.trim() || !variantInput.size.trim() || !variantInput.stock.trim()) {
-      setStatus({ type: 'error', message: 'Please fill all variant fields' });
-      return;
-    }
 
-    const newVariant: ProductVariant = {
-      id: Date.now().toString(),
-      color: variantInput.color.trim(),
-      size: variantInput.size.trim(),
-      stock: parseInt(variantInput.stock),
-    };
-
-    setFormValues((prev) => ({
-      ...prev,
-      variants: [...prev.variants, newVariant],
-    }));
-    setVariantInput({ color: '', size: '', stock: '' });
-    setStatus({ type: 'success', message: 'Variant added successfully' });
-  };
-
-  const handleRemoveVariant = (variantId: string) => {
-    setFormValues((prev) => ({
-      ...prev,
-      variants: prev.variants.filter((v) => v.id !== variantId),
-    }));
-  };
 
   const handleInputChange = (key: keyof ProductFormState, value: string | boolean) => {
     setFormValues((prev) => ({
@@ -214,6 +217,23 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
     setStatus({ type: 'idle', message: '' });
 
     try {
+      const compiledVariants: ProductVariant[] = [];
+      const sizesArray = matrixSizes.split(',').map(s => s.trim()).filter(Boolean);
+      matrixColors.forEach(color => {
+        sizesArray.forEach(size => {
+          const existingId = selectedProduct?.variants?.find(v => v.color === color.name && v.size === size)?.id;
+          compiledVariants.push({
+            id: existingId || (Date.now().toString() + Math.random().toString(36).substring(2, 9)),
+            color: color.name,
+            size,
+            stock: matrixStock[`${color.name}-${size}`] || 0,
+            imageUrl: color.imageUrl,
+            images: csvToArray(color.images || ''),
+            videoUrl: color.videoUrl || undefined
+          });
+        });
+      });
+
       const payload = {
         slug: formValues.slug,
         name: formValues.name,
@@ -228,9 +248,10 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
         advantages: csvToArray(formValues.advantages),
         features: csvToArray(formValues.features),
         specifications: specsToObject(formValues.specifications),
-        variants: formValues.variants,
+        variants: compiledVariants,
         inStock: formValues.inStock,
-        discount: Number(formValues.discount) || 0,
+        discount: formValues.discount ? Number(formValues.discount) : 0,
+        sendPromoEmail: formValues.sendPromoEmail,
       };
 
       const endpoint =
@@ -544,15 +565,32 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
                     onChange={(url) => handleInputChange('image', url)}
                     placeholder="JPG, PNG, WebP — drag & drop or browse"
                   />
-                  <div className="flex items-center gap-3 md:mt-8 bg-purple-50/50 p-2.5 rounded-xl border border-purple-200">
-                    <input
-                      type="checkbox"
-                      id="inStockCheck"
-                      checked={formValues.inStock}
-                      onChange={(e) => handleInputChange('inStock', e.target.checked)}
-                      className="w-5 h-5 text-purple-600 border-gray-300 rounded-lg focus:ring-purple-500"
-                    />
-                    <label htmlFor="inStockCheck" className="text-sm font-bold text-gray-700 cursor-pointer uppercase tracking-tight">Available for Purchase</label>
+                  <div className="flex flex-col sm:flex-row gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <div className="relative flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={formValues.inStock}
+                          onChange={(e) => handleInputChange('inStock', e.target.checked)}
+                          className="w-5 h-5 border-2 border-slate-300 rounded text-purple-600 focus:ring-purple-500 transition-colors"
+                        />
+                      </div>
+                      <span className="text-sm font-bold text-gray-700 group-hover:text-purple-600 transition-colors">In Stock</span>
+                    </label>
+
+                    {modalMode === 'create' && (
+                      <label className="flex items-center gap-3 cursor-pointer group">
+                        <div className="relative flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={formValues.sendPromoEmail}
+                            onChange={(e) => handleInputChange('sendPromoEmail', e.target.checked)}
+                            className="w-5 h-5 border-2 border-slate-300 rounded text-pink-600 focus:ring-pink-500 transition-colors"
+                          />
+                        </div>
+                        <span className="text-sm font-bold text-gray-700 group-hover:text-pink-600 transition-colors">Send Promo Email</span>
+                      </label>
+                    )}
                   </div>
                 </div>
 
@@ -580,96 +618,165 @@ export default function AdminProductsPanel({ onProductsCountChange }: AdminProdu
                   />
                 </div>
 
-                <div className="space-y-4 bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-2xl border border-blue-200">
-                  <h4 className="text-xs uppercase font-black text-blue-600 tracking-widest">Color & Size Variants</h4>
+                <div className="space-y-6 bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-2xl border border-blue-200">
+                  <h4 className="text-sm uppercase font-black text-blue-600 tracking-widest flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                    Color & Size Matrix
+                  </h4>
                   
-                  <div className="grid md:grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-[10px] font-black text-blue-600 uppercase mb-1">Color</label>
+                  {/* Step 1: Colors */}
+                  <div className="bg-white p-4 rounded-xl border border-blue-100 space-y-4 shadow-sm">
+                    <label className="block text-xs font-black text-blue-600 uppercase mb-1">Step 1: Add Colors & Images</label>
+                    <div className="flex gap-2">
                       <input
                         type="text"
-                        value={variantInput.color}
-                        onChange={(e) => setVariantInput({ ...variantInput, color: e.target.value })}
-                        className="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 outline-none transition-all placeholder:text-blue-300 hover:border-blue-300"
-                        placeholder="e.g. Red, Blue"
+                        value={newColorName}
+                        onChange={(e) => setNewColorName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (newColorName.trim() && !matrixColors.find(c => c.name === newColorName.trim())) {
+                              setMatrixColors([...matrixColors, { name: newColorName.trim() }]);
+                              setNewColorName('');
+                            }
+                          }
+                        }}
+                        className="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:border-slate-400"
+                        placeholder="e.g. Red, Black (Press Enter to add)"
                       />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (newColorName.trim() && !matrixColors.find(c => c.name === newColorName.trim())) {
+                            setMatrixColors([...matrixColors, { name: newColorName.trim() }]);
+                            setNewColorName('');
+                          }
+                        }}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition"
+                      >
+                        Add Color
+                      </button>
                     </div>
-                    <div>
-                      <label className="block text-[10px] font-black text-blue-600 uppercase mb-1">Size</label>
-                      <input
-                        type="text"
-                        value={variantInput.size}
-                        onChange={(e) => setVariantInput({ ...variantInput, size: e.target.value })}
-                        className="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 outline-none transition-all placeholder:text-blue-300 hover:border-blue-300"
-                        placeholder="e.g. M, L, XL"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-black text-blue-600 uppercase mb-1">Stock</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={variantInput.stock}
-                        onChange={(e) => setVariantInput({ ...variantInput, stock: e.target.value })}
-                        className="w-full bg-white border border-blue-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 outline-none transition-all placeholder:text-blue-300 hover:border-blue-300"
-                        placeholder="Quantity"
-                      />
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleAddVariant}
-                    className="w-full px-4 py-2 text-sm font-semibold text-blue-600 bg-white border border-blue-300 rounded-lg hover:bg-blue-50 transition-colors"
-                  >
-                    + Add Variant
-                  </button>
 
-                  {formValues.variants.length > 0 && (
-                    <div className="mt-4">
-                      <label className="block text-[10px] font-black text-blue-600 uppercase mb-2">Added Variants ({formValues.variants.length})</label>
-                      <div className="space-y-2 max-h-48 overflow-y-auto">
-                        {formValues.variants.map((variant) => (
-                          <div key={variant.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-blue-100">
-                            <div className="flex gap-4 flex-1">
-                              <span className="text-sm font-medium text-gray-700"><span className="font-black text-blue-600">Color:</span> {variant.color}</span>
-                              <span className="text-sm font-medium text-gray-700"><span className="font-black text-blue-600">Size:</span> {variant.size}</span>
-                              <span className="text-sm font-medium text-gray-700"><span className="font-black text-blue-600">Stock:</span> {variant.stock}</span>
+                    {matrixColors.length > 0 && (
+                      <div className="space-y-4 mt-4">
+                        {matrixColors.map((color, idx) => (
+                          <div key={idx} className="flex flex-col gap-4 p-4 bg-blue-50/50 rounded-xl border border-blue-100 shadow-inner">
+                            <div className="flex items-center justify-between border-b border-blue-100 pb-3">
+                              <span className="font-black text-sm text-blue-900 uppercase tracking-widest">{color.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => setMatrixColors(matrixColors.filter((_, i) => i !== idx))}
+                                className="text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition"
+                                title="Remove Color"
+                              >
+                                ✕ Remove Color
+                              </button>
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveVariant(variant.id)}
-                              className="ml-2 px-2 py-1 text-xs font-bold text-red-600 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
-                            >
-                              ✕ Remove
-                            </button>
+                            <div className="grid md:grid-cols-3 gap-6">
+                              <div>
+                                <label className="block text-[10px] font-black text-blue-600 uppercase mb-2">Primary Display Image</label>
+                                <FileUpload
+                                  label=""
+                                  accept="image"
+                                  value={color.imageUrl || ''}
+                                  onChange={(url) => {
+                                    const updated = [...matrixColors];
+                                    updated[idx].imageUrl = url;
+                                    setMatrixColors(updated);
+                                  }}
+                                  placeholder="Main display image"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-black text-blue-600 uppercase mb-2">Gallery Images</label>
+                                <MultiFileUpload
+                                  label=""
+                                  value={color.images || ''}
+                                  onChange={(urls) => {
+                                    const updated = [...matrixColors];
+                                    updated[idx].images = urls;
+                                    setMatrixColors(updated);
+                                  }}
+                                  placeholder="Add multiple angles"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-black text-blue-600 uppercase mb-2">Product Video</label>
+                                <FileUpload
+                                  label=""
+                                  accept="video"
+                                  value={color.videoUrl || ''}
+                                  onChange={(url) => {
+                                    const updated = [...matrixColors];
+                                    updated[idx].videoUrl = url;
+                                    setMatrixColors(updated);
+                                  }}
+                                  placeholder="Add MP4 video"
+                                />
+                              </div>
+                            </div>
                           </div>
                         ))}
                       </div>
+                    )}
+                  </div>
+
+                  {/* Step 2: Sizes */}
+                  <div className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
+                    <label className="block text-xs font-black text-blue-600 uppercase mb-2">Step 2: Add Sizes (Comma separated)</label>
+                    <input
+                      type="text"
+                      value={matrixSizes}
+                      onChange={(e) => setMatrixSizes(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all hover:border-slate-400"
+                      placeholder="e.g. S, M, L, XL or 7, 8, 9, 10"
+                    />
+                  </div>
+
+                  {/* Step 3: Stock Matrix */}
+                  {matrixColors.length > 0 && matrixSizes.split(',').filter(s => s.trim()).length > 0 && (
+                    <div className="bg-white p-4 rounded-xl border border-blue-100 overflow-x-auto shadow-sm">
+                      <label className="block text-xs font-black text-blue-600 uppercase mb-4">Step 3: Enter Stock Quantities</label>
+                      <table className="w-full text-left border-collapse min-w-[300px]">
+                        <thead>
+                          <tr>
+                            <th className="p-3 border-b-2 border-gray-100 text-xs text-gray-500 font-bold uppercase w-1/4">Color \ Size</th>
+                            {matrixSizes.split(',').map(s => s.trim()).filter(Boolean).map((size, idx) => (
+                              <th key={idx} className="p-3 border-b-2 border-gray-100 text-xs text-gray-800 font-black text-center">{size}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {matrixColors.map((color, cIdx) => (
+                            <tr key={cIdx} className="hover:bg-slate-50">
+                              <td className="p-3 border-b border-gray-50 text-sm font-bold text-gray-700">{color.name}</td>
+                              {matrixSizes.split(',').map(s => s.trim()).filter(Boolean).map((size, sIdx) => {
+                                const key = `${color.name}-${size}`;
+                                return (
+                                  <td key={sIdx} className="p-2 border-b border-gray-50 text-center">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      value={matrixStock[key] === undefined ? '' : matrixStock[key]}
+                                      onChange={(e) => setMatrixStock({ ...matrixStock, [key]: parseInt(e.target.value) || 0 })}
+                                      className="w-20 text-center bg-white border border-slate-200 rounded-md px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none mx-auto shadow-inner"
+                                      placeholder="0"
+                                    />
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   )}
                 </div>
 
                 <div className="space-y-4 bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-2xl border border-purple-200">
-                  <h4 className="text-xs uppercase font-black text-purple-400 tracking-widest">Additional Assets & Metadata</h4>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <MultiFileUpload
-                        label="Gallery Images"
-                        value={formValues.images}
-                        onChange={(urls) => handleInputChange('images', urls)}
-                        placeholder="Select multiple images at once"
-                      />
-                    </div>
-                    <div>
-                      <FileUpload
-                        label="Product Video"
-                        accept="video"
-                        value={formValues.videoUrl}
-                        onChange={(url) => handleInputChange('videoUrl', url)}
-                        placeholder="MP4, WebM, OGG, MOV — drag & drop or browse"
-                        labelClassName="block text-[10px] font-black text-purple-600 uppercase mb-1"
-                      />
-                    </div>
+                  <h4 className="text-xs uppercase font-black text-purple-400 tracking-widest">Additional Metadata</h4>
+                  <div className="grid gap-4">
                     <div>
                       <label className="block text-[10px] font-black text-purple-600 uppercase mb-1">Selling Points (Comma separated)</label>
                       <textarea

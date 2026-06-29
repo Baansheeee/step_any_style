@@ -40,7 +40,7 @@ export default function SliderSection({
         <ScrollAnimate animation="fade-in" className="flex justify-between items-end mb-12 border-b border-[#F5F3FF] pb-6">
           <div>
             <h2 className="text-xs font-black uppercase tracking-[0.3em] mb-2" style={{ color: accentColor }}>{subtitle}</h2>
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900">{title}</h3>
+            <h3 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter text-[#0B1727]">{title}</h3>
           </div>
           <div className="flex items-center gap-8">
             <Link href={viewAllLink} className="hidden md:block text-[11px] font-black uppercase tracking-widest border-b-2 border-gray-200 pb-1 text-gray-900 hover:border-black transition-all">

@@ -158,7 +158,10 @@ export function parseProductPayload(
       color: String(v.color || '').trim(),
       size: String(v.size || '').trim(),
       stock: Number(v.stock) || 0,
-    })).filter((v: any) => v.color && v.size && v.stock > 0);
+      imageUrl: v.imageUrl ? String(v.imageUrl).trim() : undefined,
+      images: Array.isArray(v.images) ? v.images.map((img: any) => String(img).trim()).filter(Boolean) : undefined,
+      videoUrl: v.videoUrl ? String(v.videoUrl).trim() : undefined,
+    })).filter((v: any) => v.color && v.size);
   }
 
   if (body.collectionId !== undefined) {

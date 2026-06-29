@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { ensureProductsSeeded, serializeProduct } from '@/lib/products';
+import { sendBulkEmail, buildPromoEmail } from '@/lib/email';
 import { AUTH_COOKIE_NAME, verifyAuthToken } from '@/lib/auth';
 import { parseProductPayload } from '@/lib/productValidation';
 
@@ -193,6 +194,26 @@ export async function POST(request: NextRequest) {
       },
       include: { collection: true },
     });
+
+    if (body.sendPromoEmail) {
+      const users = await prisma.user.findMany({ select: { email: true } });
+      const emails = users.map(u => u.email).filter(Boolean);
+      
+      if (emails.length > 0) {
+        const html = buildPromoEmail(
+          'New Arrival at Step & Style!',
+          `We just added an amazing new product: <strong>${product.name}</strong>. Check it out now before it sells out!`,
+          `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/products/${product.slug}`,
+          'Shop Now'
+        );
+        // Send email in the background
+        sendBulkEmail({
+          bcc: emails,
+          subject: `New Arrival: ${product.name}`,
+          html,
+        }).catch(err => console.error('Background promo email error:', err));
+      }
+    }
 
     return NextResponse.json(
       {

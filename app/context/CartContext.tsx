@@ -17,6 +17,8 @@ interface CartContextValue {
   totalCount: number;
   subtotal: number;
   promoCode: string;
+  isCartOpen: boolean;
+  setIsCartOpen: (open: boolean) => void;
   addItem: (item: Omit<CartItem, 'quantity'>, quantity?: number) => void;
   removeItem: (id: string, size?: string, color?: string) => void;
   updateQuantity: (id: string, quantity: number, size?: string, color?: string) => void;
@@ -31,6 +33,7 @@ const CART_STORAGE_KEY = 'stepstyle-cart';
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [promoCode, setPromoCode] = useState('');
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -118,6 +121,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     totalCount,
     subtotal,
     promoCode,
+    isCartOpen,
+    setIsCartOpen,
     addItem,
     removeItem,
     updateQuantity,

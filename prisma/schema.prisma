@@ -238,3 +238,30 @@ model Blog {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model Banner {
+  id              String    @id @default(cuid()) @map("_id")
+  category        String    @default("HOME_MAIN") // e.g. HOME_MAIN, MEN_SECTION, WOMEN_SECTION, KIDS_SECTION, SALE
+  desktopImageUrl String
+  mobileImageUrl  String
+  title           String?
+  subtitle        String?
+  textPosition    String    @default("OVERLAY") // OVERLAY, OUTSIDE_LEFT, OUTSIDE_RIGHT
+  ctaText         String?
+  ctaLink         String?
+  isActive        Boolean   @default(true)
+  order           Int       @default(0)
+  startDate       DateTime?
+  endDate         DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model MarketingSettings {
+  id                    String   @id @default("marketing_settings") @map("_id")
+  ga4MeasurementId      String?
+  gtmContainerId        String?
+  metaPixelId           String?
+  googleAdsConversionId String?
+  updatedAt             DateTime @updatedAt
+}

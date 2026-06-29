@@ -16,6 +16,9 @@ export interface ProductVariant {
   color: string;
   size: string;
   stock: number;
+  imageUrl?: string;
+  images?: string[];
+  videoUrl?: string;
 }
 
 export interface ProductDTO {

@@ -5,109 +5,79 @@ import Link from 'next/link';
 import { useSaleStatus } from '../hooks/useSaleStatus';
 import ScrollAnimate from './ScrollAnimate';
 
-export default function SaleBanner({ fullWidth = true }: { fullWidth?: boolean }) {
+export default function SaleBanner({ fullWidth = true, banner }: { fullWidth?: boolean; banner?: any }) {
   const saleInfo = useSaleStatus();
 
-  if (!saleInfo || !saleInfo.show) return null;
+  // If there's no active global sale event AND no active dynamic banner, don't show anything.
+  if ((!saleInfo || !saleInfo.show) && !banner) return null;
 
-  const eventName = saleInfo.eventName || 'EXCLUSIVE SALE EVENT';
-  const bannerText = saleInfo.bannerText || 'SPECIAL OFFERS LIVE NOW';
+  const eventName = saleInfo?.eventName || 'EXCLUSIVE SALE EVENT';
+  const mainHeading = banner?.title || saleInfo?.bannerText?.split(':')[0] || 'ENJOY SPECIAL';
+  const subHeading = banner?.subtitle || saleInfo?.bannerText?.substring(saleInfo.bannerText.indexOf(':') + 1).trim() || 'DISCOUNT THIS MONTH';
+  const description = "Step into style and unmatched comfort. For a limited time, experience our premium handcrafted collections at exclusive promotional prices. Elevate your footwear wardrobe today.";
+
+  const desktopImage = banner?.desktopImageUrl || "/Banner/sale_banner_clean.png";
+  const mobileImage = banner?.mobileImageUrl || desktopImage;
+  const ctaText = banner?.ctaText || "Shop The Sale Now";
+  const ctaLink = banner?.ctaLink || "/products?onSale=true";
 
   return (
-    <section className="w-full py-10 bg-gradient-to-b from-white via-[#FAF9FF] to-white overflow-hidden">
-      <div className={fullWidth ? "w-full" : "max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10"}>
-        <ScrollAnimate animation="fade-in">
-          <div className={`relative bg-gradient-to-r from-[#FAF9FF] via-[#F3E8FF] to-[#FAF9FF] border-y border-[#E9D5FF] shadow-2xl overflow-hidden md:grid md:grid-cols-12 md:items-center ${fullWidth ? 'rounded-none border-x-0' : 'rounded-3xl border shadow-2xl'}`}>
+    <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
+      {/* Desktop View */}
+      <div className="hidden md:grid w-full grid-cols-2 items-stretch min-h-[500px]">
+        <div className={`relative w-full h-full min-h-[400px] ${banner?.textPosition === 'OUTSIDE_LEFT' ? 'order-2' : 'order-1'}`}>
+          <Image
+            src={desktopImage}
+            alt={eventName}
+            fill
+            className="object-cover transition-all duration-1000"
+          />
+        </div>
+        <div className={`flex flex-col justify-center p-12 lg:p-24 space-y-6 bg-white ${banner?.textPosition === 'OUTSIDE_LEFT' ? 'order-1' : 'order-2'}`}>
+          <ScrollAnimate animation="slide-in-right">
+            <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-none text-[#0B1727]">
+              {mainHeading}
+            </h2>
+            <p className="text-gray-500 text-lg md:text-xl font-light leading-relaxed max-w-lg mt-6">
+              {subHeading && subHeading !== 'DISCOUNT THIS MONTH' ? subHeading : description}
+            </p>
+            <Link
+              href={ctaLink}
+              className="inline-block bg-[#F3E8FF] text-[#6B21A8] px-10 py-5 text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-sm mt-10"
+            >
+              {ctaText}
+            </Link>
+          </ScrollAnimate>
+        </div>
+      </div>
 
-            {/* Background design elements */}
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-[#E9D5FF]/30 to-transparent rounded-full filter blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-20 -left-20 w-[300px] h-[300px] bg-[#C084FC]/10 rounded-full filter blur-3xl pointer-events-none" />
-
-            {/* Decorative Gold/Purple accents */}
-            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#A855F7]/30 to-transparent" />
-
-            {/* Left Content Column */}
-            <div className="relative z-10 p-8 sm:p-12 md:p-16 lg:p-20 md:col-span-7 flex flex-col justify-center space-y-6">
-
-              {/* Animated Live Badge */}
-              <div className="inline-flex items-center gap-2 self-start bg-white/80 backdrop-blur-md px-4 py-2 rounded-full border border-[#E9D5FF]/60 shadow-sm">
-                <span className="flex h-2.5 w-2.5 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A855F7] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#6B21A8]"></span>
-                </span>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#6B21A8]">
-                  {eventName}
-                </span>
-              </div>
-
-              {/* Title & Description */}
-              <div className="space-y-4">
-                <h3 className="text-3xl sm:text-4xl lg:text-6xl font-black uppercase tracking-tighter text-gray-900 leading-none">
-                  {bannerText.split(':')[0] || bannerText}
-                </h3>
-                {bannerText.includes(':') && (
-                  <h4 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-[#6B21A8] to-[#A855F7] bg-clip-text text-transparent uppercase tracking-tight">
-                    {bannerText.substring(bannerText.indexOf(':') + 1).trim()}
-                  </h4>
-                )}
-
-                <p className="text-gray-600 text-sm sm:text-base font-light leading-relaxed max-w-lg">
-                  Step into style and unmatched comfort. For a limited time, experience our premium handcrafted collections at exclusive promotional prices. Elevate your footwear wardrobe today.
-                </p>
-              </div>
-
-              {/* Trust Indicators / Mini Features */}
-              <div className="grid grid-cols-2 gap-4 py-2 border-t border-[#E9D5FF]/60 border-b max-w-lg">
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-[#6B21A8]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">Open Parcel Facility</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-[#6B21A8]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">Fast Secure Delivery</span>
-                </div>
-              </div>
-
-              {/* CTA Button */}
-              <div className="pt-2">
-                <Link
-                  href="/products?onSale=true"
-                  className="relative group inline-flex items-center justify-center bg-gradient-to-r from-[#6B21A8] to-[#581C87] text-white px-10 py-4 text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 hover:shadow-[0_0_25px_rgba(107,33,168,0.4)] overflow-hidden rounded-lg"
-                >
-                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#A855F7] to-[#6B21A8] opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out" />
-                  <span className="relative z-10 flex items-center gap-2">
-                    Shop The Sale Now
-                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </span>
-                </Link>
-              </div>
+      {/* Mobile View */}
+      <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
+        <Image
+          src={mobileImage}
+          alt={eventName}
+          fill
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-purple-950/15" />
+        <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
+          <ScrollAnimate animation="fade-in">
+            <h3 className="text-3xl font-black uppercase tracking-tighter text-white leading-none">
+              {mainHeading}
+            </h3>
+            <p className="text-white/80 text-xs mt-2 font-medium">
+              {subHeading && subHeading !== 'DISCOUNT THIS MONTH' ? subHeading : description}
+            </p>
+            <div className="pt-4">
+              <Link
+                href={ctaLink}
+                className="inline-block bg-white text-black hover:bg-[#E9D5FF] hover:text-[#6B21A8] px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-xl"
+              >
+                {ctaText}
+              </Link>
             </div>
-
-            {/* Right Image Column */}
-            <div className="relative h-[320px] sm:h-[400px] md:h-full min-h-[350px] md:col-span-5 w-full overflow-hidden border-t md:border-t-0 md:border-l border-[#E9D5FF]/60 bg-white">
-              <Image
-                src="/Banner/sale_banner_clean.png"
-                alt={eventName}
-                fill
-                priority
-                className="object-cover transition-transform duration-700 hover:scale-105"
-              />
-              {/* Glassy brand badge overlaid on the image */}
-              <div className="absolute bottom-6 right-6 bg-white/35 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20 shadow-lg pointer-events-none">
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white drop-shadow-md">
-                  Step & Styl
-                </span>
-              </div>
-            </div>
-
-          </div>
-        </ScrollAnimate>
+          </ScrollAnimate>
+        </div>
       </div>
     </section>
   );

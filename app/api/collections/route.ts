@@ -14,6 +14,8 @@ export async function GET() {
   }
 }
 
+import { sendBulkEmail, buildPromoEmail } from '@/lib/email';
+
 export async function POST(request: NextRequest) {
   try {
     // Verify admin
@@ -23,7 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { name, slug, description, image, targetGender } = await request.json();
+    const { name, slug, description, image, targetGender, sendPromoEmail } = await request.json();
 
     if (!name || !slug) {
       return NextResponse.json({ success: false, error: 'Name and slug are required' }, { status: 400 });
@@ -38,6 +40,25 @@ export async function POST(request: NextRequest) {
         targetGender: targetGender || 'UNISEX',
       },
     });
+
+    if (sendPromoEmail) {
+      const users = await prisma.user.findMany({ select: { email: true } });
+      const emails = users.map(u => u.email).filter(Boolean);
+      
+      if (emails.length > 0) {
+        const html = buildPromoEmail(
+          'New Collection Alert!',
+          `We just launched a brand new collection: <strong>${collection.name}</strong>. Explore the latest additions now!`,
+          `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/collections/${collection.slug}`,
+          'Shop Collection'
+        );
+        sendBulkEmail({
+          bcc: emails,
+          subject: `New Collection: ${collection.name}`,
+          html,
+        }).catch(err => console.error('Background promo email error:', err));
+      }
+    }
 
     return NextResponse.json({ success: true, collection });
   } catch (error) {

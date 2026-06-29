@@ -17,11 +17,10 @@ export default function Navbar() {
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [accountModalMode, setAccountModalMode] = useState<AuthMode>('register');
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
-  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
-  const { totalCount: cartCount } = useCart();
+  const { totalCount: cartCount, isCartOpen, setIsCartOpen } = useCart();
   const isAdmin = authUser?.role === 'ADMIN';
   const isInfluencer = authUser?.role === 'INFLUENCER';
   const [collections, setCollections] = useState<CollectionDTO[]>([]);
@@ -258,7 +257,7 @@ export default function Navbar() {
 
               <button
                 className="relative flex items-center group h-full"
-                onClick={() => setIsCartDrawerOpen(true)}
+                onClick={() => setIsCartOpen(true)}
               >
                 <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all">Cart</span>
                 <div className="ml-2 w-6 h-6 bg-yellow-300 text-[#A855F7] text-[10px] flex items-center justify-center rounded-full font-black group-hover:bg-white group-hover:text-[#A855F7] transition-colors">
@@ -270,7 +269,7 @@ export default function Navbar() {
             {/* Mobile Nav */}
             <MobileNav
               onOpenAccount={openAccountModal}
-              onOpenCart={() => setIsCartDrawerOpen(true)}
+              onOpenCart={() => setIsCartOpen(true)}
               isAuthenticated={!!authUser}
               isAdmin={isAdmin}
               isInfluencer={isInfluencer}
@@ -290,8 +289,8 @@ export default function Navbar() {
         onAuthSuccess={handleAuthSuccess}
       />
       <CartDrawer
-        isOpen={isCartDrawerOpen}
-        onClose={() => setIsCartDrawerOpen(false)}
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
         currentUserRole={authUser?.role ?? null}
       />
     </>

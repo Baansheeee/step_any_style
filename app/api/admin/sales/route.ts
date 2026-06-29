@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sendBulkEmail, buildPromoEmail } from '@/lib/email';
 
 export async function GET() {
   try {
@@ -60,6 +61,25 @@ export async function POST(request: Request) {
         targetProducts
       },
     });
+
+    if (body.sendPromoEmail) {
+      const users = await prisma.user.findMany({ select: { email: true } });
+      const emails = users.map(u => u.email).filter(Boolean);
+      
+      if (emails.length > 0) {
+        const html = buildPromoEmail(
+          'Huge Sale Event!',
+          `We just launched a new sale event: <strong>${name}</strong>. Enjoy up to ${discountPercent}% off on selected items! Hurry up and grab your favorites before the stock runs out.`,
+          `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}`,
+          'Shop the Sale'
+        );
+        sendBulkEmail({
+          bcc: emails,
+          subject: `Sale Alert: ${name} is live!`,
+          html,
+        }).catch(err => console.error('Background promo email error:', err));
+      }
+    }
 
     return NextResponse.json({ sale });
   } catch (error) {

@@ -15,6 +15,7 @@ import GlobalProductCard from "./products/components/ProductCard";
 import SliderSection from "./components/SliderSection";
 import TrustBanner from "./components/TrustBanner";
 import AffiliateBanner from "./components/AffiliateBanner";
+import DynamicSection from "./components/DynamicSection";
 import type { ProductDTO, CollectionDTO } from "@/types/product";
 
 export default function Home() {
@@ -57,6 +58,7 @@ export default function Home() {
   const [productList, setProductList] = useState<ProductDTO[]>(() => seedProducts.map(seedToDto));
   const [collections, setCollections] = useState<CollectionDTO[]>([]);
   const [reviewMedia, setReviewMedia] = useState<any[]>([]);
+  const [banners, setBanners] = useState<any[]>([]);
   const [isFetchingProducts, setIsFetchingProducts] = useState(false);
 
   useEffect(() => {
@@ -120,14 +122,34 @@ export default function Home() {
       }
     };
 
+    const loadBanners = async () => {
+      try {
+        const response = await fetch('/api/banners?isActive=true', { cache: 'no-store' });
+        const payload = await response.json();
+        if (payload.success && isMounted) {
+          setBanners(payload.banners);
+        }
+      } catch (error) {
+        console.warn('Unable to fetch banners', error);
+      }
+    };
+
     loadProducts();
     loadCollections();
     loadReviewMedia();
+    loadBanners();
 
     return () => {
       isMounted = false;
     };
   }, []);
+
+  // Banners filtered by category
+  const mainBanners = useMemo(() => banners.filter(b => b.category === 'HOME_MAIN'), [banners]);
+  const womenBanners = useMemo(() => banners.filter(b => b.category === 'WOMEN_SECTION'), [banners]);
+  const menBanners = useMemo(() => banners.filter(b => b.category === 'MEN_SECTION'), [banners]);
+  const kidsBanners = useMemo(() => banners.filter(b => b.category === 'KIDS_SECTION'), [banners]);
+  const saleBanners = useMemo(() => banners.filter(b => b.category === 'SALE_BANNER'), [banners]);
 
   // Products filtered by gender
   const womenProducts = useMemo(() =>
@@ -137,6 +159,11 @@ export default function Home() {
 
   const menProducts = useMemo(() =>
     productList.filter(p => p.collection?.targetGender === 'MEN').slice(0, 8),
+    [productList]
+  );
+
+  const saleProducts = useMemo(() =>
+    productList.filter(p => p.discount && p.discount > 0).slice(0, 8),
     [productList]
   );
 
@@ -206,69 +233,34 @@ export default function Home() {
       )}
 
       {/* Sale Banner - Dynamically displayed when there's an active sale event */}
-      <SaleBanner />
+      <SaleBanner banner={saleBanners[0]} />
+
+      {/* Sale Products Slider */}
+      {saleProducts.length > 0 && (
+        <SliderSection
+          title="ON SALE NOW"
+          subtitle="ON SALE NOW"
+          viewAllLink="/products?onSale=true"
+          accentColor="#6B21A8"
+        >
+          {saleProducts.map((product, index) => (
+            <ProductCardWrapper key={product.id} product={product} index={index} />
+          ))}
+        </SliderSection>
+      )}
 
       {/* Hero Section - Women */}
-      <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
-        {/* Desktop View */}
-        <div className="hidden md:grid max-w-[1600px] mx-auto md:grid-cols-2 items-stretch">
-          <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
-            <Image
-              src="/women's_new.png"
-              alt="Women's Collection"
-              fill
-              className="object-cover transition-all duration-1000"
-            />
-            <div className="absolute inset-0 bg-[#A855F7]/10" />
-          </div>
-          <div className="flex flex-col justify-center p-8 sm:p-12 md:p-24 space-y-6 md:space-y-8">
-            <ScrollAnimate animation="slide-in-right">
-              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">Exclusive Collections</h2>
-              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
-                The Women&apos;s
-              </h3>
-              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#A855F7] to-[#460e7b] bg-clip-text text-transparent">
-                Essentials
-              </h3>
-              <p className="text-gray-500 text-lg font-light leading-relaxed max-w-md">
-                Elegance in every step. Discover our curated collection of luxury heels, elegant sandals, and statement footwear.
-              </p>
-              <Link
-                href="/products?gender=WOMEN"
-                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-5 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl mt-10"
-              >
-                Shop Women
-              </Link>
-            </ScrollAnimate>
-          </div>
-        </div>
-
-        {/* Mobile View */}
-        <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
-          <Image
-            src="/women_mobile.png"
-            alt="Women's Collection"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-purple-950/15" />
-          <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
-            <ScrollAnimate animation="fade-in">
-              <h3 className="text-3xl font-black uppercase tracking-tighter text-white leading-none">
-                Women&apos;s Collection
-              </h3>
-              <div className="pt-4">
-                <Link
-                  href="/products?gender=WOMEN"
-                  className="inline-block bg-white text-black hover:bg-[#E9D5FF] hover:text-[#6B21A8] px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-xl"
-                >
-                  Shop Women
-                </Link>
-              </div>
-            </ScrollAnimate>
-          </div>
-        </div>
-      </section>
+      <DynamicSection
+        banner={womenBanners[0]}
+        defaultImage="/women's_new.png"
+        defaultMobileImage="/women_mobile.png"
+        defaultTitle="The Women's"
+        defaultSubtitle="Essentials"
+        defaultDescription="Elegance in every step. Discover our curated collection of luxury heels, elegant sandals, and statement footwear."
+        defaultCtaText="Shop Women"
+        defaultCtaLink="/products?gender=WOMEN"
+        accentColor="#A855F7"
+      />
 
       {/* Shop By Collection Slider - Women */}
       {womenCollections.length > 0 && (
@@ -298,66 +290,17 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════════════ */}
 
       {/* Hero Section - Men */}
-      <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
-        {/* Desktop View */}
-        <div className="hidden md:grid max-w-[1600px] mx-auto md:grid-cols-2 items-stretch">
-          <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
-            <Image
-              src="/men's_new.png"
-              alt="Men's Collection"
-              fill
-              className="object-cover transition-all duration-1000"
-            />
-            <div className="absolute inset-0 bg-[#6B21A8]/10" />
-          </div>
-          <div className="flex flex-col justify-center p-8 sm:p-12 md:p-24 space-y-6 md:space-y-8">
-            <ScrollAnimate animation="slide-in-right">
-              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">Exclusive Collections</h2>
-              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
-                The Men&apos;s
-              </h3>
-              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#A855F7] to-[#460e7b] bg-clip-text text-transparent">
-                Essentials
-              </h3>
-              <p className="text-gray-500 text-lg font-light leading-relaxed max-w-md">
-                Refined style for the modern man. From polished loafers to everyday sneakers, find your signature look.
-              </p>
-              <Link
-                href="/products?gender=MEN"
-                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-5 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl mt-10"
-              >
-                Shop Men
-              </Link>
-            </ScrollAnimate>
-          </div>
-        </div>
-
-        {/* Mobile View */}
-        <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
-          <Image
-            src="/men_mobile.png"
-            alt="Men's Collection"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-purple-950/15" />
-          <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
-            <ScrollAnimate animation="fade-in">
-              <h3 className="text-3xl font-black uppercase tracking-tighter text-white leading-none">
-                Men&apos;s Essentials
-              </h3>
-              <div className="pt-4">
-                <Link
-                  href="/products?gender=MEN"
-                  className="inline-block bg-white text-black hover:bg-[#E9D5FF] hover:text-[#6B21A8] px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-xl"
-                >
-                  Shop Men
-                </Link>
-              </div>
-            </ScrollAnimate>
-          </div>
-        </div>
-      </section>
+      <DynamicSection
+        banner={menBanners[0]}
+        defaultImage="/men's_new.png"
+        defaultMobileImage="/men_mobile.png"
+        defaultTitle="The Men's"
+        defaultSubtitle="Essentials"
+        defaultDescription="Refined style for the modern man. From polished loafers to everyday sneakers, find your signature look."
+        defaultCtaText="Shop Men"
+        defaultCtaLink="/products?gender=MEN"
+        accentColor="#A855F7"
+      />
 
       {/* Shop By Collection Slider - Men */}
       {menCollections.length > 0 && (
@@ -389,66 +332,17 @@ export default function Home() {
       {/* ═══════════════════════════════════════════════════════ */}
 
       {/* Hero Section - Kids */}
-      <section className="bg-[#FAF9FF] border-y border-[#F5F3FF]">
-        {/* Desktop View */}
-        <div className="hidden md:grid max-w-[1600px] mx-auto md:grid-cols-2 items-stretch">
-          <div className="relative min-h-[280px] sm:min-h-[350px] overflow-hidden">
-            <Image
-              src="/kids1.png"
-              alt="Kids Collection"
-              fill
-              className="object-cover transition-all duration-1000"
-            />
-            <div className="absolute inset-0 bg-[#A855F7]/10" />
-          </div>
-          <div className="flex flex-col justify-center p-8 sm:p-12 md:p-24 space-y-6 md:space-y-8">
-            <ScrollAnimate animation="slide-in-right">
-              <h2 className="text-xs font-black uppercase tracking-[0.4em] text-[#A855F7]">Exclusive Collections</h2>
-              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-900">
-                The Kids&apos;
-              </h3>
-              <h3 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none bg-gradient-to-r from-[#A855F7] to-[#460e7b] bg-clip-text text-transparent">
-                Collection
-              </h3>
-              <p className="text-gray-500 text-lg font-light leading-relaxed max-w-md">
-                Comfortable and stylish footwear designed for growing feet. From playful sneakers to elegant party shoes, find the perfect fit for your little ones.
-              </p>
-              <Link
-                href="/products?gender=KIDS"
-                className="inline-block bg-[#E9D5FF] text-[#6B21A8] px-10 md:px-12 py-4 md:py-5 text-[11px] md:text-sm font-black uppercase tracking-[0.2em] hover:bg-[#6B21A8] hover:text-white transition-all duration-300 shadow-xl mt-10"
-              >
-                Shop Kids
-              </Link>
-            </ScrollAnimate>
-          </div>
-        </div>
-
-        {/* Mobile View */}
-        <div className="block md:hidden relative h-[380px] w-full overflow-hidden">
-          <Image
-            src="/kids_mobile.png"
-            alt="Kids Collection"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-purple-950/15" />
-          <div className="absolute inset-0 flex flex-col justify-end p-8 text-center space-y-3">
-            <ScrollAnimate animation="fade-in">
-              <h3 className="text-3xl font-black uppercase tracking-tighter text-white leading-none">
-                Kids&apos; Collection
-              </h3>
-              <div className="pt-4">
-                <Link
-                  href="/products?gender=KIDS"
-                  className="inline-block bg-white text-black hover:bg-[#E9D5FF] hover:text-[#6B21A8] px-8 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-xl"
-                >
-                  Shop Kids
-                </Link>
-              </div>
-            </ScrollAnimate>
-          </div>
-        </div>
-      </section>
+      <DynamicSection
+        banner={kidsBanners[0]}
+        defaultImage="/kids1.png"
+        defaultMobileImage="/kids_mobile.png"
+        defaultTitle="The Kids'"
+        defaultSubtitle="Collection"
+        defaultDescription="Comfortable and stylish footwear designed for growing feet. From playful sneakers to elegant party shoes, find the perfect fit for your little ones."
+        defaultCtaText="Shop Kids"
+        defaultCtaLink="/products?gender=KIDS"
+        accentColor="#A855F7"
+      />
 
 
 

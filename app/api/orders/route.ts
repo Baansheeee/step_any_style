@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
 
     const numericSubtotal = Number(subtotal) || 0;
     const numericPromoDiscount = Number(promoDiscount) || 0;
-    const numericShippingCost = Number(cityData?.region?.shippingCost) || 0;
+    const numericShippingCost = normalizedMethod === 'DIRECT' ? 0 : (Number(cityData?.region?.shippingCost) || 0);
     const numericTotal = Number(total) || 0;
 
     const sanitizedItems = items.map((item: any) => ({
