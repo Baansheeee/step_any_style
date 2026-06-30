@@ -124,7 +124,7 @@ export default function Navbar() {
                   alt="Step & Styl"
                   width={400}
                   height={150}
-                  className="object-contain h-24 md:h-28 lg:h-32 w-auto transition-all duration-300 group-hover:scale-105 brightness-0 invert origin-left transform scale-125 md:scale-100"
+                  className="object-contain h-24 md:h-28 lg:h-32 w-auto transition-all duration-300 group-hover:scale-105 brightness-0 invert origin-left transform scale-125 md:scale-100 -ml-6"
                   priority
                 />
               </Link>
