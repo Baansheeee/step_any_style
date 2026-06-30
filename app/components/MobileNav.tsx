@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useWishlist } from '@/app/context/WishlistContext';
 
 interface MobileNavProps {
   onOpenAccount: (mode?: 'login' | 'register') => void;
@@ -28,6 +29,7 @@ export default function MobileNav({
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const { totalCount: wishlistCount } = useWishlist();
 
   return (
     <>
@@ -194,6 +196,19 @@ export default function MobileNav({
             </div>
 
             <div className="h-[1px] bg-lavender-light my-4 mx-4" />
+
+            <Link
+              href="/wishlist"
+              onClick={() => setIsOpen(false)}
+              className="flex justify-between items-center text-sm font-black uppercase tracking-[0.2em] p-4 hover:bg-lavender-light hover:text-lavender-dark rounded-xl transition-all"
+            >
+              Wishlist
+              {wishlistCount > 0 && (
+                <span className="bg-yellow-300 text-[#A855F7] px-2 py-0.5 rounded-full text-[10px]">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
 
             <Link
               href="/#about"

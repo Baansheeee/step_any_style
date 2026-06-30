@@ -9,7 +9,9 @@ import TopBanner from "./TopBanner";
 import CartDrawer from "./CartDrawer";
 import { useSaleStatus } from "../hooks/useSaleStatus";
 import { useCart } from "@/app/context/CartContext";
+import { useWishlist } from "@/app/context/WishlistContext";
 import type { CollectionDTO } from "@/types/product";
+import { User, Heart, ShoppingBag } from "lucide-react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -21,6 +23,7 @@ export default function Navbar() {
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
   const { totalCount: cartCount, isCartOpen, setIsCartOpen } = useCart();
+  const { totalCount: wishlistCount } = useWishlist();
   const isAdmin = authUser?.role === 'ADMIN';
   const isInfluencer = authUser?.role === 'INFLUENCER';
   const [collections, setCollections] = useState<CollectionDTO[]>([]);
@@ -111,8 +114,8 @@ export default function Navbar() {
         ? 'bg-[#A855F7]/95 backdrop-blur-md shadow-lg shadow-purple-500/20'
         : 'bg-[#A855F7]'
         }`}>
-        <div className="max-w-[1600px] mx-auto px-3 sm:px-6 md:px-20">
-          <div className="flex justify-between items-center h-20">
+        <div className="max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-24">
             {/* Logo */}
             <Link href="/" className="group flex items-center -ml-3 sm:-ml-6 md:-ml-20">
               <Image
@@ -120,7 +123,7 @@ export default function Navbar() {
                 alt="Step & Styl"
                 width={300}
                 height={100}
-                className="object-contain h-24 md:h-32 w-auto transition-all duration-300 group-hover:scale-110 brightness-0 invert"
+                className="object-contain h-32 md:h-44 w-auto transition-all duration-300 group-hover:scale-105 brightness-0 invert"
                 priority
               />
             </Link>
@@ -131,7 +134,7 @@ export default function Navbar() {
                 href="/products?gender=WOMEN"
                 className="group h-full flex items-center"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
+                <span className="text-[10px] lg:text-[11px] xl:text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
                   Women
                 </span>
               </Link>
@@ -139,7 +142,7 @@ export default function Navbar() {
                 href="/products?gender=MEN"
                 className="group h-full flex items-center"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
+                <span className="text-[10px] lg:text-[11px] xl:text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
                   Men
                 </span>
               </Link>
@@ -147,7 +150,7 @@ export default function Navbar() {
                 href="/kids"
                 className="group h-full flex items-center"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
+                <span className="text-[10px] lg:text-[11px] xl:text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
                   Kids
                 </span>
               </Link>
@@ -155,7 +158,7 @@ export default function Navbar() {
                 href="/new-arrivals"
                 className="group h-full flex items-center"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1 whitespace-nowrap">
+                <span className="text-[10px] lg:text-[11px] xl:text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1 whitespace-nowrap">
                   New Arrivals
                 </span>
               </Link>
@@ -166,7 +169,7 @@ export default function Navbar() {
                   href="/sales"
                   className="group h-full flex items-center"
                 >
-                  <span className="text-[13px] font-black uppercase tracking-[0.2em] text-yellow-300 group-hover:text-yellow-200 transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1 flex items-center gap-2">
+                  <span className="text-[10px] lg:text-[11px] xl:text-[13px] font-black uppercase tracking-[0.2em] text-yellow-300 group-hover:text-yellow-200 transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1 flex items-center gap-2">
                     Sale
                     <span className="flex h-1.5 w-1.5 rounded-full bg-yellow-300 animate-ping" />
                   </span>
@@ -177,7 +180,7 @@ export default function Navbar() {
                 href="/products"
                 className="group h-full flex items-center"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
+                <span className="text-[10px] lg:text-[11px] xl:text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all border-b-2 border-transparent group-hover:border-yellow-300 py-1">
                   Shop
                 </span>
               </Link>
@@ -186,7 +189,7 @@ export default function Navbar() {
               <div className="relative h-full flex items-center" ref={categoryMenuRef}>
                 <button
                   onClick={() => setIsCategoryMenuOpen((prev) => !prev)}
-                  className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all flex items-center h-full whitespace-nowrap"
+                  className="text-[10px] lg:text-[11px] xl:text-[13px] font-black uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all flex items-center h-full whitespace-nowrap"
                 >
                   Category
                   <svg
@@ -220,20 +223,24 @@ export default function Navbar() {
               </div>
               <Link
                 href="/affiliate"
-                className="text-[13px] font-black uppercase tracking-[0.2em] text-yellow-300 hover:text-yellow-200 transition-all bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full flex items-center border border-white/10"
+                className="text-[10px] lg:text-[11px] xl:text-[13px] font-black uppercase tracking-[0.2em] text-yellow-300 hover:text-yellow-200 transition-all bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full flex items-center border border-white/10"
               >
                 Affiliate
               </Link>
 
 
-              <div className="h-4 w-[1px] bg-white/20 mx-2" />
+            </div>
+
+            {/* Icons (Extreme Right) */}
+            <div className="hidden md:flex flex-1 justify-end items-center space-x-2 lg:space-x-4 h-full">
 
               <div className="relative h-full flex items-center" ref={accountMenuRef}>
                 <button
                   onClick={authUser ? () => setIsAccountMenuOpen((prev) => !prev) : () => openAccountModal('login')}
-                  className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 hover:text-white transition-all h-full flex items-center whitespace-nowrap"
+                  className="text-white/80 hover:text-white transition-all flex items-center justify-center p-2"
+                  title={authUser ? 'Account' : 'Login'}
                 >
-                  {authUser ? 'Account' : 'Login'}
+                  <User size={22} strokeWidth={2} />
                 </button>
 
                 {authUser && isAccountMenuOpen && (
@@ -255,14 +262,30 @@ export default function Navbar() {
                 )}
               </div>
 
-              <button
-                className="relative flex items-center group h-full"
-                onClick={() => setIsCartOpen(true)}
+              <Link
+                href="/wishlist"
+                className="relative flex items-center group p-2 text-white/80 hover:text-white transition-all"
+                title="Wishlist"
               >
-                <span className="text-[13px] font-black uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-all">Cart</span>
-                <div className="ml-2 w-6 h-6 bg-yellow-300 text-[#A855F7] text-[10px] flex items-center justify-center rounded-full font-black group-hover:bg-white group-hover:text-[#A855F7] transition-colors">
-                  {cartCount}
-                </div>
+                <Heart size={22} strokeWidth={2} />
+                {wishlistCount > 0 && (
+                  <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-yellow-300 text-[#A855F7] text-[10px] flex items-center justify-center rounded-full font-black group-hover:bg-white transition-colors">
+                    {wishlistCount}
+                  </div>
+                )}
+              </Link>
+
+              <button
+                className="relative flex items-center group p-2 text-white/80 hover:text-white transition-all"
+                onClick={() => setIsCartOpen(true)}
+                title="Cart"
+              >
+                <ShoppingBag size={22} strokeWidth={2} />
+                {cartCount > 0 && (
+                  <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-yellow-300 text-[#A855F7] text-[10px] flex items-center justify-center rounded-full font-black group-hover:bg-white transition-colors">
+                    {cartCount}
+                  </div>
+                )}
               </button>
             </div>
 

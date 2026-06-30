@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
 import ConditionalFooter from "./components/ConditionalFooter";
 import WhatsAppButton from "./components/WhatsAppButton";
 import BlogsButton from "./components/BlogsButton";
@@ -53,12 +54,14 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CartProvider>
-          {children}
-          <BlogsButton />
-          <WhatsAppButton />
-          <ConditionalFooter />
-        </CartProvider>
+        <WishlistProvider>
+          <CartProvider>
+            {children}
+            <BlogsButton />
+            <WhatsAppButton />
+            <ConditionalFooter />
+          </CartProvider>
+        </WishlistProvider>
       </body>
       {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
     </html>

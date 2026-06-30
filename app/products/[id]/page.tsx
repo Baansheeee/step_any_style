@@ -15,6 +15,8 @@ import { formatPKR } from '@/lib/currency';
 import type { ProductDTO } from '@/types/product';
 import SliderSection from '@/app/components/SliderSection';
 import GlobalProductCard from '../components/ProductCard';
+import { Heart } from 'lucide-react';
+import { useWishlist } from '@/app/context/WishlistContext';
 
 const COLOR_MAP: Record<string, string> = {
   golden: '#FFD700',
@@ -62,6 +64,7 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [descriptionOpen, setDescriptionOpen] = useState(false);
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
   useEffect(() => {
     let isMounted = true;
@@ -471,10 +474,35 @@ export default function ProductDetailPage() {
 
           {/* RIGHT: Product Info */}
           <div className="lg:col-span-5 space-y-6 lg:pr-6 pb-10">
-            {/* Product Name */}
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-gray-900 leading-tight">
-              {product.name}
-            </h1>
+            {/* Product Name & Wishlist */}
+            <div className="flex items-start justify-between gap-4">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-gray-900 leading-tight">
+                {product.name}
+              </h1>
+              <button
+                onClick={() => {
+                  if (isInWishlist(product.id)) {
+                    removeFromWishlist(product.id);
+                  } else {
+                    addToWishlist({
+                      id: product.id,
+                      slug: product.slug,
+                      name: product.name,
+                      price: product.price,
+                      originalPrice: product.originalPrice,
+                      image: mainImage,
+                    });
+                  }
+                }}
+                className="p-3 bg-gray-50 hover:bg-purple-50 hover:text-purple-600 rounded-full transition-colors shrink-0"
+                title={isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+              >
+                <Heart 
+                  size={24} 
+                  className={isInWishlist(product.id) ? "fill-purple-600 text-purple-600" : "text-gray-400"} 
+                />
+              </button>
+            </div>
 
             {/* Pricing */}
             <div className="flex items-baseline gap-3">

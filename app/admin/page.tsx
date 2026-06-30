@@ -12,6 +12,7 @@ import AdminCollectionsPanel from './components/AdminCollectionsPanel';
 import AdminShippingPanel from './components/AdminShippingPanel';
 import AdminSalePanel from './components/AdminSalePanel';
 import AdminBannerPanel from './components/AdminBannerPanel';
+import AdminReviewsPanel from './components/AdminReviewsPanel';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -140,7 +141,7 @@ export default function AdminDashboard() {
                   src="/logo_main.png"
                   alt="Step & Styl"
                   width={140}
-                  height={45}
+                  height={145}
                   className="h-10 md:h-18 w-auto object-contain brightness-0 invert"
                 />
               </Link>
@@ -185,6 +186,7 @@ export default function AdminDashboard() {
               { id: 'affiliate-applications', label: 'Affiliate Applications' },
               { id: 'analytics', label: 'Analytics' },
               { id: 'sales', label: 'Sale Events' },
+              { id: 'reviews', label: 'Reviews' },
               { id: 'appearance', label: 'Appearance' },
             ].map((tab) => (
               <button
@@ -303,6 +305,8 @@ export default function AdminDashboard() {
           { activeTab === 'analytics' && <AdminAnalyticsPanel /> }
 
           { activeTab === 'sales' && <AdminSalePanel /> }
+
+          { activeTab === 'reviews' && <AdminReviewsPanel /> }
 
           { activeTab === 'appearance' && <AdminBannerPanel /> }
         </div>

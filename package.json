@@ -11,6 +11,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@google-analytics/data": "^6.1.0",
     "@next/third-parties": "^16.2.9",
     "@prisma/client": "^6.16.2",
     "@stripe/react-stripe-js": "^5.4.1",
