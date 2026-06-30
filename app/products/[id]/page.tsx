@@ -489,7 +489,7 @@ export default function ProductDetailPage() {
                       slug: product.slug,
                       name: product.name,
                       price: product.price,
-                      originalPrice: product.originalPrice,
+                      originalPrice: product.originalPrice ?? undefined,
                       image: mainImage,
                     });
                   }
