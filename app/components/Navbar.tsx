@@ -114,22 +114,24 @@ export default function Navbar() {
         ? 'bg-[#A855F7]/95 backdrop-blur-md shadow-lg shadow-purple-500/20'
         : 'bg-[#A855F7]'
         }`}>
-        <div className="max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-24">
+        <div className="max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex justify-between items-center h-16 md:h-20">
             {/* Logo */}
-            <Link href="/" className="group flex items-center -ml-3 sm:-ml-6 md:-ml-20">
-              <Image
-                src="/logo_main.png"
-                alt="Step & Styl"
-                width={300}
-                height={100}
-                className="object-contain h-32 md:h-44 w-auto transition-all duration-300 group-hover:scale-105 brightness-0 invert"
-                priority
-              />
-            </Link>
+            <div className="flex-1 flex justify-start">
+              <Link href="/" className="group flex items-center -ml-1 sm:-ml-3">
+                <Image
+                  src="/logo_main.png"
+                  alt="Step & Styl"
+                  width={400}
+                  height={150}
+                  className="object-contain h-24 md:h-28 lg:h-32 w-auto transition-all duration-300 group-hover:scale-105 brightness-0 invert origin-left transform scale-125 md:scale-100"
+                  priority
+                />
+              </Link>
+            </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-4 lg:space-x-6 xl:space-x-8 ml-6 xl:ml-16 h-full">
+            <div className="hidden md:flex flex-[2.5] justify-center items-center space-x-4 lg:space-x-6 xl:space-x-8 h-full">
               <Link
                 href="/products?gender=WOMEN"
                 className="group h-full flex items-center"
@@ -290,16 +292,18 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Nav */}
-            <MobileNav
-              onOpenAccount={openAccountModal}
-              onOpenCart={() => setIsCartOpen(true)}
-              isAuthenticated={!!authUser}
-              isAdmin={isAdmin}
-              isInfluencer={isInfluencer}
-              cartCount={cartCount}
-              onLogout={handleLogout}
-              collections={collections}
-            />
+            <div className="md:hidden flex-1 flex justify-end">
+              <MobileNav
+                onOpenAccount={openAccountModal}
+                onOpenCart={() => setIsCartOpen(true)}
+                isAuthenticated={!!authUser}
+                isAdmin={isAdmin}
+                isInfluencer={isInfluencer}
+                cartCount={cartCount}
+                onLogout={handleLogout}
+                collections={collections}
+              />
+            </div>
           </div>
         </div>
       </nav>

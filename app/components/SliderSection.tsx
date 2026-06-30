@@ -19,7 +19,7 @@ export default function SliderSection({
   viewAllLink, 
   accentColor = '#6B21A8',
   children,
-  itemWidth = 'min-w-[240px] md:min-w-[320px]'
+  itemWidth = 'min-w-[80vw] sm:min-w-[280px] md:min-w-[320px]'
 }: SliderSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 

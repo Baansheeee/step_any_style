@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import crypto from 'crypto';
+import cloudinary from '@/lib/cloudinary';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,19 +17,22 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const ext = file.type === 'image/png' ? 'png' : file.type === 'image/gif' ? 'gif' : 'jpg';
-    const fileName = `receipt-${crypto.randomUUID()}.${ext}`;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    // Upload to Cloudinary using a stream
+    const uploadResult = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: 'step-and-style/receipts' },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
+      uploadStream.end(buffer);
+    });
 
-    await fs.mkdir(uploadDir, { recursive: true });
-    await fs.writeFile(path.join(uploadDir, fileName), buffer);
-
-    const url = `/uploads/${fileName}`;
+    const url = (uploadResult as any).secure_url;
     return NextResponse.json({ success: true, url });
   } catch (error) {
-    console.error('Failed to upload receipt:', error);
+    console.error('Failed to upload receipt to Cloudinary:', error);
     return NextResponse.json({ success: false, error: 'Failed to upload receipt.' }, { status: 500 });
   }
 }
-
-

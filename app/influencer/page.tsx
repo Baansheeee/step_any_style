@@ -99,15 +99,6 @@ export default function InfluencerDashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-20">
             <div className="flex items-center space-x-2 md:space-x-4">
-              <Link href="/" className="group flex items-center -ml-2 md:-ml-8 transition-transform hover:scale-105 shrink-0">
-                <Image
-                  src="/logo_main.png"
-                  alt="Step & Styl"
-                  width={140}
-                  height={45}
-                  className="h-8 md:h-16 w-auto object-contain brightness-0 invert"
-                />
-              </Link>
               <h1 className="text-sm md:text-2xl font-black uppercase tracking-tight md:tracking-tighter text-white/90 max-w-[150px] md:max-w-none">
                 Influencer Dashboard
               </h1>

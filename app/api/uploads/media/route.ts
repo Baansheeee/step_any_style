@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+import cloudinary from '@/lib/cloudinary';
 import crypto from 'crypto';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -21,22 +20,6 @@ const ALLOWED_VIDEO_TYPES = [
   'video/quicktime',
 ];
 
-function getExtension(mimeType: string): string {
-  const map: Record<string, string> = {
-    'image/jpeg': 'jpg',
-    'image/png': 'png',
-    'image/gif': 'gif',
-    'image/webp': 'webp',
-    'image/avif': 'avif',
-    'image/svg+xml': 'svg',
-    'video/mp4': 'mp4',
-    'video/webm': 'webm',
-    'video/ogg': 'ogg',
-    'video/quicktime': 'mov',
-  };
-  return map[mimeType] || 'bin';
-}
-
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -48,9 +31,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'media');
-    await fs.mkdir(uploadDir, { recursive: true });
 
     const uploadedUrls: string[] = [];
     const errors: string[] = [];
@@ -76,11 +56,27 @@ export async function POST(request: NextRequest) {
 
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      const ext = getExtension(file.type);
-      const uniqueName = `${isVideo ? 'vid' : 'img'}-${crypto.randomUUID()}.${ext}`;
 
-      await fs.writeFile(path.join(uploadDir, uniqueName), buffer);
-      uploadedUrls.push(`/uploads/media/${uniqueName}`);
+      try {
+        const uploadResult = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { 
+              folder: 'step-and-style/media',
+              resource_type: isVideo ? 'video' : 'image'
+            },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result);
+            }
+          );
+          uploadStream.end(buffer);
+        });
+
+        uploadedUrls.push((uploadResult as any).secure_url);
+      } catch (uploadError) {
+        console.error('Cloudinary upload error:', uploadError);
+        errors.push(`Failed to upload "${file.name}".`);
+      }
     }
 
     if (uploadedUrls.length === 0 && errors.length > 0) {
@@ -98,7 +94,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Media upload failed:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to upload media.' },
+      { success: false, error: 'Internal Server Error.' },
       { status: 500 }
     );
   }

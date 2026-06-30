@@ -136,16 +136,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <Link href="/admin" className="group flex items-center -ml-4 md:-ml-8 transition-transform hover:scale-105">
-                <Image
-                  src="/logo_main.png"
-                  alt="Step & Styl"
-                  width={140}
-                  height={145}
-                  className="h-10 md:h-18 w-auto object-contain brightness-0 invert"
-                />
-              </Link>
-              <h1 className="text-2xl font-black uppercase tracking-wide text-white/90 -ml-10">
+              <h1 className="text-2xl font-black uppercase tracking-wide text-white/90">
                 Admin Dashboard
               </h1>
             </div>

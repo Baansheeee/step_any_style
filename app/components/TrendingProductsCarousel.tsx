@@ -69,7 +69,7 @@ export default function TrendingProductsCarousel({ products }: TrendingProductsC
               {products.map((product, index) => (
                 <div
                   key={product.id}
-                  className="shrink-0 min-w-60 md:min-w-80"
+                  className="shrink-0 min-w-[80vw] sm:min-w-[280px] md:min-w-80"
                 >
                   <ScrollAnimate animation="fade-in" delay={`${index * 0.1}s`}>
                     <GlobalProductCard product={product} index={index} />
