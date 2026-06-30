@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import ScrollAnimate from '../components/ScrollAnimate';
-import ConditionalFooter from '../components/ConditionalFooter';
 
 interface Blog {
   id: string;
@@ -204,8 +203,6 @@ export default function BlogsPage() {
           </div>
         )}
       </section>
-
-      <ConditionalFooter />
     </div>
   );
 }

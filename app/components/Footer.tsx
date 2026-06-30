@@ -13,7 +13,7 @@ const Footer = () => {
           {/* Brand Column - Full width on mobile */}
           <div className="col-span-2 lg:col-span-1 flex flex-col gap-6 md:gap-10 items-start text-left">
             <div>
-              <Link href="/" className="group flex items-center justify-start h-14 -ml-3 sm:-ml-4">
+              <Link href="/" className="group flex items-center justify-start h-4">
                 <Image
                   src="/logo_main.png"
                   alt="Step & Styl"
