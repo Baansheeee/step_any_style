@@ -7,6 +7,8 @@ import ConditionalFooter from "./components/ConditionalFooter";
 import WhatsAppButton from "./components/WhatsAppButton";
 import BlogsButton from "./components/BlogsButton";
 import { GoogleAnalytics } from '@next/third-parties/google';
+import MetaPixel from './components/MetaPixel';
+import { Suspense } from 'react';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,6 +66,9 @@ export default function RootLayout({
         </WishlistProvider>
       </body>
       {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
+      <Suspense fallback={null}>
+        <MetaPixel />
+      </Suspense>
     </html>
   );
 }

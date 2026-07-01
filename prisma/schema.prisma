@@ -262,6 +262,16 @@ model MarketingSettings {
   ga4MeasurementId      String?
   gtmContainerId        String?
   metaPixelId           String?
+  metaPixelEnabled      Boolean? @default(false)
+  metaCapiToken         String?
   googleAdsConversionId String?
   updatedAt             DateTime @updatedAt
+}
+
+model MarketingEvent {
+  id        String   @id @default(cuid()) @map("_id")
+  eventName String
+  eventData Json?
+  url       String?
+  createdAt DateTime @default(now())
 }

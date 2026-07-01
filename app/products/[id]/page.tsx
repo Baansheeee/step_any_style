@@ -17,6 +17,7 @@ import SliderSection from '@/app/components/SliderSection';
 import GlobalProductCard from '../components/ProductCard';
 import { Heart } from 'lucide-react';
 import { useWishlist } from '@/app/context/WishlistContext';
+import * as fpixel from '@/lib/fpixel';
 
 const COLOR_MAP: Record<string, string> = {
   golden: '#FFD700',
@@ -87,6 +88,15 @@ export default function ProductDetailPage() {
         if (!isMounted) return;
         setProduct(payload.data);
         setSelectedImageIndex(0);
+
+        // Track ViewContent event
+        fpixel.event('ViewContent', {
+          content_name: payload.data.name,
+          content_ids: [payload.data.slug || payload.data.id],
+          content_type: 'product',
+          value: payload.data.price,
+          currency: 'PKR'
+        });
 
         const relatedResponse = await fetch('/api/products', { cache: 'no-store' });
         const relatedPayload = await relatedResponse.json();
@@ -243,6 +253,15 @@ export default function ProductDetailPage() {
       ? Math.round(product.price * (1 - product.discount / 100)) 
       : product.price;
 
+    fpixel.event('AddToCart', {
+      content_name: product.name,
+      content_ids: [product.slug || product.id],
+      content_type: 'product',
+      value: finalPrice * quantity,
+      currency: 'PKR',
+      num_items: quantity
+    });
+
     addItem(
       {
         id: product.id,
@@ -271,6 +290,15 @@ export default function ProductDetailPage() {
     const finalPrice = product.discount && product.discount > 0 
       ? Math.round(product.price * (1 - product.discount / 100)) 
       : product.price;
+
+    fpixel.event('AddToCart', {
+      content_name: product.name,
+      content_ids: [product.slug || product.id],
+      content_type: 'product',
+      value: finalPrice * quantity,
+      currency: 'PKR',
+      num_items: quantity
+    });
 
     addItem(
       {

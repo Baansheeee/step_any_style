@@ -2,11 +2,38 @@
 
 import Link from 'next/link';
 import Navbar from '@/app/components/Navbar';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, Suspense } from 'react';
+import * as fpixel from '@/lib/fpixel';
+
+function OrderTracker() {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const total = searchParams.get('total');
+    const items = searchParams.get('items');
+    const ids = searchParams.get('ids');
+
+    if (total) {
+      fpixel.event('Purchase', {
+        value: parseFloat(total),
+        currency: 'PKR',
+        num_items: items ? parseInt(items) : undefined,
+        content_ids: ids ? ids.split(',') : undefined
+      });
+    }
+  }, [searchParams]);
+
+  return null;
+}
 
 export default function OrderSuccessPage() {
   return (
     <div className="min-h-screen bg-gray-50/50">
       <Navbar />
+      <Suspense fallback={null}>
+        <OrderTracker />
+      </Suspense>
       <div className="max-w-[1440px] mx-auto px-4 md:px-10 py-10 md:py-20 flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
 
         {/* Success Card */}

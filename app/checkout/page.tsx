@@ -7,6 +7,7 @@ import AccountModal, { AuthUser, AuthMode } from '@/app/components/AccountModal'
 import { formatPKR } from '@/lib/currency';
 import Link from 'next/link';
 import Image from 'next/image';
+import * as fpixel from '@/lib/fpixel';
 
 type PaymentMethod = 'cod' | 'direct';
 
@@ -115,6 +116,19 @@ function CheckoutContent() {
     loadUser();
   }, []);
 
+  // Track InitiateCheckout event
+  useEffect(() => {
+    if (items.length > 0) {
+      fpixel.event('InitiateCheckout', {
+        value: subtotal,
+        currency: 'PKR',
+        num_items: items.reduce((sum, item) => sum + item.quantity, 0),
+        content_ids: items.map(i => i.id)
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     const fetchRegions = async () => {
       try {
@@ -214,9 +228,11 @@ function CheckoutContent() {
           total: finalTotal,
         }),
       });
-      if (!response.ok) throw new Error('Failed to place order');
+      // Redirect to success page with data for Purchase tracking
+      const ids = items.map(i => i.id).join(',');
+      const numItems = items.reduce((sum, item) => sum + item.quantity, 0);
       clearCart();
-      router.push('/order-success');
+      router.push(`/order-success?total=${finalTotal}&items=${numItems}&ids=${ids}`);
     } catch (error) {
       setStatusMessage(error instanceof Error ? error.message : 'Error');
     } finally { setIsSubmitting(false); }

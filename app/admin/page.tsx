@@ -13,6 +13,7 @@ import AdminShippingPanel from './components/AdminShippingPanel';
 import AdminSalePanel from './components/AdminSalePanel';
 import AdminBannerPanel from './components/AdminBannerPanel';
 import AdminReviewsPanel from './components/AdminReviewsPanel';
+import AdminMarketingPanel from './components/AdminMarketingPanel';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -168,7 +169,7 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tabs */}
         <div className="border-b border-gray-200 mb-8">
-          <nav className="flex space-x-8 overflow-x-auto">
+          <nav className="flex space-x-8 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {[
               { id: 'overview', label: 'Overview' },
               { id: 'products', label: 'Products' },
@@ -176,6 +177,7 @@ export default function AdminDashboard() {
               { id: 'promo-users', label: 'Promo Users' },
               { id: 'affiliate-applications', label: 'Affiliate Applications' },
               { id: 'analytics', label: 'Analytics' },
+              { id: 'marketing', label: 'Marketing' },
               { id: 'sales', label: 'Sale Events' },
               { id: 'reviews', label: 'Reviews' },
               { id: 'appearance', label: 'Appearance' },
@@ -294,6 +296,8 @@ export default function AdminDashboard() {
           )}
 
           { activeTab === 'analytics' && <AdminAnalyticsPanel /> }
+
+          { activeTab === 'marketing' && <AdminMarketingPanel /> }
 
           { activeTab === 'sales' && <AdminSalePanel /> }
 
