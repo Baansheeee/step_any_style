@@ -105,7 +105,7 @@ export default function AdminMarketingPanel() {
           <div className="flex gap-3">
             <button 
               onClick={() => setIsConfigModalOpen(true)}
-              className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
+              className="px-4 py-2 bg-purple-500 hover:bg-purple-800 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
             >
               Configure Meta Pixel
             </button>
